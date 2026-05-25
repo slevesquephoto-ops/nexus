@@ -1,0 +1,90 @@
+# packages/content/parcours/comp10/tracks/linux/modules/linux-fund-1.yaml
+
+module:
+  id: linux-fund-1
+  trackId: linux
+  title: "Linux Fundamentals 1"
+  description: "Histoire de Linux, premières commandes, navigation de base"
+  order: 1
+  xpReward: 50
+
+  tasks:
+
+    - id: linux-fund-1-t1
+      type: task
+      title: "What is Linux?"
+      order: 1
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            Linux is an open-source operating system kernel created by **Linus Torvalds** in 1991.
+            Unlike Windows or macOS, Linux is free, transparent, and runs on almost any hardware.
+
+        - type: code_block
+          label: "Checking your Linux version"
+          content: |
+            user@linux:~$ uname -a
+            Linux hostname 6.8.0 #1 SMP x86_64 GNU/Linux
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Who created the Linux kernel?"
+              answers:
+                - text: "Richard Stallman"
+                  correct: false
+                - text: "Linus Torvalds"
+                  correct: true
+                - text: "Bill Gates"
+                  correct: false
+                - text: "Dennis Ritchie"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "What command shows your Linux kernel version?"
+              answer: "uname -a"
+
+    - id: linux-fund-1-t2
+      type: task
+      title: "Navigating the filesystem"
+      order: 2
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            The Linux filesystem is a **tree structure** starting from the root `/`.
+            You navigate it using three essential commands.
+
+        - type: command_table
+          commands:
+            - cmd: "pwd"
+              desc: "Print current directory (where you are)"
+            - cmd: "ls"
+              desc: "List files and folders"
+            - cmd: "cd"
+              desc: "Change directory"
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "What does 'pwd' stand for?"
+              answers:
+                - text: "Print Working Directory"
+                  correct: true
+                - text: "Previous Working Directory"
+                  correct: false
+                - text: "Path With Directory"
+                  correct: false
+                - text: "Print Windows Dir"
+                  correct: false
+
+    - id: linux-fund-1-challenge
+      type: challenge
+      title: "Challenge — First Contact"
+      order: 3
+      xpReward: 50
+      # → Système mission narrative existant (teacher_graded, file_submission, qcm)
