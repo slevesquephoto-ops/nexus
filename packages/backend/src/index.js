@@ -9,6 +9,7 @@ const parcoursRoutes = require('./routes/parcours');
 const tracksRoutes = require('./routes/tracks');
 const modulesRoutes = require('./routes/modules');
 const tasksRoutes = require('./routes/tasks');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.use('/api/parcours', parcoursRoutes);
 app.use('/api/tracks', tracksRoutes);
 app.use('/api/modules', modulesRoutes);
 app.use('/api/tasks', tasksRoutes);
+app.use('/api/admin', adminRoutes);
 
 module.exports = app;

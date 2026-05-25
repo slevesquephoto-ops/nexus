@@ -26,6 +26,17 @@ async function main() {
   });
   console.log(`[seed] Student: ${student.username} (${student.id})`);
 
+  const teacher = await prisma.user.upsert({
+    where: { username: 'prof' },
+    update: {},
+    create: {
+      username: 'prof',
+      passwordHash: await bcrypt.hash('prof123', SALT_ROUNDS),
+      role: 'TEACHER',
+    },
+  });
+  console.log(`[seed] Teacher: ${teacher.username} (${teacher.id})`);
+
   await prisma.badge.upsert({
     where: { id: 'premier-pas' },
     create: {

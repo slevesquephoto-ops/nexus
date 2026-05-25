@@ -7,21 +7,22 @@ datasource db {
 }
 
 model User {
-  id           String         @id @default(cuid())
-  username     String         @unique
-  email        String?        @unique
-  passwordHash String
-  role         Role           @default(STUDENT)
-  xp           Int            @default(0)
-  level        Int            @default(1)
-  avatarId     String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  classes      ClasseMember[]
-  enrollments  Enrollment[]
-  taskProgress TaskProgress[]
-  badges       UserBadge[]
-  xpLogs       XpLog[]
+  id             String         @id @default(cuid())
+  username       String         @unique
+  email          String?        @unique
+  passwordHash   String
+  role           Role           @default(STUDENT)
+  xp             Int            @default(0)
+  level          Int            @default(1)
+  avatarId       String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  classes        ClasseMember[]
+  classesCreated Classe[]       @relation("TeacherClasses")
+  enrollments    Enrollment[]
+  taskProgress   TaskProgress[]
+  badges         UserBadge[]
+  xpLogs         XpLog[]
 }
 
 model Parcours {
@@ -100,9 +101,11 @@ model TaskProgress {
 model Classe {
   id         String         @id @default(cuid())
   name       String
+  teacherId  String
   parcoursId String
   inviteCode String         @unique @default(cuid())
   createdAt  DateTime       @default(now())
+  teacher    User           @relation("TeacherClasses", fields: [teacherId], references: [id])
   parcours   Parcours       @relation(fields: [parcoursId], references: [id])
   members    ClasseMember[]
 }
