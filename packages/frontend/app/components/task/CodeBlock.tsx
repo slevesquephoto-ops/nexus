@@ -7,7 +7,7 @@ interface CodeBlockProps {
 
 export default function CodeBlock({ label, content }: CodeBlockProps) {
   return (
-    <div className="mx-6 my-4 rounded-lg overflow-hidden border border-nx-border">
+    <div className="mx-6 my-4 rounded-lg overflow-hidden border border-green-900/40 shadow-[0_0_12px_rgba(74,222,128,0.06)]">
       <div className="bg-[#1a1f2e] px-4 py-2 flex items-center gap-2">
         <span className="w-3 h-3 rounded-full bg-red-500/60" />
         <span className="w-3 h-3 rounded-full bg-yellow-500/60" />

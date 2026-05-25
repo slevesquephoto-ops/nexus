@@ -36,34 +36,41 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) {
     return (
       <div className="h-screen flex items-center justify-center bg-nx-bg">
-        <span className="text-nx-gray text-sm">Chargement…</span>
+        <span className="text-nx-text-dim text-sm tracking-wide">Chargement…</span>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-nx-bg flex flex-col">
-      <header className="sticky top-0 z-10 bg-nx-bg/90 backdrop-blur-sm border-b border-nx-border px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-nx-bg nx-grid-bg flex flex-col">
+      {/* Topbar */}
+      <header className="h-[52px] sticky top-0 z-10 bg-nx-surface/95 backdrop-blur-sm border-b border-nx-border px-6 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-nx-yellow font-bold text-sm tracking-wide">NEXUS</span>
-          <span className="text-nx-border">|</span>
-          <span className="text-nx-gray text-sm">Admin</span>
+          <div className="text-lg font-extrabold tracking-[0.15em] select-none uppercase">
+            <span className="text-nx-yellow drop-shadow-[0_0_8px_rgba(245,192,48,0.5)]">N</span>
+            <span className="text-nx-yellow drop-shadow-[0_0_8px_rgba(245,192,48,0.5)]">E</span>
+            <span className="text-nx-yellow">XUS</span>
+          </div>
+          <span className="text-nx-border text-sm">|</span>
+          <span className="text-nx-text-dim text-xs tracking-widest uppercase">Admin</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-nx-gray text-sm">{user.username}</span>
-          <Link href="/map" className="text-nx-gray hover:text-white text-sm transition-colors">
+          <span className="text-nx-text-dim text-sm font-semibold">{user.username}</span>
+          <Link href="/map" className="text-xs text-nx-text-dim hover:text-nx-yellow transition-colors duration-200 tracking-widest uppercase border border-nx-border hover:border-nx-yellow/40 px-3 py-1 rounded-lg">
             ← Carte
           </Link>
         </div>
       </header>
 
       <div className="flex flex-1">
-        <nav className="w-44 shrink-0 border-r border-nx-border pt-6 px-3">
+        {/* Sidebar */}
+        <nav className="w-[220px] shrink-0 border-r border-nx-border pt-6 px-3 bg-nx-surface/30">
+          <p className="text-[10px] text-nx-text-muted tracking-[0.2em] uppercase px-3 mb-3">Navigation</p>
           {NAV.map(item => {
             const isCurrentPath = item.href && pathname.startsWith(item.href)
             if (!item.active || !item.href) {
               return (
-                <div key={item.label} className="px-3 py-2 text-sm text-nx-border rounded-lg mb-1 cursor-not-allowed">
+                <div key={item.label} className="px-3 py-2 text-sm text-nx-text-muted rounded-lg mb-1 cursor-not-allowed tracking-wide">
                   {item.label}
                 </div>
               )
@@ -72,10 +79,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.label}
                 href={item.href}
-                className={`block px-3 py-2 text-sm rounded-lg mb-1 transition-colors ${
+                className={`flex items-center gap-2 px-3 py-2 text-sm font-semibold rounded-lg mb-1 transition-all duration-200 tracking-wide ${
                   isCurrentPath
-                    ? 'bg-nx-surface text-white border border-nx-border'
-                    : 'text-nx-gray hover:text-white hover:bg-nx-surface/50'
+                    ? 'bg-nx-surface-2 text-nx-yellow border-l-2 border-nx-yellow pl-[10px]'
+                    : 'text-nx-text-dim hover:text-nx-text hover:bg-nx-surface-2/60'
                 }`}
               >
                 {item.label}

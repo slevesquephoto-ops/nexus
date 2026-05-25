@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Island, { ISLAND_W } from './Island'
 
-const ISLAND_SPACING = 180
-const PADDING_TOP = 60
-const X_FRACS = [0.25, 0.75]
-const PLAT_ANCHOR_Y = 52
+const ISLAND_SPACING = 280
+const PADDING_TOP    = 80
+const X_FRACS        = [0.25, 0.75]
+const PLAT_ANCHOR_Y  = 60
 
 interface Module {
   id: string
@@ -15,6 +15,7 @@ interface Module {
   description: string | null
   order: number
   xpReward: number
+  mascot?: string | null
   _count: { tasks: number }
   tasks: { id: string }[]
   status?: 'done' | 'active' | 'locked'
@@ -72,39 +73,76 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
     setPaths(newPaths)
   }, [modules])
 
-  const totalXp    = modules.reduce((s, m) => s + m.xpReward, 0)
-  const totalTasks = modules.reduce((s, m) => s + m._count.tasks, 0)
-  const canvasH    = modules.length * ISLAND_SPACING + PADDING_TOP + 120
+  const totalXp        = modules.reduce((s, m) => s + m.xpReward, 0)
+  const totalTasks     = modules.reduce((s, m) => s + m._count.tasks, 0)
+  const doneCount      = modules.filter(m => m.status === 'done').length
+  const progressPct    = modules.length > 0 ? Math.round((doneCount / modules.length) * 100) : 0
+  const canvasH        = modules.length * ISLAND_SPACING + PADDING_TOP + 140
 
   return (
     <div className="min-h-full pb-10">
-      <div className="sticky top-0 z-10 bg-nx-bg/90 backdrop-blur-sm border-b border-nx-border px-6 py-3 flex items-center gap-3 flex-wrap">
-        <h2 className="text-white font-semibold">{trackTitle}</h2>
-        <span className="text-nx-border">·</span>
-        <span className="text-nx-gray text-sm">{modules.length} modules</span>
-        <span className="text-nx-border">·</span>
-        <span className="text-nx-gray text-sm">{totalTasks} tasks</span>
-        <span className="text-nx-yellow text-sm ml-auto">{totalXp} XP total</span>
+      {/* Track header */}
+      <div className="sticky top-0 z-10 bg-nx-surface border-b border-nx-border px-6 py-3">
+        <div className="flex items-center gap-3 flex-wrap mb-2">
+          <h2 className="text-nx-yellow font-bold tracking-widest uppercase text-lg">{trackTitle}</h2>
+          <span className="text-nx-border">·</span>
+          <span className="text-nx-text-dim text-sm">{modules.length} modules</span>
+          <span className="text-nx-border">·</span>
+          <span className="text-nx-text-dim text-sm">{totalTasks} tasks</span>
+          <span className="text-nx-yellow text-sm font-semibold ml-auto">{totalXp} XP total</span>
+        </div>
+        {/* Progress bar */}
+        <div className="h-0.5 bg-nx-border rounded-full overflow-hidden">
+          <div
+            className="h-full bg-nx-yellow rounded-full transition-all duration-700"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
       </div>
 
       <div
         ref={containerRef}
-        className="relative mx-auto"
-        style={{ maxWidth: 600, height: canvasH }}
+        className="relative mx-auto overflow-x-hidden"
+        style={{ maxWidth: 640, height: canvasH }}
       >
         <svg
           className="absolute inset-0 w-full pointer-events-none"
           style={{ height: canvasH }}
         >
+          <defs>
+            <linearGradient id="path-done" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#00d4c8" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#00d4c8" stopOpacity="0.4" />
+            </linearGradient>
+            <linearGradient id="path-active" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f5c030" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#f5c030" stopOpacity="0.3" />
+            </linearGradient>
+            <filter id="glow-cyan">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+            <filter id="glow-yellow">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
           {paths.map((p, i) => (
             <path
               key={i}
               d={p.d}
               fill="none"
-              stroke={p.style === 'done' ? '#00d4c8' : p.style === 'active' ? '#f5c030' : '#1c2a4a'}
+              stroke={
+                p.style === 'done'   ? 'url(#path-done)'   :
+                p.style === 'active' ? 'url(#path-active)' : '#1e2d4a'
+              }
               strokeWidth={p.style === 'locked' ? 1.5 : 2}
-              strokeDasharray={p.style === 'locked' ? '7 4' : undefined}
+              strokeDasharray={p.style === 'locked' ? '6 5' : undefined}
               strokeLinecap="round"
+              filter={
+                p.style === 'done'   ? 'url(#glow-cyan)'   :
+                p.style === 'active' ? 'url(#glow-yellow)' : undefined
+              }
             />
           ))}
         </svg>
@@ -121,6 +159,8 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
             firstTaskId={mod.tasks[0]?.id ?? null}
             onClick={(taskId) => router.push(`/task/${taskId}`)}
             islandRef={(el) => { islandRefs.current[i] = el }}
+            orderNumber={i + 1}
+            mascot={mod.mascot}
           />
         ))}
       </div>

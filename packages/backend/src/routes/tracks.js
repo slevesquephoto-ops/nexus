@@ -22,6 +22,7 @@ router.get('/:id', async (req, res) => {
             description: true,
             order: true,
             xpReward: true,
+            mascot: true,
             _count: { select: { tasks: true } },
             tasks: {
               orderBy: { order: 'asc' },
@@ -74,6 +75,7 @@ router.get('/:id', async (req, res) => {
         description: mod.description,
         order: mod.order,
         xpReward: mod.xpReward,
+        mascot: mod.mascot ?? null,
         _count: mod._count,
         tasks: firstTaskId ? [{ id: firstTaskId }] : [],
         status,

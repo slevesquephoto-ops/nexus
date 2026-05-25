@@ -96,4 +96,28 @@ router.get('/me/badges', requireAuth, async (req, res) => {
   }
 });
 
+router.get('/me/avatars', requireAuth, (req, res) => {
+  const { AVATARS } = require('../lib/avatars');
+  res.json(AVATARS.map(a => ({
+    ...a,
+    unlocked: req.user.xp >= a.xpRequired,
+    active: req.user.avatarId === a.id,
+  })));
+});
+
+router.post('/me/avatar', requireAuth, async (req, res) => {
+  const { avatarId } = req.body;
+  const { AVATARS } = require('../lib/avatars');
+  const avatar = AVATARS.find(a => a.id === avatarId);
+  if (!avatar) return res.status(400).json({ error: 'Avatar inconnu' });
+  if (req.user.xp < avatar.xpRequired) return res.status(403).json({ error: 'XP insuffisant' });
+  try {
+    const updated = await prisma.user.update({ where: { id: req.user.id }, data: { avatarId } });
+    res.json({ avatarId: updated.avatarId });
+  } catch (err) {
+    console.error('[POST /api/users/me/avatar]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

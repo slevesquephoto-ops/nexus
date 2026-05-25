@@ -8,7 +8,7 @@ import IslandMap from '../components/map/IslandMap'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
-interface User { id: string; username: string; xp: number; level: number }
+interface User { id: string; username: string; xp: number; level: number; avatarId?: string | null }
 interface Parcours { id: string; title: string; order: number; _count: { tracks: number } }
 interface Track { id: string; title: string; orderInParcours: number }
 interface Module {
@@ -106,7 +106,7 @@ export default function MapPage() {
           user={user}
         />
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,192,48,0.05) 0%, transparent 60%), #080b14' }}>
           {selectedTrackId ? (
             <IslandMap modules={modules} trackTitle={selectedTrackTitle} />
           ) : (

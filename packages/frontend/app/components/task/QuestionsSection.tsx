@@ -39,11 +39,11 @@ function QcmItem({ q, answers, submitted, onAnswer, onSubmit }: {
                 onAnswer(q.id, a.text)
                 onSubmit(q.id, a.correct)
               }}
-              className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm transition-all ${
-                showCorrect  ? 'border-nx-cyan bg-nx-cyan/10 text-nx-cyan' :
-                showWrong    ? 'border-red-500 bg-red-500/10 text-red-400' :
+              className={`w-full text-left px-4 py-3 rounded-lg border text-sm font-medium tracking-wide transition-all duration-200 ${
+                showCorrect  ? 'border-nx-cyan bg-nx-cyan/10 text-nx-cyan shadow-[0_0_12px_rgba(0,212,200,0.1)]' :
+                showWrong    ? 'border-red-500 bg-red-500/10 text-red-400 shadow-[0_0_12px_rgba(239,68,68,0.1)]' :
                 isSelected && !isDone ? 'border-nx-yellow bg-nx-yellow/10 text-nx-yellow' :
-                'border-nx-border text-nx-gray hover:border-nx-gray hover:text-white'
+                'border-nx-border text-nx-text-dim hover:border-nx-text-dim hover:text-nx-text'
               } ${isDone ? 'cursor-default' : 'cursor-pointer'}`}
             >
               {a.text}

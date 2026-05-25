@@ -16,9 +16,9 @@ function renderInline(text: string): React.ReactNode[] {
 export default function TheorySection({ content }: { content: string }) {
   const paragraphs = content.trim().split(/\n\n+/)
   return (
-    <div className="px-6 py-4 space-y-3">
+    <div className="px-8 py-6 space-y-4">
       {paragraphs.map((p, i) => (
-        <p key={i} className="text-nx-text leading-relaxed text-sm whitespace-pre-line">
+        <p key={i} className="text-nx-text leading-loose text-base whitespace-pre-line">
           {renderInline(p)}
         </p>
       ))}

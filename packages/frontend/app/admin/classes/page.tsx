@@ -104,7 +104,7 @@ export default function ClassesPage() {
               placeholder="Nom de la classe"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white placeholder-nx-gray text-sm focus:outline-none focus:border-nx-yellow/50"
+              className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
             />
             <select
               value={parcoursId}

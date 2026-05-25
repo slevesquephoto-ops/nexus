@@ -68,12 +68,14 @@ async function loadContent() {
               description: mod.description ?? null,
               order: mod.order,
               xpReward: mod.xpReward ?? 50,
+              mascot: mod.mascot ?? null,
             },
             update: {
               title: mod.title,
               description: mod.description ?? null,
               order: mod.order,
               xpReward: mod.xpReward ?? 50,
+              mascot: mod.mascot ?? null,
             },
           });
           totalModules++;

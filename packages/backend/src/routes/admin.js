@@ -66,6 +66,13 @@ router.get('/classes', requireAuth, requireTeacher, async (req, res) => {
   }
 });
 
+function generateInviteCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const digits = '23456789';
+  const pick = (s) => s[Math.floor(Math.random() * s.length)];
+  return `${pick(chars)}${pick(chars)}${pick(chars)}-${pick(digits)}${pick(digits)}${pick(digits)}`;
+}
+
 router.post('/classes', requireAuth, requireTeacher, async (req, res) => {
   const { name, parcoursId } = req.body;
   if (!name || !parcoursId) {
@@ -76,8 +83,10 @@ router.post('/classes', requireAuth, requireTeacher, async (req, res) => {
     const parcours = await prisma.parcours.findUnique({ where: { id: parcoursId } });
     if (!parcours) return res.status(404).json({ error: 'Parcours not found' });
 
+    const inviteCode = generateInviteCode();
+
     const classe = await prisma.classe.create({
-      data: { name, parcoursId, teacherId: req.user.id },
+      data: { name, parcoursId, teacherId: req.user.id, inviteCode },
       include: {
         parcours: { select: { id: true, title: true } },
         _count: { select: { members: true } },

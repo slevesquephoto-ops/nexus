@@ -69,6 +69,7 @@ model Module {
   description String?
   order       Int
   xpReward    Int      @default(50)
+  mascot      String?
   createdAt   DateTime @default(now())
   track       Track    @relation(fields: [trackId], references: [id])
   tasks       Task[]

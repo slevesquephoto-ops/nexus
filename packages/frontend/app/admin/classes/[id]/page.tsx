@@ -213,9 +213,9 @@ export default function ClassProgressPage() {
     <>
       {/* XP Modal */}
       {xpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4">
-            <h2 className="text-white font-bold">Attribuer XP — {xpModal.username}</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-nx-surface border border-nx-yellow/25 rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4 shadow-glow-yellow-sm">
+            <h2 className="text-nx-text font-bold tracking-wide">Attribuer XP — {xpModal.username}</h2>
             {xpFeedback ? (
               <p className="text-nx-cyan text-sm font-medium py-4 text-center">{xpFeedback}</p>
             ) : (
@@ -225,7 +225,7 @@ export default function ClassProgressPage() {
                   <input
                     type="number" min="1" value={xpAmount} onChange={e => setXpAmount(e.target.value)}
                     placeholder="ex. 30"
-                    className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-nx-yellow/50"
+                    className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
                   />
                 </div>
                 <div>
@@ -233,7 +233,7 @@ export default function ClassProgressPage() {
                   <input
                     type="text" value={xpReason} onChange={e => setXpReason(e.target.value)}
                     placeholder="ex. Participation en classe"
-                    className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-nx-yellow/50"
+                    className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
                   />
                 </div>
                 {xpError && <p className="text-red-400 text-xs">{xpError}</p>}
@@ -251,10 +251,10 @@ export default function ClassProgressPage() {
 
       {/* Grade Modal */}
       {gradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4 shadow-glow-cyan-sm">
             <div>
-              <h2 className="text-white font-bold">Correction</h2>
+              <h2 className="text-nx-text font-bold tracking-wide">Correction</h2>
               <p className="text-nx-gray text-sm mt-0.5">{gradeModal.taskTitle} · {gradeModal.username}</p>
             </div>
             <form onSubmit={handleGradeSubmit} className="space-y-3">
@@ -262,7 +262,7 @@ export default function ClassProgressPage() {
                 <label className="text-nx-gray text-xs block mb-1">Score / 100</label>
                 <input
                   type="number" min="0" max="100" value={gradeScore} onChange={e => setGradeScore(e.target.value)}
-                  className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-nx-yellow/50"
+                  className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
                 />
               </div>
               <label className="flex items-center gap-3 cursor-pointer select-none">
@@ -347,8 +347,8 @@ export default function ClassProgressPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {students.map(student => (
-                    <tr key={student.id} className="border-b border-nx-border/50 hover:bg-nx-surface/40">
+                  {students.map((student, rowIdx) => (
+                    <tr key={student.id} className={`border-b border-nx-border/50 hover:bg-nx-surface/60 transition-colors ${rowIdx % 2 === 0 ? '' : 'bg-nx-surface-2/20'}`}>
                       <td className="px-3 py-2.5 text-white font-medium whitespace-nowrap">{student.username}</td>
                       <td className="px-3 py-2.5 text-center"><span className="text-nx-yellow text-xs font-semibold">{student.xp}</span></td>
                       {student.progress.map(p => <PctCell key={p.moduleId} pct={p.pct} />)}
@@ -410,7 +410,7 @@ export default function ClassProgressPage() {
               <input
                 type="text" placeholder="Ajouter par nom d'utilisateur…" value={addUsername}
                 onChange={e => setAddUsername(e.target.value)}
-                className="flex-1 bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white placeholder-nx-gray text-sm focus:outline-none focus:border-nx-yellow/50"
+                className="flex-1 bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
               />
               <button type="submit" disabled={addingUser || !addUsername.trim()} className="px-4 py-2.5 bg-nx-surface border border-nx-yellow/50 text-nx-yellow text-sm font-semibold rounded-lg hover:bg-nx-yellow/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap">
                 {addingUser ? '…' : 'Ajouter'}

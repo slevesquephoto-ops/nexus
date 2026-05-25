@@ -3,6 +3,7 @@ module:
   trackId: linux
   title: "Linux Fundamentals 1"
   description: "Histoire de Linux, premières commandes, navigation de base"
+  mascot: "tux-terminal"
   order: 1
   xpReward: 50
 

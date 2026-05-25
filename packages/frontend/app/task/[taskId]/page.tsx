@@ -29,6 +29,13 @@ interface Task {
   content: Section[] | null
 }
 
+interface ModuleInfo {
+  id: string
+  title: string
+  order: number
+  track: { title: string }
+}
+
 interface CompletionResult {
   xpGained: number
   nextTaskId: string | null
@@ -39,6 +46,7 @@ export default function TaskPage() {
   const router = useRouter()
 
   const [task, setTask]               = useState<Task | null>(null)
+  const [module, setModule]           = useState<ModuleInfo | null>(null)
   const [loading, setLoading]         = useState(true)
   const [answers, setAnswers]         = useState<Record<string, string>>({})
   const [submitted, setSubmitted]     = useState<Record<string, boolean>>({})
@@ -50,6 +58,7 @@ export default function TaskPage() {
     setAnswers({})
     setSubmitted({})
     setResult(null)
+    setModule(null)
 
     fetch(`${API_URL}/api/tasks/${taskId}`, { credentials: 'include' })
       .then(r => {
@@ -57,7 +66,15 @@ export default function TaskPage() {
         if (!r.ok) return null
         return r.json()
       })
-      .then(data => { if (data) setTask(data) })
+      .then(taskData => {
+        if (!taskData) return
+        setTask(taskData)
+        // parallel breadcrumb fetch
+        fetch(`${API_URL}/api/modules/${taskData.moduleId}`, { credentials: 'include' })
+          .then(r => r.ok ? r.json() : null)
+          .then(modData => { if (modData) setModule(modData) })
+          .catch(() => {})
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [taskId, router])
@@ -69,7 +86,6 @@ export default function TaskPage() {
   const answeredCount = Object.keys(submitted).length
   const allQuestionsAnswered = totalQuestions > 0 && answeredCount >= totalQuestions
 
-  // Tasks with no questions (e.g. CHALLENGE): button always visible
   const hasQuestions = totalQuestions > 0
   const canValidate  = result === null && !completing && (hasQuestions ? allQuestionsAnswered : true)
 
@@ -95,7 +111,7 @@ export default function TaskPage() {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-nx-bg">
-        <span className="text-nx-gray text-sm">Chargement…</span>
+        <span className="text-nx-text-dim text-sm tracking-wide">Chargement…</span>
       </div>
     )
   }
@@ -103,46 +119,57 @@ export default function TaskPage() {
   if (!task) {
     return (
       <div className="h-screen flex items-center justify-center bg-nx-bg">
-        <span className="text-red-400 text-sm">Task introuvable.</span>
+        <span className="text-nx-danger text-sm">Task introuvable.</span>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-nx-bg">
-      {/* Sticky header */}
-      <div className="sticky top-0 z-10 bg-nx-bg/90 backdrop-blur-sm border-b border-nx-border px-6 py-3 flex items-center gap-4">
-        <button
-          onClick={() => router.back()}
-          className="text-nx-gray hover:text-white transition-colors text-sm shrink-0"
-        >
-          ← Retour
-        </button>
-        <h1 className="flex-1 text-white font-semibold truncate">{task.title}</h1>
-        <span className={`text-xs rounded-full px-2 py-0.5 border shrink-0 ${
-          task.type === 'CHALLENGE'
-            ? 'border-nx-cyan text-nx-cyan'
-            : 'border-nx-border text-nx-gray'
-        }`}>
-          {task.type}
-        </span>
-        <span className="text-xs bg-nx-surface border border-nx-border rounded-full px-3 py-1 text-nx-yellow shrink-0">
-          {task.xpReward} XP
-        </span>
+      {/* Sticky header with breadcrumb */}
+      <div className="sticky top-0 z-10 bg-nx-bg/95 backdrop-blur-sm border-b border-nx-border px-6 py-3">
+        <div className="flex items-center gap-2 text-xs text-nx-text-muted mb-1 tracking-wide">
+          {module && (
+            <>
+              <span>{module.track?.title}</span>
+              <span className="text-nx-border">›</span>
+              <span>{module.title}</span>
+              <span className="text-nx-border">›</span>
+            </>
+          )}
+          <span className="text-nx-text-dim">Task {task.order}</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.back()}
+            className="text-nx-text-dim hover:text-nx-text transition-colors text-sm shrink-0"
+          >
+            ←
+          </button>
+          <h1 className="flex-1 text-nx-text font-bold tracking-wide truncate">{task.title}</h1>
+          <span className={`text-[10px] rounded-full px-2 py-0.5 border tracking-widest uppercase shrink-0 ${
+            task.type === 'CHALLENGE'
+              ? 'border-nx-cyan/40 text-nx-cyan bg-nx-cyan/5'
+              : 'border-nx-border text-nx-text-muted'
+          }`}>
+            {task.type}
+          </span>
+          <span className="text-xs bg-nx-surface-2 border border-nx-border rounded-full px-3 py-1 text-nx-yellow font-semibold shrink-0">
+            {task.xpReward} XP
+          </span>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto py-6 space-y-2">
-        {/* Challenge sans sections */}
+      <div className="max-w-2xl mx-auto py-6 space-y-2 animate-fade-in-up">
         {task.type === 'CHALLENGE' && (task.content ?? []).length === 0 && (
           <div className="mx-6 my-8 text-center space-y-3">
             <p className="text-5xl">⚔️</p>
-            <p className="text-white font-semibold">{task.title}</p>
-            <p className="text-nx-gray text-sm">Relève ce défi pour débloquer la suite.</p>
+            <p className="text-nx-text font-bold tracking-wide">{task.title}</p>
+            <p className="text-nx-text-dim text-sm">Relève ce défi pour débloquer la suite.</p>
           </div>
         )}
 
-        {/* Sections */}
         {(task.content ?? []).map((section, i) => {
           switch (section.type) {
             case 'theory':
@@ -165,29 +192,26 @@ export default function TaskPage() {
           }
         })}
 
-        {/* Bouton Valider */}
         {canValidate && (
           <div className="mx-6 mt-6">
             <button
               onClick={handleComplete}
-              className="w-full py-3 bg-nx-yellow text-nx-bg font-semibold rounded-xl hover:brightness-110 active:scale-[0.98] transition-all"
+              className="w-full py-3 bg-nx-yellow text-nx-bg font-bold tracking-widest uppercase rounded-xl hover:bg-yellow-400 hover:shadow-glow-yellow active:scale-[0.98] transition-all duration-200"
             >
               Valider ✓
             </button>
           </div>
         )}
 
-        {/* Spinner pendant l'appel */}
         {completing && (
-          <div className="mx-6 mt-6 text-center text-nx-gray text-sm">
+          <div className="mx-6 mt-6 text-center text-nx-text-dim text-sm tracking-wide">
             Validation en cours…
           </div>
         )}
 
-        {/* Banner résultat */}
         {result && (
-          <div className="mx-6 mt-4 p-5 rounded-xl border border-nx-cyan bg-nx-cyan/10 text-center space-y-3">
-            <p className="text-nx-cyan font-semibold text-lg">
+          <div className="mx-6 mt-4 p-5 rounded-xl border border-nx-cyan/40 bg-nx-cyan/5 text-center space-y-3 animate-slide-in-bottom shadow-glow-cyan">
+            <p className="text-nx-cyan font-bold text-lg tracking-wide">
               {result.xpGained > 0
                 ? `✓ +${result.xpGained} XP !`
                 : '✓ Déjà complétée'}
@@ -196,17 +220,17 @@ export default function TaskPage() {
             {result.nextTaskId ? (
               <button
                 onClick={() => router.push(`/task/${result.nextTaskId}`)}
-                className="w-full py-2.5 bg-nx-yellow text-nx-bg font-semibold rounded-lg hover:brightness-110 active:scale-[0.98] transition-all"
+                className="w-full py-2.5 bg-nx-yellow text-nx-bg font-bold tracking-widest uppercase rounded-lg hover:bg-yellow-400 hover:shadow-glow-yellow active:scale-[0.98] transition-all duration-200"
               >
                 Task suivante →
               </button>
             ) : (
-              <p className="text-nx-gray text-sm">🎉 Module terminé !</p>
+              <p className="text-nx-text-dim text-sm">🎉 Module terminé !</p>
             )}
 
             <button
               onClick={() => router.push('/map')}
-              className="block w-full text-sm text-nx-gray hover:text-white transition-colors pt-1"
+              className="block w-full text-sm text-nx-text-dim hover:text-nx-text transition-colors pt-1 tracking-wide"
             >
               ← Retour à la carte
             </button>

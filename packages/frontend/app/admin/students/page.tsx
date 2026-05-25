@@ -123,14 +123,14 @@ export default function StudentsPage() {
               placeholder="Nom d'utilisateur"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white placeholder-nx-gray text-sm focus:outline-none focus:border-nx-yellow/50"
+              className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
             />
             <input
               type="text"
               placeholder="Mot de passe temporaire"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white placeholder-nx-gray text-sm focus:outline-none focus:border-nx-yellow/50"
+              className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
             />
             {createError && <p className="text-red-400 text-xs">{createError}</p>}
             <button

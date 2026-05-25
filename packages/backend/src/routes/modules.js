@@ -12,6 +12,7 @@ router.get('/:id', async (req, res) => {
         description: true,
         order: true,
         xpReward: true,
+        track: { select: { id: true, title: true } },
         tasks: {
           orderBy: { order: 'asc' },
           select: {

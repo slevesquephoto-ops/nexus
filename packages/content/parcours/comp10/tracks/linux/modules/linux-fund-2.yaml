@@ -3,6 +3,7 @@ module:
   trackId: linux
   title: "Linux Fundamentals 2"
   description: "Navigation avancée, permissions, recherche de fichiers"
+  mascot: "tux-filesystem"
   order: 2
   xpReward: 50
 
