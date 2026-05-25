@@ -72,15 +72,15 @@ export default function MapPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openParcoursId])
 
-  // Load modules for selected track
+  // Load modules for selected track — wait for user so we can pass userId for real statuses
   useEffect(() => {
-    if (!selectedTrackId) return
+    if (!selectedTrackId || !user?.id) return
 
-    fetch(`${API_URL}/api/tracks/${selectedTrackId}`, { credentials: 'include' })
+    fetch(`${API_URL}/api/tracks/${selectedTrackId}?userId=${user.id}`, { credentials: 'include' })
       .then(r => r.json())
       .then(data => setModules(data.modules ?? []))
       .catch(() => {})
-  }, [selectedTrackId])
+  }, [selectedTrackId, user?.id])
 
   function handleParcoursClick(id: string) {
     setOpenParcoursId(prev => (prev === id ? null : id))

@@ -1,0 +1,47 @@
+module:
+  id: linux-fund-2
+  trackId: linux
+  title: "Linux Fundamentals 2"
+  description: "Navigation avancée, permissions, recherche de fichiers"
+  order: 2
+  xpReward: 50
+
+  tasks:
+
+    - id: linux-fund-2-t1
+      type: task
+      title: "File Permissions"
+      order: 1
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            Every file in Linux has **permissions** that control who can
+            read, write, or execute it. Use `ls -l` to see them.
+
+        - type: code_block
+          label: "Viewing file permissions"
+          content: |
+            user@linux:~$ ls -l
+            -rwxr-xr-- 1 user group 1234 Jan 1 script.sh
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "What command shows file permissions?"
+              answers:
+                - text: "ls -l"
+                  correct: true
+                - text: "pwd"
+                  correct: false
+                - text: "cd"
+                  correct: false
+                - text: "cat"
+                  correct: false
+
+    - id: linux-fund-2-challenge
+      type: challenge
+      title: "Challenge — Permission Granted"
+      order: 2
+      xpReward: 50

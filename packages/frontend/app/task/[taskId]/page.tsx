@@ -29,19 +29,27 @@ interface Task {
   content: Section[] | null
 }
 
+interface CompletionResult {
+  xpGained: number
+  nextTaskId: string | null
+}
+
 export default function TaskPage() {
   const { taskId } = useParams<{ taskId: string }>()
   const router = useRouter()
 
-  const [task, setTask] = useState<Task | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [submitted, setSubmitted] = useState<Record<string, boolean>>({})
+  const [task, setTask]               = useState<Task | null>(null)
+  const [loading, setLoading]         = useState(true)
+  const [answers, setAnswers]         = useState<Record<string, string>>({})
+  const [submitted, setSubmitted]     = useState<Record<string, boolean>>({})
+  const [completing, setCompleting]   = useState(false)
+  const [result, setResult]           = useState<CompletionResult | null>(null)
 
   useEffect(() => {
     setLoading(true)
     setAnswers({})
     setSubmitted({})
+    setResult(null)
 
     fetch(`${API_URL}/api/tasks/${taskId}`, { credentials: 'include' })
       .then(r => {
@@ -54,21 +62,35 @@ export default function TaskPage() {
       .finally(() => setLoading(false))
   }, [taskId, router])
 
-  function handleAnswer(qId: string, val: string) {
-    setAnswers(prev => ({ ...prev, [qId]: val }))
-  }
-
-  function handleSubmit(qId: string, correct: boolean) {
-    setSubmitted(prev => ({ ...prev, [qId]: correct }))
-  }
-
-  // Count total questions across all question sections
-  const totalQuestions = (task?.content ?? []).reduce((acc, s) => {
+  const totalQuestions = (task?.content ?? []).reduce<number>((acc, s) => {
     if (s.type === 'questions') return acc + s.items.length
     return acc
   }, 0)
   const answeredCount = Object.keys(submitted).length
-  const allDone = totalQuestions > 0 && answeredCount >= totalQuestions
+  const allQuestionsAnswered = totalQuestions > 0 && answeredCount >= totalQuestions
+
+  // Tasks with no questions (e.g. CHALLENGE): button always visible
+  const hasQuestions = totalQuestions > 0
+  const canValidate  = result === null && !completing && (hasQuestions ? allQuestionsAnswered : true)
+
+  async function handleComplete() {
+    if (!task || completing || result !== null) return
+    setCompleting(true)
+    try {
+      const res = await fetch(`${API_URL}/api/tasks/${task.id}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({}),
+      })
+      if (res.status === 401) { router.push('/login'); return }
+      if (!res.ok) return
+      const data = await res.json()
+      setResult({ xpGained: data.xpGained, nextTaskId: data.nextTaskId })
+    } finally {
+      setCompleting(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -109,8 +131,18 @@ export default function TaskPage() {
         </span>
       </div>
 
-      {/* Sections */}
+      {/* Content */}
       <div className="max-w-2xl mx-auto py-6 space-y-2">
+        {/* Challenge sans sections */}
+        {task.type === 'CHALLENGE' && (task.content ?? []).length === 0 && (
+          <div className="mx-6 my-8 text-center space-y-3">
+            <p className="text-5xl">⚔️</p>
+            <p className="text-white font-semibold">{task.title}</p>
+            <p className="text-nx-gray text-sm">Relève ce défi pour débloquer la suite.</p>
+          </div>
+        )}
+
+        {/* Sections */}
         {(task.content ?? []).map((section, i) => {
           switch (section.type) {
             case 'theory':
@@ -126,20 +158,55 @@ export default function TaskPage() {
                   items={section.items}
                   answers={answers}
                   submitted={submitted}
-                  onAnswer={handleAnswer}
-                  onSubmit={handleSubmit}
+                  onAnswer={(qId, val) => setAnswers(prev => ({ ...prev, [qId]: val }))}
+                  onSubmit={(qId, correct) => setSubmitted(prev => ({ ...prev, [qId]: correct }))}
                 />
               )
           }
         })}
 
-        {/* Completion banner */}
-        {allDone && (
-          <div className="mx-6 mt-4 p-4 rounded-xl border border-nx-cyan bg-nx-cyan/10 text-center">
-            <p className="text-nx-cyan font-semibold">✓ Task complétée — {task.xpReward} XP gagnés !</p>
+        {/* Bouton Valider */}
+        {canValidate && (
+          <div className="mx-6 mt-6">
             <button
-              onClick={() => router.back()}
-              className="mt-3 text-sm text-nx-gray hover:text-white transition-colors"
+              onClick={handleComplete}
+              className="w-full py-3 bg-nx-yellow text-nx-bg font-semibold rounded-xl hover:brightness-110 active:scale-[0.98] transition-all"
+            >
+              Valider ✓
+            </button>
+          </div>
+        )}
+
+        {/* Spinner pendant l'appel */}
+        {completing && (
+          <div className="mx-6 mt-6 text-center text-nx-gray text-sm">
+            Validation en cours…
+          </div>
+        )}
+
+        {/* Banner résultat */}
+        {result && (
+          <div className="mx-6 mt-4 p-5 rounded-xl border border-nx-cyan bg-nx-cyan/10 text-center space-y-3">
+            <p className="text-nx-cyan font-semibold text-lg">
+              {result.xpGained > 0
+                ? `✓ +${result.xpGained} XP !`
+                : '✓ Déjà complétée'}
+            </p>
+
+            {result.nextTaskId ? (
+              <button
+                onClick={() => router.push(`/task/${result.nextTaskId}`)}
+                className="w-full py-2.5 bg-nx-yellow text-nx-bg font-semibold rounded-lg hover:brightness-110 active:scale-[0.98] transition-all"
+              >
+                Task suivante →
+              </button>
+            ) : (
+              <p className="text-nx-gray text-sm">🎉 Module terminé !</p>
+            )}
+
+            <button
+              onClick={() => router.push('/map')}
+              className="block w-full text-sm text-nx-gray hover:text-white transition-colors pt-1"
             >
               ← Retour à la carte
             </button>

@@ -17,6 +17,8 @@ interface Module {
   xpReward: number
   _count: { tasks: number }
   tasks: { id: string }[]
+  status?: 'done' | 'active' | 'locked'
+  completedTaskCount?: number
 }
 
 interface IslandMapProps {
@@ -24,7 +26,8 @@ interface IslandMapProps {
   trackTitle: string
 }
 
-interface PathData { d: string; active: boolean }
+type PathStyle = 'done' | 'active' | 'locked'
+interface PathData { d: string; style: PathStyle }
 
 export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
   const router = useRouter()
@@ -57,9 +60,13 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
       const a = anchors[i], b = anchors[i + 1]
       if (!a || !b) continue
       const dy = b.y - a.y
+      const srcStatus = modules[i].status ?? (i === 0 ? 'active' : 'locked')
+      const style: PathStyle =
+        srcStatus === 'done'   ? 'done'   :
+        srcStatus === 'active' ? 'active' : 'locked'
       newPaths.push({
         d: `M ${a.x},${a.y} C ${a.x},${a.y + dy * 0.45} ${b.x},${b.y - dy * 0.45} ${b.x},${b.y}`,
-        active: i === 0,
+        style,
       })
     }
     setPaths(newPaths)
@@ -94,9 +101,9 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
               key={i}
               d={p.d}
               fill="none"
-              stroke={p.active ? '#f5c030' : '#1c2a4a'}
-              strokeWidth={2}
-              strokeDasharray={p.active ? undefined : '7 4'}
+              stroke={p.style === 'done' ? '#00d4c8' : p.style === 'active' ? '#f5c030' : '#1c2a4a'}
+              strokeWidth={p.style === 'locked' ? 1.5 : 2}
+              strokeDasharray={p.style === 'locked' ? '7 4' : undefined}
               strokeLinecap="round"
             />
           ))}
@@ -106,7 +113,7 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
           <Island
             key={mod.id}
             title={mod.title}
-            status={i === 0 ? 'active' : 'locked'}
+            status={mod.status ?? (i === 0 ? 'active' : 'locked')}
             taskCount={mod._count.tasks}
             xpReward={mod.xpReward}
             xFrac={X_FRACS[i % 2]}
