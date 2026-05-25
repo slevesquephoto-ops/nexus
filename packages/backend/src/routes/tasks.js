@@ -66,6 +66,22 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
           xpLogs: { create: { amount: xpGained, reason: `Completed: ${taskId}` } },
         },
       });
+
+      // Badge "Premier Pas" : première task complétée
+      try {
+        const totalDone = await prisma.taskProgress.count({
+          where: { userId, completed: true },
+        });
+        if (totalDone === 1) {
+          await prisma.userBadge.upsert({
+            where: { userId_badgeId: { userId, badgeId: 'premier-pas' } },
+            create: { userId, badgeId: 'premier-pas' },
+            update: {},
+          });
+        }
+      } catch (badgeErr) {
+        console.warn('[complete] Badge attribution skipped:', badgeErr.message);
+      }
     }
 
     const updatedUser = await prisma.user.findUnique({

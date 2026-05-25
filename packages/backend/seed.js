@@ -25,6 +25,19 @@ async function main() {
     },
   });
   console.log(`[seed] Student: ${student.username} (${student.id})`);
+
+  await prisma.badge.upsert({
+    where: { id: 'premier-pas' },
+    create: {
+      id: 'premier-pas',
+      title: 'Premier Pas',
+      description: 'Complète ta première task.',
+      imageUrl: '🐾',
+      condition: 'first_task',
+    },
+    update: {},
+  });
+  console.log('[seed] Badge "Premier Pas" OK');
 }
 
 main()
