@@ -18,6 +18,7 @@ interface Module {
   order: number
   xpReward: number
   _count: { tasks: number }
+  tasks: { id: string }[]
 }
 
 export default function MapPage() {

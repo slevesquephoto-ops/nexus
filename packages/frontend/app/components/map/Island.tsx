@@ -9,6 +9,8 @@ interface IslandProps {
   xpReward: number
   xFrac: number
   yTop: number
+  firstTaskId: string | null
+  onClick: (taskId: string) => void
   islandRef: (el: HTMLDivElement | null) => void
 }
 
@@ -31,17 +33,24 @@ export default function Island({
   xpReward,
   xFrac,
   yTop,
+  firstTaskId,
+  onClick,
   islandRef,
 }: IslandProps) {
+  const clickable = status !== 'locked' && firstTaskId !== null
+
   return (
     <div
       ref={islandRef}
-      className="absolute flex flex-col items-center"
+      className={`absolute flex flex-col items-center transition-transform ${
+        clickable ? 'cursor-pointer hover:scale-105' : 'cursor-default'
+      }`}
       style={{
         width: ISLAND_W,
         left: `calc(${xFrac * 100}% - ${ISLAND_W / 2}px)`,
         top: yTop,
       }}
+      onClick={() => { if (clickable && firstTaskId) onClick(firstTaskId) }}
     >
       {status === 'active' && <div className="island-pulse-ring" />}
 

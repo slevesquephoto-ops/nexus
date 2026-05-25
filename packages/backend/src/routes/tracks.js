@@ -21,6 +21,11 @@ router.get('/:id', async (req, res) => {
             order: true,
             xpReward: true,
             _count: { select: { tasks: true } },
+            tasks: {
+              orderBy: { order: 'asc' },
+              select: { id: true },
+              take: 1,
+            },
           },
         },
       },

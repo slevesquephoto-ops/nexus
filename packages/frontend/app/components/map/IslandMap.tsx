@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Island, { ISLAND_W } from './Island'
 
 const ISLAND_SPACING = 180
 const PADDING_TOP = 60
 const X_FRACS = [0.25, 0.75]
-const PLAT_ANCHOR_Y = 52  // offset from island top to platform centre
+const PLAT_ANCHOR_Y = 52
 
 interface Module {
   id: string
@@ -15,6 +16,7 @@ interface Module {
   order: number
   xpReward: number
   _count: { tasks: number }
+  tasks: { id: string }[]
 }
 
 interface IslandMapProps {
@@ -25,11 +27,11 @@ interface IslandMapProps {
 interface PathData { d: string; active: boolean }
 
 export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
+  const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const islandRefs = useRef<(HTMLDivElement | null)[]>([])
   const [paths, setPaths] = useState<PathData[]>([])
 
-  // Resize ref array to match current modules (safe in render body)
   if (islandRefs.current.length !== modules.length) {
     islandRefs.current = new Array(modules.length).fill(null)
   }
@@ -69,7 +71,6 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
 
   return (
     <div className="min-h-full pb-10">
-      {/* Sticky header */}
       <div className="sticky top-0 z-10 bg-nx-bg/90 backdrop-blur-sm border-b border-nx-border px-6 py-3 flex items-center gap-3 flex-wrap">
         <h2 className="text-white font-semibold">{trackTitle}</h2>
         <span className="text-nx-border">·</span>
@@ -79,13 +80,11 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
         <span className="text-nx-yellow text-sm ml-auto">{totalXp} XP total</span>
       </div>
 
-      {/* Canvas */}
       <div
         ref={containerRef}
         className="relative mx-auto"
         style={{ maxWidth: 600, height: canvasH }}
       >
-        {/* SVG overlay */}
         <svg
           className="absolute inset-0 w-full pointer-events-none"
           style={{ height: canvasH }}
@@ -103,7 +102,6 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
           ))}
         </svg>
 
-        {/* Islands */}
         {modules.map((mod, i) => (
           <Island
             key={mod.id}
@@ -113,6 +111,8 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
             xpReward={mod.xpReward}
             xFrac={X_FRACS[i % 2]}
             yTop={PADDING_TOP + i * ISLAND_SPACING}
+            firstTaskId={mod.tasks[0]?.id ?? null}
+            onClick={(taskId) => router.push(`/task/${taskId}`)}
             islandRef={(el) => { islandRefs.current[i] = el }}
           />
         ))}
