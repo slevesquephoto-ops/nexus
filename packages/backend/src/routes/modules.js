@@ -1,5 +1,6 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
+const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 
 router.get('/:id', async (req, res) => {
@@ -73,6 +74,50 @@ router.get('/:id/progress', async (req, res) => {
     res.json({ moduleId: req.params.id, title: mod.title, tasks });
   } catch (err) {
     console.error('[GET /api/modules/:id/progress]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/:id/full', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const mod = await prisma.module.findUnique({
+      where: { id: req.params.id },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        order: true,
+        xpReward: true,
+        track: { select: { id: true, title: true } },
+        tasks: {
+          orderBy: { order: 'asc' },
+          select: {
+            id: true,
+            title: true,
+            type: true,
+            order: true,
+            xpReward: true,
+            content: true,
+            progress: {
+              where: { userId },
+              select: { completed: true, score: true },
+            },
+          },
+        },
+      },
+    });
+    if (!mod) return res.status(404).json({ error: 'Module not found' });
+
+    const tasks = mod.tasks.map(({ progress, ...task }) => ({
+      ...task,
+      completed: progress[0]?.completed ?? false,
+      score: progress[0]?.score ?? null,
+    }));
+
+    res.json({ ...mod, tasks });
+  } catch (err) {
+    console.error('[GET /api/modules/:id/full]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

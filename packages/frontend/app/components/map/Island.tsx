@@ -9,8 +9,8 @@ interface IslandProps {
   xpReward: number
   xFrac: number
   yTop: number
-  firstTaskId: string | null
-  onClick: (taskId: string) => void
+  moduleId: string
+  onClick: (moduleId: string) => void
   islandRef: (el: HTMLDivElement | null) => void
   orderNumber: number
   mascot?: string | null
@@ -35,13 +35,13 @@ export default function Island({
   xpReward,
   xFrac,
   yTop,
-  firstTaskId,
+  moduleId,
   onClick,
   islandRef,
   orderNumber,
   mascot,
 }: IslandProps) {
-  const clickable = status !== 'locked' && firstTaskId !== null
+  const clickable = status !== 'locked'
 
   return (
     <div
@@ -54,7 +54,7 @@ export default function Island({
         left: `calc(${xFrac * 100}% - ${ISLAND_W / 2}px)`,
         top: yTop,
       }}
-      onClick={() => { if (clickable && firstTaskId) onClick(firstTaskId) }}
+      onClick={() => { if (clickable) onClick(moduleId) }}
     >
       {/* Ghost module number */}
       <div

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Island, { ISLAND_W } from './Island'
 
 const ISLAND_SPACING = 280
@@ -25,13 +24,13 @@ interface Module {
 interface IslandMapProps {
   modules: Module[]
   trackTitle: string
+  onSelectModule: (moduleId: string) => void
 }
 
 type PathStyle = 'done' | 'active' | 'locked'
 interface PathData { d: string; style: PathStyle }
 
-export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
-  const router = useRouter()
+export default function IslandMap({ modules, trackTitle, onSelectModule }: IslandMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const islandRefs = useRef<(HTMLDivElement | null)[]>([])
   const [paths, setPaths] = useState<PathData[]>([])
@@ -156,8 +155,8 @@ export default function IslandMap({ modules, trackTitle }: IslandMapProps) {
             xpReward={mod.xpReward}
             xFrac={X_FRACS[i % 2]}
             yTop={PADDING_TOP + i * ISLAND_SPACING}
-            firstTaskId={mod.tasks[0]?.id ?? null}
-            onClick={(taskId) => router.push(`/task/${taskId}`)}
+            moduleId={mod.id}
+            onClick={onSelectModule}
             islandRef={(el) => { islandRefs.current[i] = el }}
             orderNumber={i + 1}
             mascot={mod.mascot}

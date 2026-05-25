@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import TopBar from '../components/ui/TopBar'
 import Sidebar from '../components/sidebar/Sidebar'
 import IslandMap from '../components/map/IslandMap'
+import ModuleView from '../components/map/ModuleView'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -30,6 +31,8 @@ export default function MapPage() {
   const [selectedTrackId, setSelectedTrackId]       = useState<string | null>(null)
   const [selectedTrackTitle, setSelectedTrackTitle] = useState('')
   const [modules, setModules]                       = useState<Module[]>([])
+  const [activeModuleId, setActiveModuleId]         = useState<string | null>(null)
+  const [moduleRefreshKey, setModuleRefreshKey]     = useState(0)
 
   // Auth check + load user
   useEffect(() => {
@@ -80,7 +83,7 @@ export default function MapPage() {
       .then(r => r.json())
       .then(data => setModules(data.modules ?? []))
       .catch(() => {})
-  }, [selectedTrackId, user?.id])
+  }, [selectedTrackId, user?.id, moduleRefreshKey])
 
   function handleParcoursClick(id: string) {
     setOpenParcoursId(prev => (prev === id ? null : id))
@@ -89,6 +92,12 @@ export default function MapPage() {
   function handleTrackClick(id: string, title: string) {
     setSelectedTrackId(id)
     setSelectedTrackTitle(title)
+    setActiveModuleId(null)
+  }
+
+  function handleBack() {
+    setActiveModuleId(null)
+    setModuleRefreshKey(k => k + 1)
   }
 
   return (
@@ -107,10 +116,20 @@ export default function MapPage() {
         />
 
         <main className="flex-1 overflow-y-auto" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(245,192,48,0.05) 0%, transparent 60%), #080b14' }}>
-          {selectedTrackId ? (
-            <IslandMap modules={modules} trackTitle={selectedTrackTitle} />
+          {activeModuleId ? (
+            <ModuleView
+              moduleId={activeModuleId}
+              onBack={handleBack}
+              user={user}
+            />
+          ) : selectedTrackId ? (
+            <IslandMap
+              modules={modules}
+              trackTitle={selectedTrackTitle}
+              onSelectModule={setActiveModuleId}
+            />
           ) : (
-            <div className="flex items-center justify-center h-full text-nx-gray text-sm">
+            <div className="flex items-center justify-center h-full text-nx-text-dim text-sm">
               Sélectionne un track pour commencer
             </div>
           )}
