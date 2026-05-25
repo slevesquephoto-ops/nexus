@@ -9,9 +9,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 interface User { id: string; username: string; role: string }
 
 const NAV = [
-  { label: 'Classes', href: '/admin/classes', active: true },
-  { label: 'Étudiants', href: null, active: false },
-  { label: 'Contenu', href: null, active: false },
+  { label: 'Classes',   href: '/admin/classes',  active: true },
+  { label: 'Étudiants', href: '/admin/students', active: true },
+  { label: 'Contenu',   href: null,              active: false },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

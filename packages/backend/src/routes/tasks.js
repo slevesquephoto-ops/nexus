@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../lib/prisma');
 const { requireAuth } = require('../middleware/auth');
+const { calculateLevel } = require('../lib/levels');
 const router = express.Router();
 
 router.get('/:id', async (req, res) => {
@@ -88,6 +89,12 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
       where: { id: userId },
       select: { xp: true, level: true },
     });
+
+    const newLevel = calculateLevel(updatedUser.xp);
+    if (newLevel !== updatedUser.level) {
+      await prisma.user.update({ where: { id: userId }, data: { level: newLevel } });
+      updatedUser.level = newLevel;
+    }
 
     const tasks = task.module.tasks;
     const idx = tasks.findIndex(t => t.id === taskId);

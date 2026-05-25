@@ -20,6 +20,9 @@ model User {
   classes        ClasseMember[]
   classesCreated Classe[]       @relation("TeacherClasses")
   enrollments    Enrollment[]
+  createdBy      String?
+  createdByUser  User?          @relation("CreatedUsers", fields: [createdBy], references: [id])
+  usersCreated   User[]         @relation("CreatedUsers")
   taskProgress   TaskProgress[]
   badges         UserBadge[]
   xpLogs         XpLog[]
