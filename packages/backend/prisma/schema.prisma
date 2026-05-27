@@ -34,11 +34,14 @@ model Parcours {
   description String?
   language    String           @default("fr")
   isPublic    Boolean          @default(false)
-  order       Int              @default(0)
-  createdAt   DateTime         @default(now())
-  classes     Classe[]
-  enrollments Enrollment[]
-  tracks      ParcoursTracks[]
+  order          Int              @default(0)
+  prerequisiteId String?
+  createdAt      DateTime         @default(now())
+  classes        Classe[]
+  enrollments    Enrollment[]
+  tracks         ParcoursTracks[]
+  prerequisite   Parcours?        @relation("ParcoursPrerequisite", fields: [prerequisiteId], references: [id])
+  dependents     Parcours[]       @relation("ParcoursPrerequisite")
 }
 
 model Track {

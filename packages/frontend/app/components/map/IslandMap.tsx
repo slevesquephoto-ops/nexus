@@ -14,6 +14,7 @@ interface Module {
   description: string | null
   order: number
   xpReward: number
+  totalXp?: number
   mascot?: string | null
   _count: { tasks: number }
   tasks: { id: string }[]
@@ -38,6 +39,17 @@ export default function IslandMap({ modules, trackTitle, onSelectModule }: Islan
   if (islandRefs.current.length !== modules.length) {
     islandRefs.current = new Array(modules.length).fill(null)
   }
+
+  useEffect(() => {
+    if (!modules.length) return
+    const activeIdx = modules.findIndex((m, i) =>
+      (m.status ?? (i === 0 ? 'active' : 'locked')) === 'active'
+    )
+    if (activeIdx < 0) return
+    setTimeout(() => {
+      islandRefs.current[activeIdx]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 150)
+  }, [modules])
 
   useEffect(() => {
     if (!containerRef.current || modules.length < 2) {
@@ -72,7 +84,7 @@ export default function IslandMap({ modules, trackTitle, onSelectModule }: Islan
     setPaths(newPaths)
   }, [modules])
 
-  const totalXp        = modules.reduce((s, m) => s + m.xpReward, 0)
+  const totalXp        = modules.reduce((s, m) => s + (m.totalXp ?? m.xpReward), 0)
   const totalTasks     = modules.reduce((s, m) => s + m._count.tasks, 0)
   const doneCount      = modules.filter(m => m.status === 'done').length
   const progressPct    = modules.length > 0 ? Math.round((doneCount / modules.length) * 100) : 0
@@ -152,7 +164,7 @@ export default function IslandMap({ modules, trackTitle, onSelectModule }: Islan
             title={mod.title}
             status={mod.status ?? (i === 0 ? 'active' : 'locked')}
             taskCount={mod._count.tasks}
-            xpReward={mod.xpReward}
+            xpReward={mod.totalXp ?? mod.xpReward}
             xFrac={X_FRACS[i % 2]}
             yTop={PADDING_TOP + i * ISLAND_SPACING}
             moduleId={mod.id}

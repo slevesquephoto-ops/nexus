@@ -1,0 +1,68 @@
+- id: linux-fund-1-challenge
+  type: challenge
+  title: "Challenge — First Contact"
+  order: 9
+  xpReward: 50
+  sections:
+
+    - type: theory
+      content: |
+        ## Mission Briefing
+
+        Agent, your first real mission begins now.
+
+        You have been given access to a Linux machine. 
+        Your objective: **explore the system and answer 
+        the questions below** using only the commands 
+        you have learned.
+
+        **Download and launch your VM:**
+        1. Download the VM file → [linux-fund-1-challenge.ova](https://nexus.tondomaine.com/vms/linux-fund-1-challenge.ova)
+        2. Import it in VMware or VirtualBox
+        3. Login: `student` / `nexus2024`
+        4. Answer the questions below
+
+    - type: questions
+      items:
+        - id: c1
+          type: short_answer
+          question: "What is the content of the file 'secret.txt' in the home directory?"
+          answer: "TuxIsAwesome"
+
+        - id: c2
+          type: short_answer
+          question: "There is a hidden directory in /home/student. What is its name? (include the dot)"
+          answer: ".hidden_dir"
+
+        - id: c3
+          type: short_answer
+          question: "What is the content of the file inside that hidden directory?"
+          answer: "linux-expert"
+
+        - id: c4
+          type: short_answer
+          question: "How many lines does the file 'report.txt' in the documents folder contain?"
+          answer: "42"
+
+        - id: c5
+          type: short_answer
+          question: "What command did you use to count the lines in report.txt?"
+          answer: "wc -l documents/report.txt"
+
+        - id: c6
+          type: qcm
+          question: "You need to copy 'notes.txt' from projects/mission1/ to your home directory. Which command is correct?"
+          answers:
+            - text: "mv projects/mission1/notes.txt ~"
+              correct: false
+            - text: "cp projects/mission1/notes.txt ~"
+              correct: true
+            - text: "copy projects/mission1/notes.txt ~"
+              correct: false
+            - text: "cat projects/mission1/notes.txt > ~"
+              correct: false
+
+        - id: c7
+          type: short_answer
+          question: "What is the full path to your home directory? (use pwd to find it)"
+          answer: "/home/student"

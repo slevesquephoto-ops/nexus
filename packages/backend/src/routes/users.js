@@ -96,6 +96,50 @@ router.get('/me/badges', requireAuth, async (req, res) => {
   }
 });
 
+router.get('/me/current-position', requireAuth, async (req, res) => {
+  try {
+    const completions = await prisma.taskProgress.findMany({
+      where: { userId: req.user.id, completed: true },
+      select: { taskId: true },
+    });
+    const doneIds = new Set(completions.map(c => c.taskId));
+
+    const allParcours = await prisma.parcours.findMany({
+      orderBy: { order: 'asc' },
+      include: {
+        tracks: {
+          orderBy: { order: 'asc' },
+          include: {
+            track: {
+              include: {
+                modules: {
+                  orderBy: { order: 'asc' },
+                  include: { tasks: { select: { id: true } } },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    for (const parcours of allParcours) {
+      for (const pt of parcours.tracks) {
+        const track = pt.track;
+        for (const module of track.modules) {
+          if (module.tasks.length > 0 && !module.tasks.every(t => doneIds.has(t.id))) {
+            return res.json({ parcoursId: parcours.id, trackId: track.id, moduleId: module.id });
+          }
+        }
+      }
+    }
+    res.json(null);
+  } catch (err) {
+    console.error('[GET /api/users/me/current-position]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/me/avatars', requireAuth, (req, res) => {
   const { AVATARS } = require('../lib/avatars');
   res.json(AVATARS.map(a => ({

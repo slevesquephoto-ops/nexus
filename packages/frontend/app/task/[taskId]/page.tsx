@@ -6,6 +6,7 @@ import TheorySection from '../../components/task/TheorySection'
 import CodeBlock from '../../components/task/CodeBlock'
 import CommandTable from '../../components/task/CommandTable'
 import QuestionsSection from '../../components/task/QuestionsSection'
+import ImageSection from '../../components/task/ImageSection'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -14,6 +15,7 @@ type Section =
   | { type: 'code_block'; label?: string; content: string }
   | { type: 'command_table'; commands: { cmd: string; desc: string }[] }
   | { type: 'questions'; items: Question[] }
+  | { type: 'image'; src: string; alt: string; caption?: string }
 
 type Question =
   | { id: string; type: 'qcm'; question: string; answers: { text: string; correct: boolean }[] }
@@ -189,6 +191,8 @@ export default function TaskPage() {
                   onSubmit={(qId, correct) => setSubmitted(prev => ({ ...prev, [qId]: correct }))}
                 />
               )
+            case 'image':
+              return <ImageSection key={i} src={section.src} alt={section.alt} caption={section.caption} />
           }
         })}
 

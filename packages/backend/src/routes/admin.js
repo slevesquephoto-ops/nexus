@@ -181,7 +181,7 @@ router.post('/users', requireAuth, requireTeacher, async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { username, passwordHash, role: role ?? 'STUDENT', createdBy: req.user.id },
+      data: { username, passwordHash, role: role ?? 'STUDENT', createdBy: req.user.id, avatarId: 'default' },
       select: { id: true, username: true, role: true },
     });
     res.status(201).json(user);
@@ -268,6 +268,23 @@ router.delete('/classes/:id/students/:userId', requireAuth, requireTeacher, asyn
     res.json({ ok: true });
   } catch (err) {
     console.error('[DELETE /api/admin/classes/:id/students/:userId]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/classes/:id', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    await prisma.$transaction([
+      prisma.classeMember.deleteMany({ where: { classeId: classe.id } }),
+      prisma.classe.delete({ where: { id: classe.id } }),
+    ]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DELETE /api/admin/classes/:id]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

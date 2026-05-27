@@ -28,6 +28,8 @@ router.get('/:id', async (req, res) => {
               orderBy: { order: 'asc' },
               select: {
                 id: true,
+                xpReward: true,
+                type: true,
                 ...(userId ? {
                   progress: {
                     where: { userId: String(userId), completed: true },
@@ -47,6 +49,7 @@ router.get('/:id', async (req, res) => {
     if (!userId) {
       const modules = track.modules.map(mod => ({
         ...mod,
+        totalXp: mod.tasks.filter(t => t.type !== 'CHALLENGE').reduce((s, t) => s + t.xpReward, 0),
         tasks: mod.tasks.slice(0, 1),
       }));
       return res.json({ ...track, modules });
@@ -69,12 +72,15 @@ router.get('/:id', async (req, res) => {
       const firstUncompleted = mod.tasks.find(t => !t.progress || t.progress.length === 0);
       const firstTaskId = firstUncompleted?.id ?? mod.tasks[0]?.id ?? null;
 
+      const totalXp = mod.tasks.filter(t => t.type !== 'CHALLENGE').reduce((s, t) => s + t.xpReward, 0);
+
       return {
         id: mod.id,
         title: mod.title,
         description: mod.description,
         order: mod.order,
         xpReward: mod.xpReward,
+        totalXp,
         mascot: mod.mascot ?? null,
         _count: mod._count,
         tasks: firstTaskId ? [{ id: firstTaskId }] : [],

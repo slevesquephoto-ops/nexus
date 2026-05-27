@@ -7,6 +7,8 @@ interface Parcours {
   title: string
   order: number
   _count: { tracks: number }
+  prerequisiteId?: string | null
+  prerequisiteCompleted?: boolean
 }
 
 interface Track {
@@ -67,28 +69,36 @@ export default function Sidebar({
         )}
 
         {parcoursList.map(parcours => {
-          const isOpen = openParcoursId === parcours.id
-          const tracks = parcoursTracksCache[parcours.id] ?? []
+          const isOpen   = openParcoursId === parcours.id
+          const isLocked = parcours.prerequisiteId != null && parcours.prerequisiteCompleted === false
+          const tracks   = parcoursTracksCache[parcours.id] ?? []
 
           return (
             <div key={parcours.id} className="mb-1">
               <button
-                onClick={() => onParcoursClick(parcours.id)}
+                onClick={() => !isLocked && onParcoursClick(parcours.id)}
+                disabled={isLocked}
+                title={isLocked ? "Complète le parcours prérequis d'abord" : undefined}
                 className={`w-full flex items-center gap-2 py-3 text-base font-semibold transition-all duration-200 tracking-wide ${
-                  isOpen
+                  isLocked
+                    ? 'text-nx-text-muted px-3 opacity-50 cursor-not-allowed'
+                    : isOpen
                     ? 'bg-nx-surface-2 border-l-2 border-nx-yellow text-white pl-[10px] pr-3'
                     : 'text-nx-text-dim hover:text-nx-text hover:bg-nx-surface-2/60 px-3'
                 }`}
               >
                 <span className="flex-1 text-left truncate">{parcours.title}</span>
-                <span className="text-xs text-nx-text-muted shrink-0">{parcours._count.tracks}</span>
+                {isLocked
+                  ? <span className="text-xs shrink-0">🔒</span>
+                  : <span className="text-xs text-nx-text-muted shrink-0">{parcours._count.tracks}</span>
+                }
               </button>
 
               <div className="h-px bg-nx-border mx-3 mb-1 rounded-full overflow-hidden">
                 <div className="h-full bg-nx-yellow rounded-full" style={{ width: '0%' }} />
               </div>
 
-              {isOpen && tracks.map(track => (
+              {isOpen && !isLocked && tracks.map(track => (
                 <TrackItem
                   key={track.id}
                   track={track}

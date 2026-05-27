@@ -1,6 +1,7 @@
 const AVATARS = [
-  { id: 'debutant',   name: 'Débutant',         xpRequired: 0,    file: 'avatar-debutant.png' },
-  { id: 'default',    name: 'Tux Classic',       xpRequired: 100,  file: 'avatar-default.png' },
+  { id: 'default',    name: 'Défaut',            xpRequired: 0,    file: 'default.png' },
+  { id: 'debutant',   name: 'Débutant',          xpRequired: 0,    file: 'avatar-debutant.png' },
+  { id: 'tux',        name: 'Tux Classic',       xpRequired: 100,  file: 'avatar-default.png' },
   { id: 'technicien', name: 'Technicien',        xpRequired: 200,  file: 'avatar-technicien.png' },
   { id: 'stagiaire',  name: 'Stagiaire IT',      xpRequired: 500,  file: 'avatar-stagiaire.png' },
   { id: 'admin',      name: 'Administrateur',    xpRequired: 1000, file: 'avatar-admin.png' },

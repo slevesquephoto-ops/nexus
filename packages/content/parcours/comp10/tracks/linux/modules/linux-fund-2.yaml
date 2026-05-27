@@ -2,47 +2,872 @@ module:
   id: linux-fund-2
   trackId: linux
   title: "Linux Fundamentals 2"
-  description: "Navigation avancée, permissions, recherche de fichiers"
-  mascot: "tux-filesystem"
+  description: "File permissions, users, groups, sudo, and searching for files"
   order: 2
+  mascot: "tux-terminal"
   xpReward: 50
 
   tasks:
 
+    # ── TASK 1 ────────────────────────────────────────────────────────────────
     - id: linux-fund-2-t1
       type: task
-      title: "File Permissions"
+      title: "Understanding File Permissions"
       order: 1
-      xpReward: 15
+      xpReward: 10
       sections:
         - type: theory
           content: |
-            Every file in Linux has **permissions** that control who can
-            read, write, or execute it. Use `ls -l` to see them.
+            ## Why permissions matter
 
-        - type: code_block
-          label: "Viewing file permissions"
-          content: |
-            user@linux:~$ ls -l
-            -rwxr-xr-- 1 user group 1234 Jan 1 script.sh
+            In Linux, **every file and directory has permissions** that control
+            who can read, write, or execute it.
+
+            This is fundamental to IT support — most "permission denied" errors
+            you will encounter are caused by incorrect file permissions.
+
+            There are three types of permissions:
+
+            | Permission | Symbol | Meaning |
+            |------------|--------|---------|
+            | Read       | `r`    | View the contents of a file or list a directory |
+            | Write      | `w`    | Modify a file or create/delete files in a directory |
+            | Execute    | `x`    | Run a file as a program, or enter a directory |
+
+            And three categories of users:
+
+            | Category | Meaning |
+            |----------|---------|
+            | **Owner** | The user who created the file |
+            | **Group** | Users belonging to the file's group |
+            | **Others** | Everyone else on the system |
 
         - type: questions
           items:
             - id: q1
               type: qcm
-              question: "What command shows file permissions?"
+              question: "What does the 'execute' permission allow on a directory?"
               answers:
-                - text: "ls -l"
+                - text: "Run scripts inside the directory"
+                  correct: false
+                - text: "Enter (cd into) the directory"
                   correct: true
-                - text: "pwd"
+                - text: "Delete the directory"
                   correct: false
-                - text: "cd"
-                  correct: false
-                - text: "cat"
+                - text: "List the contents of the directory"
                   correct: false
 
+            - id: q2
+              type: qcm
+              question: "A file has write permission for the Owner but not for Group or Others. Who can modify it?"
+              answers:
+                - text: "Everyone on the system"
+                  correct: false
+                - text: "Only members of the file's group"
+                  correct: false
+                - text: "Only the file's owner"
+                  correct: true
+                - text: "Nobody"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "Which permission allows you to view the contents of a file?"
+              answers:
+                - text: "Execute (x)"
+                  correct: false
+                - text: "Write (w)"
+                  correct: false
+                - text: "Read (r)"
+                  correct: true
+                - text: "Open (o)"
+                  correct: false
+
+    # ── TASK 2 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t2
+      type: task
+      title: "Reading Permissions with ls -l"
+      order: 2
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Reading the permission string
+
+            Use `ls -l` to see detailed file information including permissions.
+
+        - type: code_block
+          label: "Output of ls -l"
+          content: |
+            user@linux:~$ ls -l
+            -rwxr-xr-- 1 alice devs  1234 Jan 10 09:00 script.sh
+            drwxr-x--- 2 alice devs  4096 Jan 10 09:00 projects/
+            -rw-r--r-- 1 bob   staff  512 Jan 10 08:00 readme.txt
+
+        - type: theory
+          content: |
+            Let's break down the permission string `-rwxr-xr--` :
+
+            ```
+            - rwx r-x r--
+            │ │││ │││ │││
+            │ │││ │││ └┴┴── Others  : r-- (read only)
+            │ │││ └┴┴────── Group   : r-x (read + execute)
+            │ └┴┴────────── Owner   : rwx (read + write + execute)
+            └────────────── Type    : - (file) or d (directory)
+            ```
+
+            The first character tells you the **type**:
+            - `-` → regular file
+            - `d` → directory
+            - `l` → symbolic link
+
+        - type: theory
+          content: |
+            ## The other columns
+
+            ```
+            -rwxr-xr-- 1 alice devs 1234 Jan 10 09:00 script.sh
+                       │ │     │    │    │             │
+                       │ │     │    │    └── Last modified date
+                       │ │     │    └─────── File size (bytes)
+                       │ │     └──────────── Group owner
+                       │ └────────────────── User owner
+                       └──────────────────── Number of hard links
+            ```
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "In the permission string 'drwxr-xr--', what does the 'd' mean?"
+              answers:
+                - text: "The file was deleted"
+                  correct: false
+                - text: "The item is a directory"
+                  correct: true
+                - text: "The file is dangerous"
+                  correct: false
+                - text: "The file belongs to root"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "A file shows '-rw-r--r--'. Can the group members write to this file?"
+              answers:
+                - text: "Yes"
+                  correct: false
+                - text: "No"
+                  correct: true
+                - text: "Only if they use sudo"
+                  correct: false
+                - text: "Only the root user can write"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Using 'ls -l', what command shows you the permissions of all files in your current directory?"
+              answer: "ls -l"
+
+            - id: q4
+              type: qcm
+              question: "A file shows '-rwxr-xr--'. Can 'Others' execute this file?"
+              answers:
+                - text: "Yes — others have r-x"
+                  correct: false
+                - text: "No — others only have r-- (no execute)"
+                  correct: true
+                - text: "Yes — everyone can always execute"
+                  correct: false
+                - text: "Only the owner can execute"
+                  correct: false
+
+    # ── TASK 3 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t3
+      type: task
+      title: "Changing Permissions with chmod"
+      order: 3
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## chmod — Change File Mode
+
+            `chmod` lets you modify the permissions of a file or directory.
+            There are two ways to use it: **symbolic** and **numeric (octal)**.
+
+            ### Symbolic method
+
+            Format: `chmod [who][operator][permission] file`
+
+            | Who | Meaning |
+            |-----|---------|
+            | `u` | User (owner) |
+            | `g` | Group |
+            | `o` | Others |
+            | `a` | All (u+g+o) |
+
+            | Operator | Meaning |
+            |----------|---------|
+            | `+` | Add permission |
+            | `-` | Remove permission |
+            | `=` | Set exact permission |
+
+        - type: code_block
+          label: "chmod symbolic examples"
+          content: |
+            user@linux:~$ chmod u+x script.sh       # add execute for owner
+            user@linux:~$ chmod g-w report.txt      # remove write from group
+            user@linux:~$ chmod o=r readme.txt      # set others to read only
+            user@linux:~$ chmod a+r public.txt      # add read for everyone
+
+        - type: theory
+          content: |
+            ### Numeric (octal) method
+
+            Each permission has a numeric value:
+
+            | Permission | Value |
+            |------------|-------|
+            | Read (r)   | 4     |
+            | Write (w)  | 2     |
+            | Execute (x)| 1     |
+            | None (-)   | 0     |
+
+            You add them together for each category (owner, group, others):
+
+            | Example | Calculation | Result |
+            |---------|-------------|--------|
+            | `rwx`   | 4+2+1       | 7      |
+            | `r-x`   | 4+0+1       | 5      |
+            | `r--`   | 4+0+0       | 4      |
+            | `---`   | 0+0+0       | 0      |
+
+            So `chmod 755 file` means: owner=rwx(7), group=r-x(5), others=r-x(5)
+
+        - type: code_block
+          label: "chmod numeric examples"
+          content: |
+            user@linux:~$ chmod 755 script.sh    # rwxr-xr-x
+            user@linux:~$ chmod 644 config.txt   # rw-r--r--
+            user@linux:~$ chmod 600 private.key  # rw-------
+            user@linux:~$ chmod 777 shared/      # rwxrwxrwx (dangerous!)
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Write the command to add execute permission for the owner of 'deploy.sh'."
+              answer: "chmod u+x deploy.sh"
+
+            - id: q2
+              type: qcm
+              question: "What numeric value represents 'rwx' permissions?"
+              answers:
+                - text: "5"
+                  correct: false
+                - text: "6"
+                  correct: false
+                - text: "7"
+                  correct: true
+                - text: "4"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "What does 'chmod 644 report.txt' set?"
+              answers:
+                - text: "Owner: rw-, Group: r--, Others: r--"
+                  correct: true
+                - text: "Owner: rwx, Group: r-x, Others: r--"
+                  correct: false
+                - text: "Owner: rw-, Group: rw-, Others: r--"
+                  correct: false
+                - text: "Owner: r--, Group: r--, Others: r--"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Write the chmod command to give owner full permissions, group read+execute, and no permissions to others. Use numeric format."
+              answer: "chmod 750 "
+
+    # ── TASK 4 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t4
+      type: task
+      title: "Ownership — chown and chgrp"
+      order: 4
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## Changing file ownership
+
+            Permissions only make sense when combined with **ownership**.
+            Every file has an **owner** (user) and a **group owner**.
+
+        - type: command_table
+          commands:
+            - cmd: "chown user file"
+              desc: "Change the owner of a file"
+            - cmd: "chown user:group file"
+              desc: "Change both owner and group at once"
+            - cmd: "chgrp group file"
+              desc: "Change only the group owner"
+            - cmd: "chown -R user:group dir/"
+              desc: "Recursively change ownership of a directory and all its contents"
+
+        - type: code_block
+          label: "chown examples"
+          content: |
+            user@linux:~$ ls -l report.txt
+            -rw-r--r-- 1 alice staff 512 Jan 10 report.txt
+
+            user@linux:~$ sudo chown bob report.txt
+            user@linux:~$ ls -l report.txt
+            -rw-r--r-- 1 bob staff 512 Jan 10 report.txt
+
+            user@linux:~$ sudo chown bob:devs report.txt
+            user@linux:~$ ls -l report.txt
+            -rw-r--r-- 1 bob devs 512 Jan 10 report.txt
+
+        - type: theory
+          content: |
+            ## Why use -R (recursive)?
+
+            When you have a directory with many files inside, using `-R` applies
+            the ownership change to **all files and subdirectories** at once.
+
+            This is very common in IT support when fixing web server issues:
+
+        - type: code_block
+          label: "Fixing a web server ownership issue"
+          content: |
+            # Website files owned by wrong user — Apache can't read them
+            user@linux:~$ sudo chown -R www-data:www-data /var/www/html/
+            # Now Apache (running as www-data) can access the files
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Write the command to change the owner of 'config.txt' to user 'admin'."
+              answer: "sudo chown admin config.txt"
+
+            - id: q2
+              type: qcm
+              question: "What does 'chown -R alice:devs /home/alice/' do?"
+              answers:
+                - text: "Changes only the directory ownership"
+                  correct: false
+                - text: "Changes ownership of the directory and all files inside recursively"
+                  correct: true
+                - text: "Removes all permissions recursively"
+                  correct: false
+                - text: "Creates a new user named alice"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Write the command to change both the owner to 'bob' and the group to 'staff' for the file 'data.csv'."
+              answer: "sudo chown bob:staff data.csv"
+
+    # ── TASK 5 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t5
+      type: task
+      title: "Users and Groups"
+      order: 5
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## User management basics
+
+            Linux is a **multi-user system** — multiple users can be logged in
+            and working at the same time. Understanding users and groups is
+            essential for IT support work.
+
+        - type: command_table
+          commands:
+            - cmd: "whoami"
+              desc: "Show your current username"
+            - cmd: "id"
+              desc: "Show your user ID (uid), group ID (gid), and all groups"
+            - cmd: "groups"
+              desc: "List all groups you belong to"
+            - cmd: "who"
+              desc: "Show who is currently logged in to the system"
+            - cmd: "cat /etc/passwd"
+              desc: "List all user accounts on the system"
+            - cmd: "cat /etc/group"
+              desc: "List all groups on the system"
+
+        - type: code_block
+          label: "User information commands"
+          content: |
+            user@linux:~$ whoami
+            student
+
+            user@linux:~$ id
+            uid=1000(student) gid=1000(student) groups=1000(student),27(sudo),1001(devs)
+
+            user@linux:~$ groups
+            student sudo devs
+
+        - type: theory
+          content: |
+            ## Creating and managing users
+
+            These commands require **sudo** (administrator privileges):
+
+        - type: command_table
+          commands:
+            - cmd: "sudo adduser username"
+              desc: "Create a new user interactively (recommended)"
+            - cmd: "sudo passwd username"
+              desc: "Change a user's password"
+            - cmd: "sudo usermod -aG group user"
+              desc: "Add a user to a group (-a = append, -G = groups)"
+            - cmd: "sudo deluser username"
+              desc: "Delete a user account"
+
+        - type: code_block
+          label: "Creating a new user and adding to a group"
+          content: |
+            user@linux:~$ sudo adduser john
+            Adding user 'john' ...
+            New password: ****
+            Retype new password: ****
+            passwd: password updated successfully
+
+            user@linux:~$ sudo usermod -aG sudo john
+            # john can now use sudo commands
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "What command shows your user ID and all the groups you belong to?"
+              answer: "id"
+
+            - id: q2
+              type: qcm
+              question: "What does 'sudo usermod -aG devs alice' do?"
+              answers:
+                - text: "Removes alice from the devs group"
+                  correct: false
+                - text: "Creates a new group called devs"
+                  correct: false
+                - text: "Adds alice to the devs group without removing her from other groups"
+                  correct: true
+                - text: "Changes alice's primary group to devs"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Write the command to create a new user named 'techsupport'."
+              answer: "sudo adduser techsupport"
+
+            - id: q4
+              type: qcm
+              question: "A colleague says they can't log in. Which file would you check to verify their account exists?"
+              answers:
+                - text: "/etc/group"
+                  correct: false
+                - text: "/etc/shadow"
+                  correct: false
+                - text: "/etc/passwd"
+                  correct: true
+                - text: "/var/log/users"
+                  correct: false
+
+    # ── TASK 6 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t6
+      type: task
+      title: "Sudo and Root"
+      order: 6
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## The root user
+
+            In Linux, **root** is the superuser — the administrator account that
+            has **unrestricted access** to every file and command on the system.
+
+            Root can:
+            - Read, write, and execute any file
+            - Create and delete any user
+            - Install and remove software
+            - Modify system configuration files
+
+            **Root is powerful and dangerous.** A single wrong command as root
+            can destroy the entire system. That's why in modern Linux, we avoid
+            logging in directly as root.
+
+        - type: theory
+          content: |
+            ## sudo — Superuser Do
+
+            `sudo` lets authorized users **run a single command as root**
+            without being logged in as root.
+
+            This is safer because:
+            - Every sudo command is **logged** (audit trail)
+            - You only elevate privileges for one command at a time
+            - A typo won't accidentally destroy the system
+
+        - type: command_table
+          commands:
+            - cmd: "sudo command"
+              desc: "Run a single command as root"
+            - cmd: "sudo -l"
+              desc: "List what commands you are allowed to run with sudo"
+            - cmd: "sudo su"
+              desc: "Switch to a root shell (use with extreme caution)"
+            - cmd: "su username"
+              desc: "Switch to another user account"
+
+        - type: code_block
+          label: "Using sudo"
+          content: |
+            user@linux:~$ cat /etc/shadow
+            cat: /etc/shadow: Permission denied
+
+            user@linux:~$ sudo cat /etc/shadow
+            [sudo] password for student:
+            root:*:19000:0:99999:7:::
+            student:$6$abc123...:19000:0:99999:7:::
+
+        - type: theory
+          content: |
+            ## Who can use sudo?
+
+            Only users in the **sudo group** (or **wheel** group on some distros)
+            can use sudo. You can check with:
+
+            ```
+            groups student
+            ```
+
+            If `sudo` appears in the output — that user has sudo privileges.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Why is it safer to use 'sudo' instead of logging in directly as root?"
+              answers:
+                - text: "sudo is faster than root"
+                  correct: false
+                - text: "sudo commands are logged and only elevate privileges for one command"
+                  correct: true
+                - text: "sudo gives more permissions than root"
+                  correct: false
+                - text: "Root cannot run all commands"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Write the command to check what sudo commands the current user is allowed to run."
+              answer: "sudo -l"
+
+            - id: q3
+              type: qcm
+              question: "A user gets 'Permission denied' when trying to edit /etc/hosts. What is the most likely cause?"
+              answers:
+                - text: "The file is corrupted"
+                  correct: false
+                - text: "The user is not in the sudo group or did not use sudo"
+                  correct: true
+                - text: "The file does not exist"
+                  correct: false
+                - text: "The user needs to restart the system"
+                  correct: false
+
+    # ── TASK 7 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t7
+      type: task
+      title: "Searching for Files"
+      order: 7
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Finding files in Linux
+
+            In IT support, you will constantly need to locate files — configuration
+            files, log files, scripts. Two commands are essential:
+
+            - `find` — searches by filename, type, permissions, owner, date...
+            - `grep` — searches **inside** files for specific text
+
+        - type: command_table
+          commands:
+            - cmd: "find / -name filename"
+              desc: "Search the entire system for a file by name"
+            - cmd: "find /home -name '*.txt'"
+              desc: "Find all .txt files in /home"
+            - cmd: "find / -user alice"
+              desc: "Find all files owned by user alice"
+            - cmd: "find / -perm 777"
+              desc: "Find all files with permission 777 (security audit)"
+            - cmd: "find / -type d -name config"
+              desc: "Find directories named 'config'"
+
+        - type: code_block
+          label: "find examples"
+          content: |
+            user@linux:~$ find /home -name "*.log"
+            /home/student/app/error.log
+            /home/student/app/access.log
+
+            user@linux:~$ find / -name "sshd_config" 2>/dev/null
+            /etc/ssh/sshd_config
+
+            user@linux:~$ find / -perm 777 2>/dev/null
+            /tmp/suspicious_script.sh
+
+        - type: theory
+          content: |
+            ## grep — Search inside files
+
+            `grep` searches for a **pattern** inside files. It is extremely
+            useful for reading logs and configuration files.
+
+        - type: command_table
+          commands:
+            - cmd: "grep 'pattern' file"
+              desc: "Search for pattern in a file"
+            - cmd: "grep -r 'pattern' directory/"
+              desc: "Search recursively in all files in a directory"
+            - cmd: "grep -i 'pattern' file"
+              desc: "Case-insensitive search"
+            - cmd: "grep -n 'pattern' file"
+              desc: "Show line numbers with results"
+            - cmd: "grep -v 'pattern' file"
+              desc: "Show lines that do NOT match the pattern"
+
+        - type: code_block
+          label: "grep examples"
+          content: |
+            user@linux:~$ grep "error" /var/log/syslog
+            Jan 10 09:15:32 linux kernel: [ERROR] disk read failed
+
+            user@linux:~$ grep -r "password" /etc/ 2>/dev/null
+            /etc/mysql/mysql.conf:password = secret123
+
+            user@linux:~$ grep -i "failed" /var/log/auth.log | tail -5
+            Jan 10 09:00:01 linux sshd: Failed password for root from 192.168.1.50
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Write the command to find all files named 'config.txt' on the entire system."
+              answer: "find / -name config.txt"
+
+            - id: q2
+              type: short_answer
+              question: "Write the command to search for the word 'error' inside the file '/var/log/syslog'."
+              answer: "grep error /var/log/syslog"
+
+            - id: q3
+              type: qcm
+              question: "You want to find all files with permission 777 for a security audit. Which command do you use?"
+              answers:
+                - text: "ls -l / | grep 777"
+                  correct: false
+                - text: "find / -perm 777"
+                  correct: true
+                - text: "chmod -l 777"
+                  correct: false
+                - text: "grep -r 777 /"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Write the command to search recursively for the word 'password' in all files under /etc/."
+              answer: "grep -r password /etc/"
+
+    # ── TASK 8 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-t8
+      type: task
+      title: "Practical Scenario — Permission Denied!"
+      order: 8
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Putting it all together
+
+            Let's simulate a real IT support scenario. A user calls you:
+
+            > *"I can't access the shared folder, and my script stopped working
+            > after the server was updated. Can you help?"*
+
+            This is the most common type of permission-related support ticket.
+            Let's work through it step by step.
+
+        - type: theory
+          content: |
+            ## Step 1 — Identify the problem
+
+            First, check what's happening:
+
+        - type: code_block
+          label: "Diagnosing a permission issue"
+          content: |
+            # Check who you are
+            user@linux:~$ whoami
+            student
+
+            # Try to access the shared folder
+            user@linux:~$ ls /shared/
+            ls: cannot open directory '/shared/': Permission denied
+
+            # Check the permissions
+            user@linux:~$ ls -ld /shared/
+            drwxrwx--- 2 root devteam 4096 Jan 10 /shared/
+
+            # Check your groups
+            user@linux:~$ groups
+            student sudo
+
+            # Problem identified: /shared/ requires 'devteam' group
+            # but 'student' is not in 'devteam'
+
+        - type: theory
+          content: |
+            ## Step 2 — Fix the problem
+
+        - type: code_block
+          label: "Fixing the permission issue"
+          content: |
+            # Add student to devteam group
+            user@linux:~$ sudo usermod -aG devteam student
+
+            # Log out and back in for group changes to take effect
+            # OR use: newgrp devteam
+
+            # Verify the fix
+            user@linux:~$ groups
+            student sudo devteam
+
+            user@linux:~$ ls /shared/
+            project1/  project2/  reports/
+            # Problem solved!
+
+        - type: theory
+          content: |
+            ## Step 3 — Fix the broken script
+
+        - type: code_block
+          label: "Fixing a script that lost execute permission"
+          content: |
+            user@linux:~$ ./backup.sh
+            bash: ./backup.sh: Permission denied
+
+            user@linux:~$ ls -l backup.sh
+            -rw-r--r-- 1 student student 256 Jan 10 backup.sh
+            # Missing execute permission!
+
+            user@linux:~$ chmod u+x backup.sh
+            user@linux:~$ ./backup.sh
+            Backup started...
+            Backup completed successfully.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "A user gets 'Permission denied' on a directory. What is the FIRST thing you should check?"
+              answers:
+                - text: "Restart the server"
+                  correct: false
+                - text: "The directory permissions with ls -ld and the user's groups with 'groups'"
+                  correct: true
+                - text: "Delete and recreate the directory"
+                  correct: false
+                - text: "Give everyone permission 777"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "A script named 'deploy.sh' gives 'Permission denied' when you try to run it. Write the command to fix it for the owner."
+              answer: "chmod u+x deploy.sh"
+
+            - id: q3
+              type: qcm
+              question: "After adding a user to a new group with usermod -aG, when do the changes take effect?"
+              answers:
+                - text: "Immediately, no action needed"
+                  correct: false
+                - text: "After the user logs out and back in"
+                  correct: true
+                - text: "After rebooting the server"
+                  correct: false
+                - text: "After running chmod"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Write the full command to check the permissions of the directory '/var/www/html/' (not its contents)."
+              answer: "ls -ld /var/www/html/"
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
     - id: linux-fund-2-challenge
       type: challenge
-      title: "Challenge — Permission Granted"
-      order: 2
+      title: "Challenge — Permission Denied!"
+      order: 9
       xpReward: 50
+      sections:
+        - type: theory
+          content: |
+            ## Mission Briefing
+
+            Agent, a Linux server has been misconfigured after a system update.
+            Multiple permission issues are preventing users from doing their work.
+
+            **Your mission:** Connect to the challenge VM, diagnose and fix all
+            permission issues, and answer the questions below.
+
+            **Download and launch your VM:**
+            1. Download → [linux-fund-2-challenge.ova](#)
+            2. Import in VMware or VirtualBox
+            3. Login: `student` / `nexus2024`
+            4. Read the file `/home/student/mission-briefing.txt` to get started
+
+        - type: questions
+          items:
+            - id: c1
+              type: short_answer
+              question: "What are the current permissions of the file '/home/student/secret/report.txt'? (format: -rwxr-xr--)"
+              answer: "----------"
+
+            - id: c2
+              type: short_answer
+              question: "Who is the owner of the file '/opt/company/app.sh'?"
+              answer: "root"
+
+            - id: c3
+              type: short_answer
+              question: "What group does the user 'operator' belong to? (check with: id operator)"
+              answer: "operators"
+
+            - id: c4
+              type: short_answer
+              question: "After fixing the permissions on '/home/student/secret/', what command did you use to give the owner read and write permissions? (no sudo needed)"
+              answer: "chmod u+rw /home/student/secret/report.txt"
+
+            - id: c5
+              type: qcm
+              question: "The file '/opt/company/app.sh' needs to be executable by its owner only. Which chmod command achieves this most precisely?"
+              answers:
+                - text: "chmod 777 /opt/company/app.sh"
+                  correct: false
+                - text: "chmod u+x /opt/company/app.sh"
+                  correct: true
+                - text: "chmod +x /opt/company/app.sh"
+                  correct: false
+                - text: "chmod 755 /opt/company/app.sh"
+                  correct: false

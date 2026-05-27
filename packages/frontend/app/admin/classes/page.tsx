@@ -25,6 +25,7 @@ export default function ClassesPage() {
   const [name, setName] = useState('')
   const [parcoursId, setParcoursId] = useState('')
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
@@ -64,6 +65,16 @@ export default function ClassesPage() {
     } finally {
       setCreating(false)
     }
+  }
+
+  async function handleDeleteClass(id: string) {
+    const res = await fetch(`${API_URL}/api/admin/classes/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (!res.ok) return
+    setClasses(prev => prev.filter(c => c.id !== id))
+    setConfirmDeleteId(null)
   }
 
   function copyCode(id: string, code: string) {
@@ -154,12 +165,29 @@ export default function ClassesPage() {
                     {c.memberCount} élève{c.memberCount !== 1 ? 's' : ''}
                   </p>
                 </div>
-                <Link
-                  href={`/admin/classes/${c.id}`}
-                  className="shrink-0 px-3 py-1.5 bg-nx-dark border border-nx-border text-white text-xs font-medium rounded-lg hover:border-nx-yellow/50 transition-colors"
-                >
-                  Progression →
-                </Link>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Link
+                    href={`/admin/classes/${c.id}`}
+                    className="px-3 py-1.5 bg-nx-dark border border-nx-border text-white text-xs font-medium rounded-lg hover:border-nx-yellow/50 transition-colors"
+                  >
+                    Progression →
+                  </Link>
+                  {confirmDeleteId === c.id ? (
+                    <button
+                      onClick={() => handleDeleteClass(c.id)}
+                      className="px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-lg hover:bg-red-500 transition-colors"
+                    >
+                      Confirmer
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmDeleteId(c.id)}
+                      className="px-3 py-1.5 bg-nx-dark border border-nx-border text-nx-gray text-xs rounded-lg hover:border-red-500/50 hover:text-red-400 transition-colors"
+                    >
+                      Supprimer
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="mt-4 pt-4 border-t border-nx-border flex items-center gap-3">

@@ -1,27 +1,24 @@
 'use client'
 
-import React from 'react'
-
-function renderInline(text: string): React.ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/)
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**'))
-      return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>
-    if (part.startsWith('`') && part.endsWith('`'))
-      return <code key={i} className="bg-nx-surface text-nx-cyan px-1 rounded text-sm font-mono">{part.slice(1, -1)}</code>
-    return <span key={i}>{part}</span>
-  })
-}
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function TheorySection({ content }: { content: string }) {
-  const paragraphs = content.trim().split(/\n\n+/)
   return (
-    <div className="px-8 py-6 space-y-4">
-      {paragraphs.map((p, i) => (
-        <p key={i} className="text-nx-text leading-loose text-base whitespace-pre-line">
-          {renderInline(p)}
-        </p>
-      ))}
+    <div className="px-8 py-6">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        className="prose prose-invert prose-sm max-w-none
+          prose-headings:text-nx-yellow prose-headings:font-semibold
+          prose-p:text-nx-text prose-p:leading-loose
+          prose-code:text-nx-cyan prose-code:bg-nx-surface prose-code:px-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
+          prose-pre:bg-nx-surface prose-pre:border prose-pre:border-nx-border
+          prose-strong:text-white
+          prose-a:text-nx-cyan prose-a:no-underline hover:prose-a:underline
+          prose-li:text-nx-text prose-li:marker:text-nx-yellow"
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   )
 }

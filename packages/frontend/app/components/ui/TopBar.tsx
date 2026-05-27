@@ -1,6 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import { getAvatarFile } from '../../lib/avatars'
 
 interface TopBarProps {
   user: { username: string; xp: number; level: number; avatarId?: string | null } | null
@@ -36,7 +37,7 @@ export default function TopBar({ user }: TopBarProps) {
             </span>
             <div className="flex items-center gap-3 bg-nx-bg rounded-full px-5 py-2 border border-nx-border hover:border-nx-yellow/40 transition-colors duration-200">
               <img
-                src={`/avatars/avatar-${user.avatarId || 'debutant'}.png`}
+                src={`/avatars/${getAvatarFile(user.avatarId)}`}
                 alt={user.username}
                 className="w-[52px] h-[52px] rounded-full object-cover object-top border-2 border-nx-yellow"
                 style={{ mixBlendMode: 'screen' }}

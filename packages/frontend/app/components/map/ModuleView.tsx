@@ -6,6 +6,7 @@ import TheorySection from '../task/TheorySection'
 import CodeBlock from '../task/CodeBlock'
 import CommandTable from '../task/CommandTable'
 import QuestionsSection from '../task/QuestionsSection'
+import ImageSection from '../task/ImageSection'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -14,6 +15,7 @@ type SectionType =
   | { type: 'code_block'; label?: string; content: string }
   | { type: 'command_table'; commands: { cmd: string; desc: string }[] }
   | { type: 'questions'; items: Question[] }
+  | { type: 'image'; src: string; alt: string; caption?: string }
 
 type Question =
   | { id: string; type: 'qcm'; question: string; answers: { text: string; correct: boolean }[] }
@@ -190,6 +192,7 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
   const doneCount   = normalTasks.filter(t => completions[t.id] ?? t.completed).length
   const totalNormal = normalTasks.length
   const progressPct = totalNormal > 0 ? Math.round((doneCount / totalNormal) * 100) : 0
+  const totalXp     = normalTasks.reduce((s, t) => s + t.xpReward, 0)
 
   return (
     <div className="min-h-full">
@@ -206,7 +209,7 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
         </div>
         <div className="flex items-center gap-3 mt-2">
           <span className="text-nx-text-dim text-base">{doneCount} / {totalNormal} tasks ✓</span>
-          <span className="text-nx-yellow text-base font-semibold ml-auto">{mod.xpReward} XP</span>
+          <span className="text-nx-yellow text-base font-semibold ml-auto">{totalXp} XP</span>
         </div>
         <div className="h-1 bg-nx-border rounded-full mt-3 overflow-hidden">
           <div
@@ -312,6 +315,8 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
                             }))}
                           />
                         )
+                      case 'image':
+                        return <ImageSection key={j} src={section.src} alt={section.alt} caption={section.caption} />
                     }
                   })}
 

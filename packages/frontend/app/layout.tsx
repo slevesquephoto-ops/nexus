@@ -4,6 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "NEXUS",
   description: "Plateforme d'apprentissage gamifiée",
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({

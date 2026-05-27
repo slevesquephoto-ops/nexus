@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import TopBar from '../components/ui/TopBar'
+import { getAvatarFile } from '../lib/avatars'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -104,7 +105,7 @@ export default function ProfilePage() {
         <div className="flex flex-col items-center gap-3">
           <div className="w-28 h-28 rounded-full border-4 border-nx-yellow shadow-glow-yellow-sm overflow-hidden shrink-0">
             <img
-              src={`/avatars/avatar-${user.avatarId || 'debutant'}.png`}
+              src={`/avatars/${getAvatarFile(user.avatarId)}`}
               alt="avatar"
               className="w-full h-full object-cover object-top rounded-full"
               style={{ mixBlendMode: 'screen' }}
