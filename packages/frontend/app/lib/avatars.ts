@@ -1,15 +1,16 @@
 const AVATAR_FILES: Record<string, string> = {
-  default:    'default.png',
-  debutant:   'avatar-debutant.png',
-  tux:        'avatar-default.png',
-  technicien: 'avatar-technicien.png',
-  stagiaire:  'avatar-stagiaire.png',
-  admin:      'avatar-admin.png',
-  ingenieur:  'avatar-ingenieur.png',
-  securite:   'avatar-securite.png',
-  hacker:     'avatar-hacker.png',
+  noob:          'default.png',
+  debutant:      'avatar-debutant.png',
+  default:       'avatar-default.png',
+  stagiaire:     'avatar-stagiaire.png',
+  technicien:    'avatar-technicien.png',
+  admin:         'avatar-admin.png',
+  ingenieur:     'avatar-ingenieur.png',
+  securite:      'avatar-securite.png',
+  hacker:        'avatar-hacker.png',
+  'nexus-agent': 'avatar-nexus-agent.png',
 }
 
 export function getAvatarFile(avatarId?: string | null): string {
-  return AVATAR_FILES[avatarId ?? 'default'] ?? 'default.png'
+  return AVATAR_FILES[avatarId ?? 'noob'] ?? 'default.png'
 }

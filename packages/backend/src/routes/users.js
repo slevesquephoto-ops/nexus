@@ -140,13 +140,23 @@ router.get('/me/current-position', requireAuth, async (req, res) => {
   }
 });
 
-router.get('/me/avatars', requireAuth, (req, res) => {
+router.get('/me/avatars', requireAuth, async (req, res) => {
   const { AVATARS } = require('../lib/avatars');
-  res.json(AVATARS.map(a => ({
-    ...a,
-    unlocked: req.user.xp >= a.xpRequired,
-    active: req.user.avatarId === a.id,
-  })));
+  const userId = req.user.id;
+  try {
+    const earned = await prisma.userAvatarReward.findMany({
+      where: { userId },
+      include: { reward: true },
+    });
+    const unlockedIds = new Set(['noob', ...earned.map(e => e.reward.avatarId)]);
+    const avatars = AVATARS
+      .filter(a => unlockedIds.has(a.id))
+      .map(a => ({ ...a, isActive: req.user.avatarId === a.id }));
+    res.json({ avatars });
+  } catch (err) {
+    console.error('[GET /api/users/me/avatars]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 router.post('/me/avatar', requireAuth, async (req, res) => {

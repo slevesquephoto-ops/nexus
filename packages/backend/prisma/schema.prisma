@@ -25,6 +25,7 @@ model User {
   usersCreated   User[]         @relation("CreatedUsers")
   taskProgress   TaskProgress[]
   badges         UserBadge[]
+  avatarRewards  UserAvatarReward[]
   xpLogs         XpLog[]
 }
 
@@ -155,6 +156,26 @@ model UserBadge {
   user     User     @relation(fields: [userId], references: [id])
 
   @@id([userId, badgeId])
+}
+
+model AvatarReward {
+  id          String             @id
+  avatarId    String
+  triggerType String
+  triggerId   String
+  title       String
+  description String
+  earnedBy    UserAvatarReward[]
+}
+
+model UserAvatarReward {
+  userId         String
+  avatarRewardId String
+  earnedAt       DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id])
+  reward         AvatarReward @relation(fields: [avatarRewardId], references: [id])
+
+  @@id([userId, avatarRewardId])
 }
 
 model XpLog {

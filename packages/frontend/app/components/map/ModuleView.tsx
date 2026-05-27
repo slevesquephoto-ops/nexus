@@ -7,6 +7,7 @@ import CodeBlock from '../task/CodeBlock'
 import CommandTable from '../task/CommandTable'
 import QuestionsSection from '../task/QuestionsSection'
 import ImageSection from '../task/ImageSection'
+import AvatarUnlockModal from '../ui/AvatarUnlockModal'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -100,6 +101,7 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
   const [submitted, setSubmitted]     = useState<Record<string, Record<string, boolean>>>({})
   const [banners, setBanners]         = useState<Record<string, { xpGained: number }>>({})
   const [completing, setCompleting]   = useState<Record<string, boolean>>({})
+  const [newUnlockedAvatar, setNewUnlockedAvatar] = useState<{ avatarId: string; title: string; description: string; file: string } | null>(null)
 
   const loadModule = useCallback(async () => {
     setLoading(true)
@@ -161,6 +163,7 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
 
       setCompletions(prev => ({ ...prev, [task.id]: true }))
       setBanners(prev => ({ ...prev, [task.id]: { xpGained: data.xpGained } }))
+      if (data.newAvatar) setNewUnlockedAvatar(data.newAvatar)
 
       if (data.nextTaskId) {
         setTimeout(() => {
@@ -195,6 +198,7 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
   const totalXp     = normalTasks.reduce((s, t) => s + t.xpReward, 0)
 
   return (
+    <>
     <div className="min-h-full">
       {/* Sticky header — top-0 colle au haut du conteneur overflow-y-auto parent */}
       <div className="sticky top-0 z-10 bg-nx-surface border-b border-nx-border px-8 py-6">
@@ -361,5 +365,13 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
         )}
       </div>
     </div>
+
+    {newUnlockedAvatar && (
+      <AvatarUnlockModal
+        avatar={newUnlockedAvatar}
+        onClose={() => setNewUnlockedAvatar(null)}
+      />
+    )}
+    </>
   )
 }

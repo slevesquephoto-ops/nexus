@@ -11,7 +11,7 @@ interface User  { id: string; username: string; xp: number; level: number; avata
 interface Stats { tasksCompleted: number; modulesCompleted: number; tracksCompleted: number; xp: number }
 interface XpLog { id: string; amount: number; reason: string; createdAt: string }
 interface Badge { id: string; title: string; description: string; imageUrl: string; earnedAt: string }
-interface AvatarItem { id: string; name: string; xpRequired: number; file: string; unlocked: boolean; active: boolean }
+interface AvatarItem { id: string; name: string; file: string; isActive: boolean }
 
 function xpForLevel(level: number) { return level * 200 }
 
@@ -61,7 +61,7 @@ export default function ProfilePage() {
       setStats(statsData)
       setLogs(Array.isArray(logsData) ? logsData : [])
       setBadges(Array.isArray(badgesData) ? badgesData : [])
-      setAvatars(Array.isArray(avatarsData) ? avatarsData : [])
+      setAvatars(Array.isArray(avatarsData?.avatars) ? avatarsData.avatars : [])
     } catch {
       router.push('/login')
     } finally {
@@ -178,34 +178,29 @@ export default function ProfilePage() {
             {avatars.map(avatar => (
               <button
                 key={avatar.id}
-                disabled={!avatar.unlocked}
-                onClick={() => avatar.unlocked && selectAvatar(avatar.id)}
+                onClick={() => selectAvatar(avatar.id)}
                 style={{ minHeight: '140px' }}
-                className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200 ${
-                  avatar.active
+                className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
+                  avatar.isActive
                     ? 'border-nx-cyan bg-nx-surface-2'
-                    : avatar.unlocked
-                    ? 'border-nx-border bg-nx-surface hover:border-nx-yellow cursor-pointer'
-                    : 'border-nx-border bg-nx-surface cursor-not-allowed'
+                    : 'border-nx-border bg-nx-surface hover:border-nx-yellow'
                 }`}
               >
                 <img
                   src={`/avatars/${avatar.file}`}
                   alt={avatar.name}
-                  className={`w-24 h-24 rounded-full object-cover object-top ${!avatar.unlocked ? 'grayscale opacity-40' : ''}`}
+                  className="w-24 h-24 rounded-full object-cover object-top"
                 />
-                {avatar.active && (
+                {avatar.isActive && (
                   <span className="absolute top-2 right-2.5 text-nx-cyan text-sm font-bold">✓</span>
-                )}
-                {!avatar.unlocked && (
-                  <span className="absolute top-2 right-2 text-sm font-bold text-nx-yellow bg-nx-surface/80 backdrop-blur-sm px-1.5 py-0.5 rounded leading-tight">
-                    {avatar.xpRequired} XP
-                  </span>
                 )}
                 <span className="text-sm font-semibold text-nx-text-dim text-center leading-tight">{avatar.name}</span>
               </button>
             ))}
           </div>
+          {avatars.length <= 1 && (
+            <p className="text-nx-text-muted text-sm text-center mt-4">Complete modules to unlock new avatars! 🐧</p>
+          )}
         </section>
 
         {/* Historique XP */}

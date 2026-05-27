@@ -4,6 +4,66 @@ const { requireAuth } = require('../middleware/auth');
 const { calculateLevel } = require('../lib/levels');
 const router = express.Router();
 
+async function checkAvatarRewards(userId, completedTaskId) {
+  const task = await prisma.task.findUnique({
+    where: { id: completedTaskId },
+    include: { module: { include: { tasks: true, track: true } } },
+  });
+
+  const moduleTaskIds = task.module.tasks.map(t => t.id);
+  const completedCount = await prisma.taskProgress.count({
+    where: { userId, taskId: { in: moduleTaskIds }, completed: true },
+  });
+  const moduleComplete = completedCount === moduleTaskIds.length;
+
+  let newAvatar = null;
+
+  if (moduleComplete) {
+    const moduleReward = await prisma.avatarReward.findFirst({
+      where: { triggerType: 'module', triggerId: task.moduleId },
+    });
+    if (moduleReward) {
+      const alreadyHas = await prisma.userAvatarReward.findFirst({
+        where: { userId, avatarRewardId: moduleReward.id },
+      });
+      if (!alreadyHas) {
+        await prisma.userAvatarReward.create({
+          data: { userId, avatarRewardId: moduleReward.id },
+        });
+        newAvatar = moduleReward;
+      }
+    }
+
+    // Vérifier si le track entier est complété
+    const trackModules = await prisma.module.findMany({
+      where: { trackId: task.module.trackId },
+      include: { tasks: true },
+    });
+    const allTrackTaskIds = trackModules.flatMap(m => m.tasks.map(t => t.id));
+    const completedTrackCount = await prisma.taskProgress.count({
+      where: { userId, taskId: { in: allTrackTaskIds }, completed: true },
+    });
+    if (completedTrackCount === allTrackTaskIds.length) {
+      const trackReward = await prisma.avatarReward.findFirst({
+        where: { triggerType: 'track', triggerId: task.module.trackId },
+      });
+      if (trackReward) {
+        const alreadyHasTrack = await prisma.userAvatarReward.findFirst({
+          where: { userId, avatarRewardId: trackReward.id },
+        });
+        if (!alreadyHasTrack) {
+          await prisma.userAvatarReward.create({
+            data: { userId, avatarRewardId: trackReward.id },
+          });
+          if (!newAvatar) newAvatar = trackReward;
+        }
+      }
+    }
+  }
+
+  return newAvatar;
+}
+
 router.get('/:id', async (req, res) => {
   try {
     const task = await prisma.task.findUnique({
@@ -85,6 +145,26 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
       }
     }
 
+    // Vérification des récompenses avatar
+    let newAvatarData = null;
+    if (isNew) {
+      try {
+        const newAvatar = await checkAvatarRewards(userId, taskId);
+        if (newAvatar) {
+          const { AVATARS } = require('../lib/avatars');
+          const avatarFile = AVATARS.find(a => a.id === newAvatar.avatarId)?.file ?? null;
+          newAvatarData = {
+            avatarId: newAvatar.avatarId,
+            title: newAvatar.title,
+            description: newAvatar.description,
+            file: avatarFile,
+          };
+        }
+      } catch (avatarErr) {
+        console.warn('[complete] Avatar reward skipped:', avatarErr.message);
+      }
+    }
+
     const updatedUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { xp: true, level: true },
@@ -104,6 +184,7 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
       xpGained,
       user: { xp: updatedUser.xp, level: updatedUser.level },
       nextTaskId,
+      newAvatar: newAvatarData,
     });
   } catch (err) {
     console.error('[POST /api/tasks/:id/complete]', err);

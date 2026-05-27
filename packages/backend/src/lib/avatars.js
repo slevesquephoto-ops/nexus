@@ -1,13 +1,14 @@
 const AVATARS = [
-  { id: 'default',    name: 'Défaut',            xpRequired: 0,    file: 'default.png' },
-  { id: 'debutant',   name: 'Débutant',          xpRequired: 0,    file: 'avatar-debutant.png' },
-  { id: 'tux',        name: 'Tux Classic',       xpRequired: 100,  file: 'avatar-default.png' },
-  { id: 'technicien', name: 'Technicien',        xpRequired: 200,  file: 'avatar-technicien.png' },
-  { id: 'stagiaire',  name: 'Stagiaire IT',      xpRequired: 500,  file: 'avatar-stagiaire.png' },
-  { id: 'admin',      name: 'Administrateur',    xpRequired: 1000, file: 'avatar-admin.png' },
-  { id: 'ingenieur',  name: 'Ingénieur Réseau',  xpRequired: 2000, file: 'avatar-ingenieur.png' },
-  { id: 'securite',   name: 'Spécialiste Sécu',  xpRequired: 3500, file: 'avatar-securite.png' },
-  { id: 'hacker',     name: 'Hacker Vétéran',    xpRequired: 5000, file: 'avatar-hacker.png' },
+  { id: 'noob',         name: 'Recrue',            file: 'default.png' },
+  { id: 'debutant',     name: 'Tux Casquette',     file: 'avatar-debutant.png' },
+  { id: 'default',      name: 'Tux Classic',       file: 'avatar-default.png' },
+  { id: 'stagiaire',    name: 'Stagiaire IT',      file: 'avatar-stagiaire.png' },
+  { id: 'technicien',   name: 'Technicien',        file: 'avatar-technicien.png' },
+  { id: 'admin',        name: 'Administrateur',    file: 'avatar-admin.png' },
+  { id: 'ingenieur',    name: 'Ingénieur Réseau',  file: 'avatar-ingenieur.png' },
+  { id: 'securite',     name: 'Spécialiste Sécu',  file: 'avatar-securite.png' },
+  { id: 'hacker',       name: 'Hacker Vétéran',    file: 'avatar-hacker.png' },
+  { id: 'nexus-agent',  name: 'Agent NEXUS',       file: 'avatar-nexus-agent.png' },
 ]
 
 module.exports = { AVATARS }

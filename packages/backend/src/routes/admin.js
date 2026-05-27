@@ -181,7 +181,7 @@ router.post('/users', requireAuth, requireTeacher, async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { username, passwordHash, role: role ?? 'STUDENT', createdBy: req.user.id, avatarId: 'default' },
+      data: { username, passwordHash, role: role ?? 'STUDENT', createdBy: req.user.id, avatarId: 'noob' },
       select: { id: true, username: true, role: true },
     });
     res.status(201).json(user);
