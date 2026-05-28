@@ -12,7 +12,7 @@ interface ModuleSummary { id: string; title: string; taskCount: number }
 interface StudentProgress { moduleId: string; completedTasks: number; totalTasks: number; pct: number }
 interface Student { id: string; username: string; xp: number; progress: StudentProgress[] }
 interface ClasseDetail {
-  classe: { id: string; name: string; inviteCode: string; parcours: { id: string; title: string } }
+  classe: { id: string; name: string; inviteCode: string; parcours: { id: string; title: string }[] }
   modules: ModuleSummary[]
   students: Student[]
 }
@@ -290,7 +290,9 @@ export default function ClassProgressPage() {
           <div>
             <Link href="/admin/classes" className="text-nx-gray hover:text-white text-sm transition-colors">← Classes</Link>
             <h1 className="text-white text-2xl font-bold mt-2">{classe.name}</h1>
-            <p className="text-nx-gray text-sm mt-0.5">{classe.parcours.title}</p>
+            <p className="text-nx-gray text-sm mt-0.5">
+              {classe.parcours.map(p => p.title).join(' · ') || 'Aucun parcours'}
+            </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <div className="text-right">

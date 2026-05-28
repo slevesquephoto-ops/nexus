@@ -1,10 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const prisma = require('../lib/prisma');
-const { requireAuth, requireTeacher } = require('../middleware/auth');
+const { requireAuth, requireTeacher, requireAdmin } = require('../middleware/auth');
 const { calculateLevel } = require('../lib/levels');
 
 const router = express.Router();
+
+// ─── Dashboard ───────────────────────────────────────────────────────────────
 
 router.get('/dashboard', requireAuth, requireTeacher, async (req, res) => {
   try {
@@ -41,127 +43,18 @@ router.get('/dashboard', requireAuth, requireTeacher, async (req, res) => {
   }
 });
 
-router.get('/classes', requireAuth, requireTeacher, async (req, res) => {
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+router.get('/users', requireAuth, requireTeacher, async (req, res) => {
   try {
-    const classes = await prisma.classe.findMany({
-      where: { teacherId: req.user.id },
-      include: {
-        parcours: { select: { id: true, title: true } },
-        _count: { select: { members: true } },
-      },
+    const users = await prisma.user.findMany({
+      where: { createdBy: req.user.id },
+      select: { id: true, username: true, role: true, xp: true, level: true, createdAt: true },
       orderBy: { createdAt: 'desc' },
     });
-
-    res.json(classes.map(c => ({
-      id: c.id,
-      name: c.name,
-      inviteCode: c.inviteCode,
-      parcours: c.parcours,
-      memberCount: c._count.members,
-      createdAt: c.createdAt,
-    })));
+    res.json(users);
   } catch (err) {
-    console.error('[GET /api/admin/classes]', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-function generateInviteCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-  const digits = '23456789';
-  const pick = (s) => s[Math.floor(Math.random() * s.length)];
-  return `${pick(chars)}${pick(chars)}${pick(chars)}-${pick(digits)}${pick(digits)}${pick(digits)}`;
-}
-
-router.post('/classes', requireAuth, requireTeacher, async (req, res) => {
-  const { name, parcoursId } = req.body;
-  if (!name || !parcoursId) {
-    return res.status(400).json({ error: 'name and parcoursId are required' });
-  }
-
-  try {
-    const parcours = await prisma.parcours.findUnique({ where: { id: parcoursId } });
-    if (!parcours) return res.status(404).json({ error: 'Parcours not found' });
-
-    const inviteCode = generateInviteCode();
-
-    const classe = await prisma.classe.create({
-      data: { name, parcoursId, teacherId: req.user.id, inviteCode },
-      include: {
-        parcours: { select: { id: true, title: true } },
-        _count: { select: { members: true } },
-      },
-    });
-
-    res.status(201).json({
-      id: classe.id,
-      name: classe.name,
-      inviteCode: classe.inviteCode,
-      parcours: classe.parcours,
-      memberCount: 0,
-      createdAt: classe.createdAt,
-    });
-  } catch (err) {
-    console.error('[POST /api/admin/classes]', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.get('/classes/:id', requireAuth, requireTeacher, async (req, res) => {
-  try {
-    const classe = await prisma.classe.findUnique({
-      where: { id: req.params.id },
-      include: {
-        parcours: {
-          include: {
-            tracks: {
-              include: {
-                track: {
-                  include: {
-                    modules: {
-                      include: { tasks: { select: { id: true } } },
-                      orderBy: { order: 'asc' },
-                    },
-                  },
-                },
-              },
-              orderBy: { order: 'asc' },
-            },
-          },
-        },
-        members: {
-          include: {
-            user: { select: { id: true, username: true, xp: true, taskProgress: { where: { completed: true }, select: { taskId: true } } } },
-          },
-        },
-      },
-    });
-
-    if (!classe) return res.status(404).json({ error: 'Class not found' });
-    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
-
-    const modules = classe.parcours.tracks
-      .flatMap(pt => pt.track.modules)
-      .map(m => ({ id: m.id, title: m.title, taskCount: m.tasks.length, taskIds: m.tasks.map(t => t.id) }));
-
-    const students = classe.members.map(member => {
-      const completedSet = new Set(member.user.taskProgress.map(p => p.taskId));
-      const progress = modules.map(mod => {
-        const completedTasks = mod.taskIds.filter(id => completedSet.has(id)).length;
-        const totalTasks = mod.taskCount;
-        const pct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-        return { moduleId: mod.id, completedTasks, totalTasks, pct };
-      });
-      return { id: member.user.id, username: member.user.username, xp: member.user.xp, progress };
-    });
-
-    res.json({
-      classe: { id: classe.id, name: classe.name, inviteCode: classe.inviteCode, parcours: { id: classe.parcours.id, title: classe.parcours.title } },
-      modules: modules.map(m => ({ id: m.id, title: m.title, taskCount: m.taskCount })),
-      students,
-    });
-  } catch (err) {
-    console.error('[GET /api/admin/classes/:id]', err);
+    console.error('[GET /api/admin/users]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -173,6 +66,9 @@ router.post('/users', requireAuth, requireTeacher, async (req, res) => {
   }
   if (role && !['STUDENT', 'TEACHER'].includes(role)) {
     return res.status(400).json({ error: 'role must be STUDENT or TEACHER' });
+  }
+  if (role === 'TEACHER' && req.user.role !== 'ADMIN') {
+    return res.status(403).json({ error: 'Only admins can create teacher accounts' });
   }
 
   try {
@@ -191,16 +87,21 @@ router.post('/users', requireAuth, requireTeacher, async (req, res) => {
   }
 });
 
-router.get('/users', requireAuth, requireTeacher, async (req, res) => {
+router.patch('/users/:id/password', requireAuth, requireTeacher, async (req, res) => {
+  const { password } = req.body;
+  if (!password || password.trim().length < 4) {
+    return res.status(400).json({ error: 'password must be at least 4 characters' });
+  }
   try {
-    const users = await prisma.user.findMany({
-      where: { createdBy: req.user.id },
-      select: { id: true, username: true, role: true, xp: true, level: true, createdAt: true },
-      orderBy: { createdAt: 'desc' },
-    });
-    res.json(users);
+    const user = await prisma.user.findUnique({ where: { id: req.params.id } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (user.createdBy !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    const passwordHash = await bcrypt.hash(password.trim(), 10);
+    await prisma.user.update({ where: { id: req.params.id }, data: { passwordHash } });
+    res.json({ ok: true });
   } catch (err) {
-    console.error('[GET /api/admin/users]', err);
+    console.error('[PATCH /api/admin/users/:id/password]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -222,98 +123,6 @@ router.delete('/users/:id', requireAuth, requireTeacher, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('[DELETE /api/admin/users/:id]', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.post('/classes/:id/students', requireAuth, requireTeacher, async (req, res) => {
-  const { username } = req.body;
-  if (!username) return res.status(400).json({ error: 'username is required' });
-
-  try {
-    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
-    if (!classe) return res.status(404).json({ error: 'Class not found' });
-    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
-
-    const user = await prisma.user.findUnique({ where: { username } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    await prisma.classeMember.upsert({
-      where: { userId_classeId: { userId: user.id, classeId: classe.id } },
-      create: { userId: user.id, classeId: classe.id },
-      update: {},
-    });
-    await prisma.enrollment.upsert({
-      where: { userId_parcoursId: { userId: user.id, parcoursId: classe.parcoursId } },
-      create: { userId: user.id, parcoursId: classe.parcoursId },
-      update: {},
-    });
-
-    res.json({ id: user.id, username: user.username });
-  } catch (err) {
-    console.error('[POST /api/admin/classes/:id/students]', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.delete('/classes/:id/students/:userId', requireAuth, requireTeacher, async (req, res) => {
-  try {
-    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
-    if (!classe) return res.status(404).json({ error: 'Class not found' });
-    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
-
-    await prisma.classeMember.delete({
-      where: { userId_classeId: { userId: req.params.userId, classeId: classe.id } },
-    });
-    res.json({ ok: true });
-  } catch (err) {
-    console.error('[DELETE /api/admin/classes/:id/students/:userId]', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.delete('/classes/:id', requireAuth, requireTeacher, async (req, res) => {
-  try {
-    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
-    if (!classe) return res.status(404).json({ error: 'Class not found' });
-    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
-
-    await prisma.$transaction([
-      prisma.classeMember.deleteMany({ where: { classeId: classe.id } }),
-      prisma.classe.delete({ where: { id: classe.id } }),
-    ]);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error('[DELETE /api/admin/classes/:id]', err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.post('/classes/:id/join', requireAuth, async (req, res) => {
-  const { inviteCode } = req.body;
-  if (!inviteCode) return res.status(400).json({ error: 'inviteCode is required' });
-
-  try {
-    const classe = await prisma.classe.findFirst({
-      where: { id: req.params.id, inviteCode },
-    });
-    if (!classe) return res.status(404).json({ error: 'Invalid invite code or class not found' });
-
-    await prisma.classeMember.upsert({
-      where: { userId_classeId: { userId: req.user.id, classeId: classe.id } },
-      create: { userId: req.user.id, classeId: classe.id },
-      update: {},
-    });
-
-    await prisma.enrollment.upsert({
-      where: { userId_parcoursId: { userId: req.user.id, parcoursId: classe.parcoursId } },
-      create: { userId: req.user.id, parcoursId: classe.parcoursId },
-      update: {},
-    });
-
-    res.json({ ok: true, parcoursId: classe.parcoursId });
-  } catch (err) {
-    console.error('[POST /api/admin/classes/:id/join]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -354,35 +163,222 @@ router.post('/users/:userId/xp', requireAuth, requireTeacher, async (req, res) =
   }
 });
 
-router.get('/classes/:id/challenges', requireAuth, requireTeacher, async (req, res) => {
+// ─── Teachers (ADMIN only) ────────────────────────────────────────────────────
+
+router.get('/teachers', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const teachers = await prisma.user.findMany({
+      where: { role: 'TEACHER' },
+      select: {
+        id: true,
+        username: true,
+        createdAt: true,
+        classesCreated: {
+          select: {
+            id: true,
+            name: true,
+            _count: { select: { members: true } },
+            parcours: { include: { parcours: { select: { id: true, title: true } } } },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json(teachers.map(t => ({
+      id: t.id,
+      username: t.username,
+      createdAt: t.createdAt,
+      classes: t.classesCreated.map(c => ({
+        id: c.id,
+        name: c.name,
+        memberCount: c._count.members,
+        parcours: c.parcours.map(cp => cp.parcours),
+      })),
+    })));
+  } catch (err) {
+    console.error('[GET /api/admin/teachers]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ─── Classes ──────────────────────────────────────────────────────────────────
+
+const PARCOURS_INCLUDE = {
+  parcours: { include: { parcours: { select: { id: true, title: true } } } },
+  _count: { select: { members: true } },
+};
+
+function formatClasse(c) {
+  return {
+    id: c.id,
+    name: c.name,
+    inviteCode: c.inviteCode,
+    parcours: c.parcours.map(cp => cp.parcours),
+    memberCount: c._count.members,
+    createdAt: c.createdAt,
+  };
+}
+
+function generateInviteCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const digits = '23456789';
+  const pick = (s) => s[Math.floor(Math.random() * s.length)];
+  return `${pick(chars)}${pick(chars)}${pick(chars)}-${pick(digits)}${pick(digits)}${pick(digits)}`;
+}
+
+router.get('/classes', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classes = await prisma.classe.findMany({
+      where: { teacherId: req.user.id },
+      include: PARCOURS_INCLUDE,
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(classes.map(formatClasse));
+  } catch (err) {
+    console.error('[GET /api/admin/classes]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/classes', requireAuth, requireTeacher, async (req, res) => {
+  const { name, parcoursId } = req.body;
+  if (!name) return res.status(400).json({ error: 'name is required' });
+
+  try {
+    if (parcoursId) {
+      const parcours = await prisma.parcours.findUnique({ where: { id: parcoursId } });
+      if (!parcours) return res.status(404).json({ error: 'Parcours not found' });
+    }
+
+    const inviteCode = generateInviteCode();
+    const created = await prisma.classe.create({
+      data: {
+        name,
+        teacher: { connect: { id: req.user.id } },
+        inviteCode,
+      },
+    });
+
+    if (parcoursId) {
+      await prisma.classeParcours.create({
+        data: { classeId: created.id, parcoursId },
+      });
+    }
+
+    const classe = await prisma.classe.findUnique({
+      where: { id: created.id },
+      include: PARCOURS_INCLUDE,
+    });
+
+    res.status(201).json(formatClasse(classe));
+  } catch (err) {
+    console.error('[POST /api/admin/classes]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/classes/:id/parcours', requireAuth, requireTeacher, async (req, res) => {
+  const { parcoursId } = req.body;
+  if (!parcoursId) return res.status(400).json({ error: 'parcoursId is required' });
+
+  try {
+    const classe = await prisma.classe.findUnique({
+      where: { id: req.params.id },
+      include: { members: { select: { userId: true } } },
+    });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    const parcours = await prisma.parcours.findUnique({ where: { id: parcoursId } });
+    if (!parcours) return res.status(404).json({ error: 'Parcours not found' });
+
+    await prisma.classeParcours.upsert({
+      where: { classeId_parcoursId: { classeId: req.params.id, parcoursId } },
+      create: { classeId: req.params.id, parcoursId },
+      update: {},
+    });
+
+    for (const member of classe.members) {
+      await prisma.enrollment.upsert({
+        where: { userId_parcoursId: { userId: member.userId, parcoursId } },
+        create: { userId: member.userId, parcoursId },
+        update: {},
+      });
+    }
+
+    res.json({ ok: true, parcours: { id: parcours.id, title: parcours.title } });
+  } catch (err) {
+    console.error('[POST /api/admin/classes/:id/parcours]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/classes/:id/parcours/:parcoursId', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({
+      where: { id: req.params.id },
+      include: { members: { select: { userId: true } } },
+    });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    const memberIds = classe.members.map(m => m.userId);
+
+    await prisma.$transaction([
+      prisma.classeParcours.delete({
+        where: { classeId_parcoursId: { classeId: req.params.id, parcoursId: req.params.parcoursId } },
+      }),
+      prisma.enrollment.deleteMany({
+        where: { parcoursId: req.params.parcoursId, userId: { in: memberIds } },
+      }),
+    ]);
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DELETE /api/admin/classes/:id/parcours/:parcoursId]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/classes/:id', requireAuth, requireTeacher, async (req, res) => {
   try {
     const classe = await prisma.classe.findUnique({
       where: { id: req.params.id },
       include: {
         parcours: {
           include: {
-            tracks: {
+            parcours: {
               include: {
-                track: {
+                tracks: {
                   include: {
-                    modules: {
+                    track: {
                       include: {
-                        tasks: {
-                          where: { type: 'CHALLENGE' },
-                          select: { id: true, title: true, xpReward: true },
+                        modules: {
+                          include: { tasks: { select: { id: true } } },
+                          orderBy: { order: 'asc' },
                         },
                       },
-                      orderBy: { order: 'asc' },
                     },
                   },
+                  orderBy: { order: 'asc' },
                 },
               },
-              orderBy: { order: 'asc' },
             },
           },
         },
         members: {
-          include: { user: { select: { id: true, username: true } } },
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                xp: true,
+                taskProgress: { where: { completed: true }, select: { taskId: true } },
+              },
+            },
+          },
         },
       },
     });
@@ -390,8 +386,182 @@ router.get('/classes/:id/challenges', requireAuth, requireTeacher, async (req, r
     if (!classe) return res.status(404).json({ error: 'Class not found' });
     if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
 
+    const modules = classe.parcours
+      .flatMap(cp => cp.parcours.tracks)
+      .flatMap(pt => pt.track.modules)
+      .map(m => ({ id: m.id, title: m.title, taskCount: m.tasks.length, taskIds: m.tasks.map(t => t.id) }));
+
+    const students = classe.members.map(member => {
+      const completedSet = new Set(member.user.taskProgress.map(p => p.taskId));
+      const progress = modules.map(mod => {
+        const completedTasks = mod.taskIds.filter(id => completedSet.has(id)).length;
+        const totalTasks = mod.taskCount;
+        const pct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        return { moduleId: mod.id, completedTasks, totalTasks, pct };
+      });
+      return { id: member.user.id, username: member.user.username, xp: member.user.xp, progress };
+    });
+
+    res.json({
+      classe: {
+        id: classe.id,
+        name: classe.name,
+        inviteCode: classe.inviteCode,
+        parcours: classe.parcours.map(cp => ({ id: cp.parcours.id, title: cp.parcours.title })),
+      },
+      modules: modules.map(m => ({ id: m.id, title: m.title, taskCount: m.taskCount })),
+      students,
+    });
+  } catch (err) {
+    console.error('[GET /api/admin/classes/:id]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/classes/:id', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    await prisma.$transaction([
+      prisma.classeMember.deleteMany({ where: { classeId: classe.id } }),
+      prisma.classe.delete({ where: { id: classe.id } }),
+    ]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DELETE /api/admin/classes/:id]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/classes/:id/students', requireAuth, requireTeacher, async (req, res) => {
+  const { username } = req.body;
+  if (!username) return res.status(400).json({ error: 'username is required' });
+
+  try {
+    const classe = await prisma.classe.findUnique({
+      where: { id: req.params.id },
+      include: { parcours: { select: { parcoursId: true } } },
+    });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    await prisma.classeMember.upsert({
+      where: { userId_classeId: { userId: user.id, classeId: classe.id } },
+      create: { userId: user.id, classeId: classe.id },
+      update: {},
+    });
+
+    for (const { parcoursId } of classe.parcours) {
+      await prisma.enrollment.upsert({
+        where: { userId_parcoursId: { userId: user.id, parcoursId } },
+        create: { userId: user.id, parcoursId },
+        update: {},
+      });
+    }
+
+    res.json({ id: user.id, username: user.username });
+  } catch (err) {
+    console.error('[POST /api/admin/classes/:id/students]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/classes/:id/students/:userId', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    await prisma.classeMember.delete({
+      where: { userId_classeId: { userId: req.params.userId, classeId: classe.id } },
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DELETE /api/admin/classes/:id/students/:userId]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/classes/:id/join', requireAuth, async (req, res) => {
+  const { inviteCode } = req.body;
+  if (!inviteCode) return res.status(400).json({ error: 'inviteCode is required' });
+
+  try {
+    const classe = await prisma.classe.findFirst({
+      where: { id: req.params.id, inviteCode },
+      include: { parcours: { select: { parcoursId: true } } },
+    });
+    if (!classe) return res.status(404).json({ error: 'Invalid invite code or class not found' });
+
+    await prisma.classeMember.upsert({
+      where: { userId_classeId: { userId: req.user.id, classeId: classe.id } },
+      create: { userId: req.user.id, classeId: classe.id },
+      update: {},
+    });
+
+    for (const { parcoursId } of classe.parcours) {
+      await prisma.enrollment.upsert({
+        where: { userId_parcoursId: { userId: req.user.id, parcoursId } },
+        create: { userId: req.user.id, parcoursId },
+        update: {},
+      });
+    }
+
+    res.json({ ok: true, parcoursIds: classe.parcours.map(cp => cp.parcoursId) });
+  } catch (err) {
+    console.error('[POST /api/admin/classes/:id/join]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ─── Challenges & Grading ─────────────────────────────────────────────────────
+
+router.get('/classes/:id/challenges', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({
+      where: { id: req.params.id },
+      include: {
+        parcours: {
+          include: {
+            parcours: {
+              include: {
+                tracks: {
+                  include: {
+                    track: {
+                      include: {
+                        modules: {
+                          include: {
+                            tasks: {
+                              where: { type: 'CHALLENGE' },
+                              select: { id: true, title: true, xpReward: true },
+                            },
+                          },
+                          orderBy: { order: 'asc' },
+                        },
+                      },
+                    },
+                  },
+                  orderBy: { order: 'asc' },
+                },
+              },
+            },
+          },
+        },
+        members: { include: { user: { select: { id: true, username: true } } } },
+      },
+    });
+
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
     const students = classe.members.map(m => m.user);
-    const challenges = classe.parcours.tracks
+    const challenges = classe.parcours
+      .flatMap(cp => cp.parcours.tracks)
       .flatMap(pt => pt.track.modules)
       .flatMap(mod => mod.tasks.map(t => ({ ...t, moduleTitle: mod.title })));
 
@@ -437,13 +607,11 @@ router.patch('/tasks/:taskId/grade', requireAuth, requireTeacher, async (req, re
   }
 
   try {
-    // Verify student is in a class owned by this teacher
     const studentMembership = await prisma.classeMember.findFirst({
       where: { userId, classe: { teacherId: req.user.id } },
     });
     if (!studentMembership) return res.status(403).json({ error: 'Forbidden: student not in your class' });
 
-    // Verify the task's track belongs to a parcours of one of this teacher's classes
     const task = await prisma.task.findUnique({
       where: { id: req.params.taskId },
       include: { module: { include: { track: { include: { parcours: true } } } } },
@@ -451,8 +619,8 @@ router.patch('/tasks/:taskId/grade', requireAuth, requireTeacher, async (req, re
     if (!task) return res.status(404).json({ error: 'Task not found' });
 
     const trackParcoursIds = task.module.track.parcours.map(pt => pt.parcoursId);
-    const classOwnership = await prisma.classe.findFirst({
-      where: { teacherId: req.user.id, parcoursId: { in: trackParcoursIds } },
+    const classOwnership = await prisma.classeParcours.findFirst({
+      where: { parcoursId: { in: trackParcoursIds }, classe: { teacherId: req.user.id } },
     });
     if (!classOwnership) return res.status(403).json({ error: 'Forbidden: task not in your parcours' });
 
@@ -492,10 +660,7 @@ router.patch('/tasks/:taskId/grade', requireAuth, requireTeacher, async (req, re
       });
     }
 
-    res.json({
-      progress: { completed: passed, score },
-      xpAwarded,
-    });
+    res.json({ progress: { completed: passed, score }, xpAwarded });
   } catch (err) {
     console.error('[PATCH /api/admin/tasks/:taskId/grade]', err);
     res.status(500).json({ error: 'Internal server error' });

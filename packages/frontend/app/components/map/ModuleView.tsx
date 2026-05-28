@@ -57,11 +57,13 @@ interface ModuleViewProps {
   moduleId: string
   onBack: () => void
   user: User | null
+  isStaff?: boolean
 }
 
-function getTaskStatus(tasks: Task[], index: number, completions: Record<string, boolean>): TaskStatus {
+function getTaskStatus(tasks: Task[], index: number, completions: Record<string, boolean>, isStaff = false): TaskStatus {
   const task = tasks[index]
   if (completions[task.id] ?? task.completed) return 'done'
+  if (isStaff) return 'active'
 
   if (task.type === 'CHALLENGE') {
     const nonChallengeDone = tasks
@@ -89,7 +91,7 @@ const cardStyles: Record<TaskStatus, string> = {
   locked: 'border border-nx-border bg-nx-surface opacity-50 pointer-events-none',
 }
 
-export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) {
+export default function ModuleView({ moduleId, onBack, user, isStaff = false }: ModuleViewProps) {
   const router = useRouter()
 
   const [mod, setMod]         = useState<ModuleData | null>(null)
@@ -226,7 +228,7 @@ export default function ModuleView({ moduleId, onBack, user }: ModuleViewProps) 
       {/* Task accordion */}
       <div className="max-w-2xl mx-auto w-full px-4 py-6 space-y-3">
         {mod.tasks.map((task, i) => {
-          const status      = getTaskStatus(mod.tasks, i, completions)
+          const status      = getTaskStatus(mod.tasks, i, completions, isStaff)
           const isOpen      = openTasks.has(task.id)
           const isChallenge = task.type === 'CHALLENGE'
 

@@ -4,14 +4,18 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { getAvatarFile } from '../../lib/avatars'
 import ProfileOverlay from './ProfileOverlay'
+import ClassePanel from './ClassePanel'
 
 interface TopBarProps {
-  user: { username: string; xp: number; level: number; avatarId?: string | null } | null
+  user: { id: string; username: string; xp: number; level: number; avatarId?: string | null; role?: string } | null
 }
 
 export default function TopBar({ user }: TopBarProps) {
   const pathname = usePathname()
   const [showProfile, setShowProfile] = useState(false)
+  const [showClasse, setShowClasse] = useState(false)
+  const isStaff = user?.role === 'TEACHER' || user?.role === 'ADMIN'
+  const isStudent = user?.role === 'STUDENT'
 
   return (
     <>
@@ -26,12 +30,34 @@ export default function TopBar({ user }: TopBarProps) {
         <span className="text-nx-text-dim text-sm tracking-widest uppercase">Ma carte</span>
 
         <nav className="flex gap-1 ml-4">
-          <a href="/map" className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname === '/map' ? 'text-white' : 'text-nx-text-dim hover:text-nx-text'}`}>
+          <a
+            href="/map"
+            className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname === '/map' ? 'text-white' : 'text-nx-text-dim hover:text-nx-text'}`}
+          >
             Carte
           </a>
-          <a href="/profile" className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname === '/profile' ? 'text-white' : 'text-nx-text-dim hover:text-nx-text'}`}>
+          <a
+            href="/profile"
+            className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname === '/profile' ? 'text-white' : 'text-nx-text-dim hover:text-nx-text'}`}
+          >
             Profil
           </a>
+          {isStudent && (
+            <button
+              onClick={() => setShowClasse(true)}
+              className="px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 text-nx-text-dim hover:text-nx-text"
+            >
+              Classe
+            </button>
+          )}
+          {isStaff && (
+            <a
+              href="/admin"
+              className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname.startsWith('/admin') ? 'text-nx-yellow' : 'text-nx-text-dim hover:text-nx-yellow'}`}
+            >
+              Admin
+            </a>
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-4">
@@ -59,6 +85,10 @@ export default function TopBar({ user }: TopBarProps) {
 
       {showProfile && user && (
         <ProfileOverlay user={user} onClose={() => setShowProfile(false)} />
+      )}
+
+      {showClasse && user && (
+        <ClassePanel currentUserId={user.id} onClose={() => setShowClasse(false)} />
       )}
     </>
   )

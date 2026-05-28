@@ -19,6 +19,7 @@ interface Track {
 
 interface SidebarProps {
   parcoursList: Parcours[]
+  parcoursLoaded: boolean
   parcoursTracksCache: Record<string, Track[]>
   openParcoursId: string | null
   selectedTrackId: string | null
@@ -52,6 +53,7 @@ function TrackItem({
 
 export default function Sidebar({
   parcoursList,
+  parcoursLoaded,
   parcoursTracksCache,
   openParcoursId,
   selectedTrackId,
@@ -62,10 +64,16 @@ export default function Sidebar({
   return (
     <aside className="w-[260px] shrink-0 h-full bg-nx-surface border-r border-nx-border flex flex-col overflow-hidden">
       <div className="flex-1 overflow-y-auto pt-4">
-        <p className="text-[11px] text-nx-text-muted tracking-[0.2em] uppercase px-3 mb-3 mt-2">Navigation</p>
+        <p className="text-[11px] text-nx-gray tracking-[0.2em] uppercase px-3 mb-3 mt-2">Navigation</p>
 
-        {parcoursList.length === 0 && (
-          <p className="text-sm text-nx-text-dim px-3 py-2">Chargement…</p>
+        {!parcoursLoaded && parcoursList.length === 0 && (
+          <p className="text-sm text-nx-gray px-3 py-2">Chargement…</p>
+        )}
+        {parcoursLoaded && parcoursList.length === 0 && (
+          <p className="text-sm text-nx-gray px-4 py-3 leading-relaxed">
+            Aucun cours assigné.<br />
+            <span className="text-xs text-nx-text-dim">Contacte ton professeur pour rejoindre une classe.</span>
+          </p>
         )}
 
         {parcoursList.map(parcours => {

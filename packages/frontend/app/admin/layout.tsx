@@ -8,10 +8,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
 interface User { id: string; username: string; role: string }
 
-const NAV = [
+const NAV_BASE = [
   { label: 'Classes',   href: '/admin/classes',  active: true },
   { label: 'Étudiants', href: '/admin/students', active: true },
-  { label: 'Contenu',   href: null,              active: false },
+]
+const NAV_ADMIN = [
+  { label: 'Profs',     href: '/admin/profs',    active: true },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -66,15 +68,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Sidebar */}
         <nav className="w-[220px] shrink-0 border-r border-nx-border pt-6 px-3 bg-nx-surface/30">
           <p className="text-[10px] text-nx-text-muted tracking-[0.2em] uppercase px-3 mb-3">Navigation</p>
-          {NAV.map(item => {
+          {[...NAV_BASE, ...(user.role === 'ADMIN' ? NAV_ADMIN : [])].map(item => {
             const isCurrentPath = item.href && pathname.startsWith(item.href)
-            if (!item.active || !item.href) {
-              return (
-                <div key={item.label} className="px-3 py-2 text-sm text-nx-text-muted rounded-lg mb-1 cursor-not-allowed tracking-wide">
-                  {item.label}
-                </div>
-              )
-            }
             return (
               <Link
                 key={item.label}

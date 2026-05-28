@@ -140,6 +140,55 @@ router.get('/me/current-position', requireAuth, async (req, res) => {
   }
 });
 
+router.get('/class', requireAuth, async (req, res) => {
+  try {
+    const membership = await prisma.classeMember.findFirst({
+      where: { userId: req.user.id },
+      include: {
+        classe: {
+          include: {
+            members: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    xp: true,
+                    level: true,
+                    avatarId: true,
+                    taskProgress: { where: { completed: true }, select: { id: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!membership) return res.json({ classe: null, members: [] });
+
+    const members = membership.classe.members
+      .map(m => ({
+        id: m.user.id,
+        username: m.user.username,
+        xp: m.user.xp,
+        level: m.user.level,
+        avatarId: m.user.avatarId,
+        tasksCompleted: m.user.taskProgress.length,
+      }))
+      .sort((a, b) => b.xp - a.xp);
+
+    res.json({
+      classe: { id: membership.classe.id, name: membership.classe.name },
+      members,
+    });
+  } catch (err) {
+    console.error('[GET /api/users/class]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/me/avatars', requireAuth, async (req, res) => {
   const { AVATARS } = require('../lib/avatars');
   const userId = req.user.id;

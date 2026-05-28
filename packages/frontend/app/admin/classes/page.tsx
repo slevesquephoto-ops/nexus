@@ -6,15 +6,15 @@ import Link from 'next/link'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
+interface Parcours { id: string; title: string }
+
 interface Classe {
   id: string
   name: string
   inviteCode: string
-  parcours: { id: string; title: string }
+  parcours: Parcours[]
   memberCount: number
 }
-
-interface Parcours { id: string; title: string }
 
 export default function ClassesPage() {
   const router = useRouter()
@@ -27,6 +27,11 @@ export default function ClassesPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+
+  // Add parcours to class state
+  const [addParcoursClassId, setAddParcoursClassId] = useState<string | null>(null)
+  const [addParcoursId, setAddParcoursId] = useState('')
+  const [addingParcours, setAddingParcours] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -47,14 +52,14 @@ export default function ClassesPage() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim() || !parcoursId) return
+    if (!name.trim()) return
     setCreating(true)
     try {
       const res = await fetch(`${API_URL}/api/admin/classes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ name: name.trim(), parcoursId }),
+        body: JSON.stringify({ name: name.trim(), ...(parcoursId ? { parcoursId } : {}) }),
       })
       if (!res.ok) return
       const newClass = await res.json()
@@ -75,6 +80,39 @@ export default function ClassesPage() {
     if (!res.ok) return
     setClasses(prev => prev.filter(c => c.id !== id))
     setConfirmDeleteId(null)
+  }
+
+  async function handleAddParcours(classeId: string) {
+    if (!addParcoursId) return
+    setAddingParcours(true)
+    try {
+      const res = await fetch(`${API_URL}/api/admin/classes/${classeId}/parcours`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ parcoursId: addParcoursId }),
+      })
+      if (!res.ok) return
+      const body = await res.json()
+      setClasses(prev => prev.map(c =>
+        c.id === classeId ? { ...c, parcours: [...c.parcours, body.parcours] } : c
+      ))
+      setAddParcoursClassId(null)
+      setAddParcoursId('')
+    } finally {
+      setAddingParcours(false)
+    }
+  }
+
+  async function handleRemoveParcours(classeId: string, pid: string) {
+    const res = await fetch(`${API_URL}/api/admin/classes/${classeId}/parcours/${pid}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (!res.ok) return
+    setClasses(prev => prev.map(c =>
+      c.id === classeId ? { ...c, parcours: c.parcours.filter(p => p.id !== pid) } : c
+    ))
   }
 
   function copyCode(id: string, code: string) {
@@ -122,7 +160,7 @@ export default function ClassesPage() {
               onChange={e => setParcoursId(e.target.value)}
               className="w-full bg-nx-dark border border-nx-border rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-nx-yellow/50"
             >
-              <option value="">Sélectionner un parcours…</option>
+              <option value="">Sélectionner un parcours (optionnel)…</option>
               {parcoursList.map(p => (
                 <option key={p.id} value={p.id}>{p.title}</option>
               ))}
@@ -131,7 +169,7 @@ export default function ClassesPage() {
           <div className="flex gap-3">
             <button
               type="submit"
-              disabled={creating || !name.trim() || !parcoursId}
+              disabled={creating || !name.trim()}
               className="px-4 py-2 bg-nx-yellow text-nx-bg text-sm font-semibold rounded-lg hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {creating ? 'Création…' : 'Créer'}
@@ -155,55 +193,122 @@ export default function ClassesPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {classes.map(c => (
-            <div key={c.id} className="bg-nx-surface border border-nx-border rounded-xl p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-white font-semibold">{c.name}</p>
-                  <p className="text-nx-gray text-sm mt-0.5">{c.parcours.title}</p>
-                  <p className="text-nx-gray text-xs mt-1">
-                    {c.memberCount} élève{c.memberCount !== 1 ? 's' : ''}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Link
-                    href={`/admin/classes/${c.id}`}
-                    className="px-3 py-1.5 bg-nx-dark border border-nx-border text-white text-xs font-medium rounded-lg hover:border-nx-yellow/50 transition-colors"
-                  >
-                    Progression →
-                  </Link>
-                  {confirmDeleteId === c.id ? (
-                    <button
-                      onClick={() => handleDeleteClass(c.id)}
-                      className="px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-lg hover:bg-red-500 transition-colors"
-                    >
-                      Confirmer
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setConfirmDeleteId(c.id)}
-                      className="px-3 py-1.5 bg-nx-dark border border-nx-border text-nx-gray text-xs rounded-lg hover:border-red-500/50 hover:text-red-400 transition-colors"
-                    >
-                      Supprimer
-                    </button>
-                  )}
-                </div>
-              </div>
+          {classes.map(c => {
+            const availableParcours = parcoursList.filter(p => !c.parcours.some(cp => cp.id === p.id))
+            const isAddingToThis = addParcoursClassId === c.id
 
-              <div className="mt-4 pt-4 border-t border-nx-border flex items-center gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-nx-gray text-xs">Code d&apos;invitation</p>
-                  <p className="text-white text-sm font-mono mt-0.5 truncate">{c.inviteCode}</p>
+            return (
+              <div key={c.id} className="bg-nx-surface border border-nx-border rounded-xl p-5 space-y-4">
+                {/* Header */}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold">{c.name}</p>
+                    <p className="text-nx-gray text-xs mt-1">
+                      {c.memberCount} élève{c.memberCount !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Link
+                      href={`/admin/classes/${c.id}`}
+                      className="px-3 py-1.5 bg-nx-dark border border-nx-border text-white text-xs font-medium rounded-lg hover:border-nx-yellow/50 transition-colors"
+                    >
+                      Progression →
+                    </Link>
+                    {confirmDeleteId === c.id ? (
+                      <button
+                        onClick={() => handleDeleteClass(c.id)}
+                        className="px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-lg hover:bg-red-500 transition-colors"
+                      >
+                        Confirmer
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDeleteId(c.id)}
+                        className="px-3 py-1.5 bg-nx-dark border border-nx-border text-nx-gray text-xs rounded-lg hover:border-red-500/50 hover:text-red-400 transition-colors"
+                      >
+                        Supprimer
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <button
-                  onClick={() => copyCode(c.id, c.inviteCode)}
-                  className="shrink-0 px-3 py-1.5 bg-nx-dark border border-nx-border text-xs rounded-lg transition-colors hover:border-nx-cyan/50 text-nx-gray hover:text-white"
-                >
-                  {copiedId === c.id ? '✓ Copié' : 'Copier'}
-                </button>
+
+                {/* Parcours section */}
+                <div className="space-y-2">
+                  <p className="text-nx-gray text-xs font-medium tracking-wide uppercase">Parcours assignés</p>
+                  {c.parcours.length === 0 ? (
+                    <p className="text-nx-text-muted text-xs">Aucun parcours assigné.</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {c.parcours.map(p => (
+                        <div
+                          key={p.id}
+                          className="flex items-center gap-1.5 px-2.5 py-1 bg-nx-dark border border-nx-border rounded-lg"
+                        >
+                          <span className="text-white text-xs">{p.title}</span>
+                          <button
+                            onClick={() => handleRemoveParcours(c.id, p.id)}
+                            className="text-nx-gray hover:text-red-400 transition-colors text-xs leading-none"
+                            title="Retirer ce parcours"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {isAddingToThis ? (
+                    <div className="flex gap-2 items-center">
+                      <select
+                        value={addParcoursId}
+                        onChange={e => setAddParcoursId(e.target.value)}
+                        className="flex-1 bg-nx-dark border border-nx-border rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-nx-yellow/50"
+                      >
+                        <option value="">Choisir un parcours…</option>
+                        {availableParcours.map(p => (
+                          <option key={p.id} value={p.id}>{p.title}</option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => handleAddParcours(c.id)}
+                        disabled={!addParcoursId || addingParcours}
+                        className="px-3 py-1.5 bg-nx-yellow text-nx-bg text-xs font-semibold rounded-lg hover:brightness-110 disabled:opacity-50 transition-all"
+                      >
+                        {addingParcours ? '…' : 'Ajouter'}
+                      </button>
+                      <button
+                        onClick={() => { setAddParcoursClassId(null); setAddParcoursId('') }}
+                        className="text-nx-gray hover:text-white text-xs transition-colors"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  ) : availableParcours.length > 0 ? (
+                    <button
+                      onClick={() => { setAddParcoursClassId(c.id); setAddParcoursId('') }}
+                      className="text-xs text-nx-yellow/80 hover:text-nx-yellow transition-colors"
+                    >
+                      + Ajouter un parcours
+                    </button>
+                  ) : null}
+                </div>
+
+                {/* Invite code */}
+                <div className="pt-3 border-t border-nx-border flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-nx-gray text-xs">Code d&apos;invitation</p>
+                    <p className="text-white text-sm font-mono mt-0.5 truncate">{c.inviteCode}</p>
+                  </div>
+                  <button
+                    onClick={() => copyCode(c.id, c.inviteCode)}
+                    className="shrink-0 px-3 py-1.5 bg-nx-dark border border-nx-border text-xs rounded-lg transition-colors hover:border-nx-cyan/50 text-nx-gray hover:text-white"
+                  >
+                    {copiedId === c.id ? '✓ Copié' : 'Copier'}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

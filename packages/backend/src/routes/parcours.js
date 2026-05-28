@@ -14,7 +14,33 @@ router.get('/', async (req, res) => {
   }
 
   try {
+    if (!userId) {
+      const all = await prisma.parcours.findMany({
+        orderBy: { order: 'asc' },
+        select: { id: true, title: true, description: true, language: true, order: true, prerequisiteId: true, _count: { select: { tracks: true } } },
+      });
+      return res.json(all.map(p => ({ ...p, prerequisiteCompleted: true })));
+    }
+
+    const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+
+    if (currentUser?.role === 'TEACHER' || currentUser?.role === 'ADMIN') {
+      const all = await prisma.parcours.findMany({
+        orderBy: { order: 'asc' },
+        select: { id: true, title: true, description: true, language: true, order: true, prerequisiteId: true, _count: { select: { tracks: true } } },
+      });
+      return res.json(all.map(p => ({ ...p, prerequisiteCompleted: true })));
+    }
+
+    // Students: only enrolled parcours
+    const enrollments = await prisma.enrollment.findMany({
+      where: { userId },
+      select: { parcoursId: true },
+    });
+    const enrolledIds = new Set(enrollments.map(e => e.parcoursId));
+
     const parcoursList = await prisma.parcours.findMany({
+      where: { id: { in: [...enrolledIds] } },
       orderBy: { order: 'asc' },
       select: {
         id: true,
@@ -26,10 +52,6 @@ router.get('/', async (req, res) => {
         _count: { select: { tracks: true } },
       },
     });
-
-    if (!userId) {
-      return res.json(parcoursList.map(p => ({ ...p, prerequisiteCompleted: true })));
-    }
 
     const prereqIds = [...new Set(parcoursList.map(p => p.prerequisiteId).filter(Boolean))];
     const prereqCompletionMap = {};
