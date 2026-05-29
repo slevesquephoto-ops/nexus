@@ -1,0 +1,879 @@
+module:
+  id: linux-fund-2-fr
+  trackId: linux-fr
+  title: "Les fondements de Linux 2"
+  description: "Permissions de fichiers, utilisateurs, groupes, sudo et recherche de fichiers"
+  order: 2
+  mascot: "tux-security"
+  xpReward: 50
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t1
+      type: task
+      title: "Comprendre les permissions de fichiers"
+      order: 1
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## Pourquoi les permissions sont importantes
+
+            Sous Linux, **chaque fichier et répertoire possède des permissions**
+            qui contrôlent qui peut le lire, le modifier ou l'exécuter.
+
+            C'est fondamental en soutien informatique — la plupart des erreurs
+            « Permission refusée » que tu vas rencontrer sont causées par des
+            permissions incorrectes.
+
+            Il existe trois types de permissions :
+
+            | Permission | Symbole | Signification |
+            |------------|---------|---------------|
+            | Lecture    | `r`     | Voir le contenu d'un fichier ou lister un répertoire |
+            | Écriture   | `w`     | Modifier un fichier ou créer/supprimer des fichiers dans un répertoire |
+            | Exécution  | `x`     | Lancer un fichier comme programme, ou entrer dans un répertoire |
+
+            Et trois catégories d'utilisateurs :
+
+            | Catégorie    | Signification |
+            |--------------|---------------|
+            | **Propriétaire** | L'utilisateur qui a créé le fichier |
+            | **Groupe**       | Les utilisateurs appartenant au groupe du fichier |
+            | **Autres**       | Tous les autres utilisateurs du système |
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Que permet la permission 'exécution' sur un répertoire ?"
+              answers:
+                - text: "Lancer des scripts dans le répertoire"
+                  correct: false
+                - text: "Entrer dans le répertoire avec cd"
+                  correct: true
+                - text: "Supprimer le répertoire"
+                  correct: false
+                - text: "Lister le contenu du répertoire"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "Un fichier donne la permission d'écriture au propriétaire seulement. Qui peut le modifier ?"
+              answers:
+                - text: "Tout le monde sur le système"
+                  correct: false
+                - text: "Seulement les membres du groupe du fichier"
+                  correct: false
+                - text: "Seulement le propriétaire du fichier"
+                  correct: true
+                - text: "Personne"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "Quelle permission te permet de voir le contenu d'un fichier ?"
+              answers:
+                - text: "Exécution (x)"
+                  correct: false
+                - text: "Écriture (w)"
+                  correct: false
+                - text: "Lecture (r)"
+                  correct: true
+                - text: "Ouverture (o)"
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t2
+      type: task
+      title: "Lire les permissions avec ls -l"
+      order: 2
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Lire la chaîne de permissions
+
+            Utilise `ls -l` pour voir les informations détaillées des fichiers,
+            incluant les permissions.
+
+        - type: code_block
+          label: "Résultat de ls -l"
+          content: |
+            utilisateur@linux:~$ ls -l
+            -rwxr-xr-- 1 alice devs  1234 10 jan 09:00 script.sh
+            drwxr-x--- 2 alice devs  4096 10 jan 09:00 projets/
+            -rw-r--r-- 1 bob   staff  512 10 jan 08:00 lisezmoi.txt
+
+        - type: theory
+          content: |
+            Décortiquons la chaîne de permissions `-rwxr-xr--` :
+
+            ```
+            - rwx r-x r--
+            │ │││ │││ │││
+            │ │││ │││ └┴┴── Autres      : r-- (lecture seulement)
+            │ │││ └┴┴────── Groupe      : r-x (lecture + exécution)
+            │ └┴┴────────── Propriétaire: rwx (lecture + écriture + exécution)
+            └────────────── Type        : - (fichier) ou d (répertoire)
+            ```
+
+            Le premier caractère indique le **type** :
+            - `-` → fichier ordinaire
+            - `d` → répertoire
+            - `l` → lien symbolique
+
+        - type: theory
+          content: |
+            ## Les autres colonnes
+
+            ```
+            -rwxr-xr-- 1 alice devs 1234 10 jan 09:00 script.sh
+                       │ │     │    │    │             │
+                       │ │     │    │    └── Date de modification
+                       │ │     │    └─────── Taille (octets)
+                       │ │     └──────────── Groupe propriétaire
+                       │ └────────────────── Propriétaire
+                       └──────────────────── Nombre de liens physiques
+            ```
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Dans la chaîne 'drwxr-xr--', que signifie le 'd' ?"
+              answers:
+                - text: "Le fichier a été supprimé"
+                  correct: false
+                - text: "L'élément est un répertoire"
+                  correct: true
+                - text: "Le fichier est dangereux"
+                  correct: false
+                - text: "Le fichier appartient à root"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "Un fichier affiche '-rw-r--r--'. Les membres du groupe peuvent-ils modifier ce fichier ?"
+              answers:
+                - text: "Oui"
+                  correct: false
+                - text: "Non"
+                  correct: true
+                - text: "Seulement avec sudo"
+                  correct: false
+                - text: "Seulement root peut écrire"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Quelle commande affiche les permissions de tous les fichiers dans ton répertoire actuel ?"
+              answer: "ls -l"
+
+            - id: q4
+              type: qcm
+              question: "Un fichier affiche '-rwxr-xr--'. Les 'Autres' peuvent-ils exécuter ce fichier ?"
+              answers:
+                - text: "Oui — les autres ont r-x"
+                  correct: false
+                - text: "Non — les autres ont seulement r-- (pas d'exécution)"
+                  correct: true
+                - text: "Oui — tout le monde peut toujours exécuter"
+                  correct: false
+                - text: "Seulement le propriétaire peut exécuter"
+                  correct: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t3
+      type: task
+      title: "Modifier les permissions avec chmod"
+      order: 3
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## chmod — Modifier les permissions
+
+            `chmod` te permet de modifier les permissions d'un fichier ou répertoire.
+            Il y a deux façons de l'utiliser : **symbolique** et **numérique (octal)**.
+
+            ### Méthode symbolique
+
+            Format : `chmod [qui][opérateur][permission] fichier`
+
+            | Qui | Signification |
+            |-----|---------------|
+            | `u` | User (propriétaire) |
+            | `g` | Group (groupe) |
+            | `o` | Others (autres) |
+            | `a` | All (tous : u+g+o) |
+
+            | Opérateur | Signification |
+            |-----------|---------------|
+            | `+` | Ajouter une permission |
+            | `-` | Retirer une permission |
+            | `=` | Définir exactement les permissions |
+
+        - type: code_block
+          label: "Exemples chmod symbolique"
+          content: |
+            utilisateur@linux:~$ chmod u+x script.sh       # ajouter exécution pour le propriétaire
+            utilisateur@linux:~$ chmod g-w rapport.txt     # retirer écriture du groupe
+            utilisateur@linux:~$ chmod o=r lisezmoi.txt    # mettre autres en lecture seule
+            utilisateur@linux:~$ chmod a+r public.txt      # ajouter lecture pour tout le monde
+
+        - type: theory
+          content: |
+            ### Méthode numérique (octale)
+
+            Chaque permission a une valeur numérique :
+
+            | Permission   | Valeur |
+            |--------------|--------|
+            | Lecture (r)  | 4      |
+            | Écriture (w) | 2      |
+            | Exécution (x)| 1      |
+            | Aucune (-)   | 0      |
+
+            On additionne les valeurs pour chaque catégorie (propriétaire, groupe, autres) :
+
+            | Exemple | Calcul | Résultat |
+            |---------|--------|----------|
+            | `rwx`   | 4+2+1  | 7        |
+            | `r-x`   | 4+0+1  | 5        |
+            | `r--`   | 4+0+0  | 4        |
+            | `---`   | 0+0+0  | 0        |
+
+            Donc `chmod 755 fichier` signifie : propriétaire=rwx(7), groupe=r-x(5), autres=r-x(5)
+
+        - type: code_block
+          label: "Exemples chmod numérique"
+          content: |
+            utilisateur@linux:~$ chmod 755 script.sh    # rwxr-xr-x
+            utilisateur@linux:~$ chmod 644 config.txt   # rw-r--r--
+            utilisateur@linux:~$ chmod 600 prive.key    # rw-------
+            utilisateur@linux:~$ chmod 777 partage/     # rwxrwxrwx (dangereux !)
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour ajouter la permission d'exécution pour le propriétaire du fichier 'deploiement.sh'."
+              answer: "chmod u+x deploiement.sh"
+
+            - id: q2
+              type: qcm
+              question: "Quelle valeur numérique représente les permissions 'rwx' ?"
+              answers:
+                - text: "5"
+                  correct: false
+                - text: "6"
+                  correct: false
+                - text: "7"
+                  correct: true
+                - text: "4"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "Que fait 'chmod 644 rapport.txt' ?"
+              answers:
+                - text: "Propriétaire : rw-, Groupe : r--, Autres : r--"
+                  correct: true
+                - text: "Propriétaire : rwx, Groupe : r-x, Autres : r--"
+                  correct: false
+                - text: "Propriétaire : rw-, Groupe : rw-, Autres : r--"
+                  correct: false
+                - text: "Propriétaire : r--, Groupe : r--, Autres : r--"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Écris la commande chmod pour donner au propriétaire tous les droits, au groupe lecture+exécution, et aucun droit aux autres. Utilise le format numérique."
+              answer: "chmod 750 "
+
+    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t4
+      type: task
+      title: "Propriété — chown et chgrp"
+      order: 4
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## Changer la propriété des fichiers
+
+            Les permissions n'ont de sens qu'avec la **propriété**.
+            Chaque fichier a un **propriétaire** (utilisateur) et un **groupe propriétaire**.
+
+        - type: command_table
+          commands:
+            - cmd: "chown utilisateur fichier"
+              desc: "Change le propriétaire d'un fichier"
+            - cmd: "chown utilisateur:groupe fichier"
+              desc: "Change le propriétaire et le groupe en même temps"
+            - cmd: "chgrp groupe fichier"
+              desc: "Change seulement le groupe propriétaire"
+            - cmd: "chown -R utilisateur:groupe rep/"
+              desc: "Change récursivement la propriété d'un répertoire et tout son contenu"
+
+        - type: code_block
+          label: "Exemples chown"
+          content: |
+            utilisateur@linux:~$ ls -l rapport.txt
+            -rw-r--r-- 1 alice staff 512 10 jan rapport.txt
+
+            utilisateur@linux:~$ sudo chown bob rapport.txt
+            utilisateur@linux:~$ ls -l rapport.txt
+            -rw-r--r-- 1 bob staff 512 10 jan rapport.txt
+
+            utilisateur@linux:~$ sudo chown bob:devs rapport.txt
+            utilisateur@linux:~$ ls -l rapport.txt
+            -rw-r--r-- 1 bob devs 512 10 jan rapport.txt
+
+        - type: theory
+          content: |
+            ## Pourquoi utiliser -R (récursif) ?
+
+            Quand tu as un répertoire avec plusieurs fichiers, `-R` applique
+            le changement de propriété à **tous les fichiers et sous-répertoires**
+            en une seule commande.
+
+            C'est très courant en soutien informatique pour corriger des problèmes
+            de serveur web :
+
+        - type: code_block
+          label: "Corriger un problème de propriété sur un serveur web"
+          content: |
+            # Les fichiers du site appartiennent au mauvais utilisateur
+            # Apache ne peut pas les lire
+            utilisateur@linux:~$ sudo chown -R www-data:www-data /var/www/html/
+            # Maintenant Apache (qui tourne en tant que www-data) peut accéder aux fichiers
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour changer le propriétaire de 'config.txt' vers l'utilisateur 'admin'."
+              answer: "sudo chown admin config.txt"
+
+            - id: q2
+              type: qcm
+              question: "Que fait 'chown -R alice:devs /home/alice/' ?"
+              answers:
+                - text: "Change seulement la propriété du répertoire"
+                  correct: false
+                - text: "Change récursivement la propriété du répertoire et de tous les fichiers à l'intérieur"
+                  correct: true
+                - text: "Supprime toutes les permissions récursivement"
+                  correct: false
+                - text: "Crée un nouvel utilisateur nommé alice"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour changer le propriétaire à 'bob' ET le groupe à 'staff' pour le fichier 'donnees.csv'."
+              answer: "sudo chown bob:staff donnees.csv"
+
+    # ── TÂCHE 5 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t5
+      type: task
+      title: "Utilisateurs et groupes"
+      order: 5
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## Gestion des utilisateurs
+
+            Linux est un **système multi-utilisateurs** — plusieurs personnes peuvent
+            être connectées et travailler simultanément. Comprendre les utilisateurs
+            et les groupes est essentiel pour le soutien informatique.
+
+        - type: command_table
+          commands:
+            - cmd: "whoami"
+              desc: "Affiche ton nom d'utilisateur actuel"
+            - cmd: "id"
+              desc: "Affiche ton ID utilisateur (uid), ID groupe (gid) et tous tes groupes"
+            - cmd: "groups"
+              desc: "Liste tous les groupes auxquels tu appartiens"
+            - cmd: "who"
+              desc: "Affiche qui est connecté sur le système"
+            - cmd: "cat /etc/passwd"
+              desc: "Liste tous les comptes utilisateurs du système"
+            - cmd: "cat /etc/group"
+              desc: "Liste tous les groupes du système"
+
+        - type: code_block
+          label: "Commandes d'information utilisateur"
+          content: |
+            utilisateur@linux:~$ whoami
+            etudiant
+
+            utilisateur@linux:~$ id
+            uid=1000(etudiant) gid=1000(etudiant) groups=1000(etudiant),27(sudo),1001(devs)
+
+            utilisateur@linux:~$ groups
+            etudiant sudo devs
+
+        - type: theory
+          content: |
+            ## Créer et gérer des utilisateurs
+
+            Ces commandes nécessitent les **privilèges sudo** (administrateur) :
+
+        - type: command_table
+          commands:
+            - cmd: "sudo adduser nomutilisateur"
+              desc: "Crée un nouvel utilisateur de façon interactive (recommandé)"
+            - cmd: "sudo passwd nomutilisateur"
+              desc: "Change le mot de passe d'un utilisateur"
+            - cmd: "sudo usermod -aG groupe utilisateur"
+              desc: "Ajoute un utilisateur à un groupe (-a = ajouter, -G = groupes)"
+            - cmd: "sudo deluser nomutilisateur"
+              desc: "Supprime un compte utilisateur"
+
+        - type: code_block
+          label: "Créer un utilisateur et l'ajouter à un groupe"
+          content: |
+            utilisateur@linux:~$ sudo adduser jean
+            Ajout de l'utilisateur 'jean' ...
+            Nouveau mot de passe : ****
+            Retapez le nouveau mot de passe : ****
+            passwd : le mot de passe a été mis à jour
+
+            utilisateur@linux:~$ sudo usermod -aG sudo jean
+            # jean peut maintenant utiliser les commandes sudo
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Quelle commande affiche ton ID utilisateur et tous les groupes auxquels tu appartiens ?"
+              answer: "id"
+
+            - id: q2
+              type: qcm
+              question: "Que fait 'sudo usermod -aG devs alice' ?"
+              answers:
+                - text: "Retire alice du groupe devs"
+                  correct: false
+                - text: "Crée un nouveau groupe nommé devs"
+                  correct: false
+                - text: "Ajoute alice au groupe devs sans la retirer de ses autres groupes"
+                  correct: true
+                - text: "Change le groupe principal d'alice pour devs"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour créer un nouvel utilisateur nommé 'techsupport'."
+              answer: "sudo adduser techsupport"
+
+            - id: q4
+              type: qcm
+              question: "Un collègue dit qu'il ne peut pas se connecter. Quel fichier vérifies-tu pour confirmer que son compte existe ?"
+              answers:
+                - text: "/etc/group"
+                  correct: false
+                - text: "/etc/shadow"
+                  correct: false
+                - text: "/etc/passwd"
+                  correct: true
+                - text: "/var/log/users"
+                  correct: false
+
+    # ── TÂCHE 6 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t6
+      type: task
+      title: "Sudo et root"
+      order: 6
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## L'utilisateur root
+
+            Sous Linux, **root** est le superutilisateur — le compte administrateur
+            qui a un **accès illimité** à chaque fichier et commande du système.
+
+            Root peut :
+            - Lire, écrire et exécuter n'importe quel fichier
+            - Créer et supprimer n'importe quel utilisateur
+            - Installer et désinstaller des logiciels
+            - Modifier les fichiers de configuration du système
+
+            **Root est puissant et dangereux.** Une seule mauvaise commande en root
+            peut détruire tout le système. C'est pourquoi sous Linux moderne,
+            on évite de se connecter directement en root.
+
+        - type: theory
+          content: |
+            ## sudo — Superuser Do
+
+            `sudo` permet aux utilisateurs autorisés d'**exécuter une seule commande
+            en tant que root** sans être connecté comme root.
+
+            C'est plus sécuritaire parce que :
+            - Chaque commande sudo est **enregistrée dans les journaux** (traçabilité)
+            - Tu élèves tes privilèges seulement pour une commande à la fois
+            - Une faute de frappe ne va pas accidentellement détruire le système
+
+        - type: command_table
+          commands:
+            - cmd: "sudo commande"
+              desc: "Exécute une seule commande en tant que root"
+            - cmd: "sudo -l"
+              desc: "Liste les commandes que tu as le droit d'exécuter avec sudo"
+            - cmd: "sudo su"
+              desc: "Ouvre un shell root (à utiliser avec extrême prudence)"
+            - cmd: "su nomutilisateur"
+              desc: "Changer de compte utilisateur"
+
+        - type: code_block
+          label: "Utiliser sudo"
+          content: |
+            utilisateur@linux:~$ cat /etc/shadow
+            cat: /etc/shadow: Permission non accordée
+
+            utilisateur@linux:~$ sudo cat /etc/shadow
+            [sudo] mot de passe pour etudiant :
+            root:*:19000:0:99999:7:::
+            etudiant:$6$abc123...:19000:0:99999:7:::
+
+        - type: theory
+          content: |
+            ## Qui peut utiliser sudo ?
+
+            Seulement les utilisateurs dans le **groupe sudo** (ou **wheel** sur
+            certaines distributions) peuvent utiliser sudo. Tu peux vérifier avec :
+
+            ```
+            groups etudiant
+            ```
+
+            Si `sudo` apparaît dans la liste — cet utilisateur a les privilèges sudo.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Pourquoi est-il plus sécuritaire d'utiliser 'sudo' plutôt que de se connecter directement en root ?"
+              answers:
+                - text: "sudo est plus rapide que root"
+                  correct: false
+                - text: "Les commandes sudo sont enregistrées et n'élèvent les privilèges que pour une commande"
+                  correct: true
+                - text: "sudo donne plus de permissions que root"
+                  correct: false
+                - text: "Root ne peut pas exécuter toutes les commandes"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour vérifier quelles commandes sudo l'utilisateur actuel est autorisé à exécuter."
+              answer: "sudo -l"
+
+            - id: q3
+              type: qcm
+              question: "Un utilisateur obtient 'Permission non accordée' en essayant de modifier /etc/hosts. Quelle est la cause la plus probable ?"
+              answers:
+                - text: "Le fichier est corrompu"
+                  correct: false
+                - text: "L'utilisateur n'est pas dans le groupe sudo ou n'a pas utilisé sudo"
+                  correct: true
+                - text: "Le fichier n'existe pas"
+                  correct: false
+                - text: "L'utilisateur doit redémarrer le système"
+                  correct: false
+
+    # ── TÂCHE 7 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t7
+      type: task
+      title: "Rechercher des fichiers"
+      order: 7
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Trouver des fichiers sous Linux
+
+            En soutien informatique, tu vas constamment avoir besoin de localiser
+            des fichiers — fichiers de configuration, journaux, scripts.
+            Deux commandes sont essentielles :
+
+            - `find` — recherche par nom, type, permissions, propriétaire, date...
+            - `grep` — recherche du texte **à l'intérieur** des fichiers
+
+        - type: command_table
+          commands:
+            - cmd: "find / -name nomfichier"
+              desc: "Cherche sur tout le système un fichier par son nom"
+            - cmd: "find /home -name '*.txt'"
+              desc: "Trouve tous les fichiers .txt dans /home"
+            - cmd: "find / -user alice"
+              desc: "Trouve tous les fichiers appartenant à l'utilisateur alice"
+            - cmd: "find / -perm 777"
+              desc: "Trouve tous les fichiers avec la permission 777 (audit de sécurité)"
+            - cmd: "find / -type d -name config"
+              desc: "Trouve les répertoires nommés 'config'"
+
+        - type: code_block
+          label: "Exemples find"
+          content: |
+            utilisateur@linux:~$ find /home -name "*.log"
+            /home/etudiant/app/erreur.log
+            /home/etudiant/app/acces.log
+
+            utilisateur@linux:~$ find / -name "sshd_config" 2>/dev/null
+            /etc/ssh/sshd_config
+
+            utilisateur@linux:~$ find / -perm 777 2>/dev/null
+            /tmp/script_suspect.sh
+
+        - type: theory
+          content: |
+            ## grep — Rechercher dans les fichiers
+
+            `grep` recherche un **motif** à l'intérieur des fichiers. C'est
+            extrêmement utile pour lire les journaux et les fichiers de configuration.
+
+        - type: command_table
+          commands:
+            - cmd: "grep 'motif' fichier"
+              desc: "Cherche le motif dans un fichier"
+            - cmd: "grep -r 'motif' repertoire/"
+              desc: "Recherche récursivement dans tous les fichiers d'un répertoire"
+            - cmd: "grep -i 'motif' fichier"
+              desc: "Recherche sans tenir compte de la casse (majuscules/minuscules)"
+            - cmd: "grep -n 'motif' fichier"
+              desc: "Affiche les numéros de ligne avec les résultats"
+            - cmd: "grep -v 'motif' fichier"
+              desc: "Affiche les lignes qui NE correspondent PAS au motif"
+
+        - type: code_block
+          label: "Exemples grep"
+          content: |
+            utilisateur@linux:~$ grep "erreur" /var/log/syslog
+            jan 10 09:15:32 linux kernel: [ERREUR] lecture disque échouée
+
+            utilisateur@linux:~$ grep -r "password" /etc/ 2>/dev/null
+            /etc/mysql/mysql.conf:password = secret123
+
+            utilisateur@linux:~$ grep -i "echec" /var/log/auth.log | tail -5
+            jan 10 09:00:01 linux sshd: Échec mot de passe pour root depuis 192.168.1.50
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour trouver tous les fichiers nommés 'config.txt' sur tout le système."
+              answer: "find / -name config.txt"
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour chercher le mot 'erreur' dans le fichier '/var/log/syslog'."
+              answer: "grep erreur /var/log/syslog"
+
+            - id: q3
+              type: qcm
+              question: "Tu veux trouver tous les fichiers avec la permission 777 pour un audit de sécurité. Quelle commande utilises-tu ?"
+              answers:
+                - text: "ls -l / | grep 777"
+                  correct: false
+                - text: "find / -perm 777"
+                  correct: true
+                - text: "chmod -l 777"
+                  correct: false
+                - text: "grep -r 777 /"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Écris la commande pour chercher récursivement le mot 'password' dans tous les fichiers sous /etc/."
+              answer: "grep -r password /etc/"
+
+    # ── TÂCHE 8 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-t8
+      type: task
+      title: "Scénario pratique — Permission refusée !"
+      order: 8
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Mettons tout ça ensemble
+
+            Simulons un vrai scénario de soutien informatique. Un utilisateur t'appelle :
+
+            > *« Je ne peux pas accéder au dossier partagé, et mon script a arrêté
+            > de fonctionner après la mise à jour du serveur. Peux-tu m'aider ? »*
+
+            C'est le type de billet de soutien le plus fréquent lié aux permissions.
+            Travaillons-le étape par étape.
+
+        - type: theory
+          content: |
+            ## Étape 1 — Identifier le problème
+
+        - type: code_block
+          label: "Diagnostiquer un problème de permission"
+          content: |
+            # Vérifier qui on est
+            utilisateur@linux:~$ whoami
+            etudiant
+
+            # Essayer d'accéder au dossier partagé
+            utilisateur@linux:~$ ls /partage/
+            ls: impossible d'ouvrir le répertoire '/partage/': Permission non accordée
+
+            # Vérifier les permissions
+            utilisateur@linux:~$ ls -ld /partage/
+            drwxrwx--- 2 root equipedev 4096 10 jan /partage/
+
+            # Vérifier ses groupes
+            utilisateur@linux:~$ groups
+            etudiant sudo
+
+            # Problème identifié : /partage/ nécessite le groupe 'equipedev'
+            # mais 'etudiant' n'est pas dans 'equipedev'
+
+        - type: theory
+          content: |
+            ## Étape 2 — Corriger le problème
+
+        - type: code_block
+          label: "Résoudre le problème de permission"
+          content: |
+            # Ajouter etudiant au groupe equipedev
+            utilisateur@linux:~$ sudo usermod -aG equipedev etudiant
+
+            # Se déconnecter et se reconnecter pour que les changements prennent effet
+            # OU utiliser : newgrp equipedev
+
+            # Vérifier la correction
+            utilisateur@linux:~$ groups
+            etudiant sudo equipedev
+
+            utilisateur@linux:~$ ls /partage/
+            projet1/  projet2/  rapports/
+            # Problème résolu !
+
+        - type: theory
+          content: |
+            ## Étape 3 — Corriger le script brisé
+
+        - type: code_block
+          label: "Corriger un script qui a perdu sa permission d'exécution"
+          content: |
+            utilisateur@linux:~$ ./sauvegarde.sh
+            bash: ./sauvegarde.sh: Permission non accordée
+
+            utilisateur@linux:~$ ls -l sauvegarde.sh
+            -rw-r--r-- 1 etudiant etudiant 256 10 jan sauvegarde.sh
+            # La permission d'exécution manque !
+
+            utilisateur@linux:~$ chmod u+x sauvegarde.sh
+            utilisateur@linux:~$ ./sauvegarde.sh
+            Sauvegarde démarrée...
+            Sauvegarde terminée avec succès.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Un utilisateur obtient 'Permission refusée' sur un répertoire. Quelle est la PREMIÈRE chose à vérifier ?"
+              answers:
+                - text: "Redémarrer le serveur"
+                  correct: false
+                - text: "Les permissions du répertoire avec ls -ld et les groupes de l'utilisateur avec 'groups'"
+                  correct: true
+                - text: "Supprimer et recréer le répertoire"
+                  correct: false
+                - text: "Donner la permission 777 à tout le monde"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Un script nommé 'deploiement.sh' donne 'Permission refusée' quand tu essaies de le lancer. Écris la commande pour corriger ça pour le propriétaire."
+              answer: "chmod u+x deploiement.sh"
+
+            - id: q3
+              type: qcm
+              question: "Après avoir ajouté un utilisateur à un nouveau groupe avec usermod -aG, quand les changements prennent-ils effet ?"
+              answers:
+                - text: "Immédiatement, aucune action nécessaire"
+                  correct: false
+                - text: "Après que l'utilisateur se déconnecte et se reconnecte"
+                  correct: true
+                - text: "Après un redémarrage du serveur"
+                  correct: false
+                - text: "Après avoir exécuté chmod"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Écris la commande complète pour vérifier les permissions du répertoire '/var/www/html/' (pas son contenu)."
+              answer: "ls -ld /var/www/html/"
+
+    # ── DÉFI ──────────────────────────────────────────────────────────────────
+    - id: linux-fund-2-fr-challenge
+      type: challenge
+      title: "Défi — Permission refusée !"
+      order: 9
+      xpReward: 50
+      sections:
+        - type: theory
+          content: |
+            ## Briefing de mission
+
+            Agent, un serveur Linux a été mal configuré après une mise à jour système.
+            Plusieurs problèmes de permissions empêchent les utilisateurs de faire
+            leur travail.
+
+            **Ta mission :** Connecte-toi à la machine virtuelle du défi, diagnostique
+            et corrige tous les problèmes de permissions, puis réponds aux questions
+            ci-dessous.
+
+            **Télécharge et lance ta machine virtuelle :**
+            1. Télécharge → [linux-fund-2-challenge.ova](#)
+            2. Importe dans VMware ou VirtualBox
+            3. Connexion : `student` / `nexus2024`
+            4. Lis le fichier `/home/student/mission-briefing.txt` pour commencer
+
+        - type: questions
+          items:
+            - id: c1
+              type: short_answer
+              question: "Quelles sont les permissions actuelles du fichier '/home/student/secret/rapport.txt' ? (format : -rwxr-xr--)"
+              answer: "----------"
+
+            - id: c2
+              type: short_answer
+              question: "Qui est le propriétaire du fichier '/opt/compagnie/app.sh' ?"
+              answer: "root"
+
+            - id: c3
+              type: short_answer
+              question: "À quel groupe appartient l'utilisateur 'operateur' ? (vérifie avec : id operateur)"
+              answer: "operateurs"
+
+            - id: c4
+              type: short_answer
+              question: "Après avoir corrigé les permissions sur '/home/student/secret/', quelle commande as-tu utilisée pour donner les permissions lecture et écriture au propriétaire ?"
+              answer: "chmod u+rw /home/student/secret/rapport.txt"
+
+            - id: c5
+              type: qcm
+              question: "Le fichier '/opt/compagnie/app.sh' doit être exécutable par son propriétaire seulement. Quelle commande chmod est la plus précise ?"
+              answers:
+                - text: "chmod 777 /opt/compagnie/app.sh"
+                  correct: false
+                - text: "chmod u+x /opt/compagnie/app.sh"
+                  correct: true
+                - text: "chmod +x /opt/compagnie/app.sh"
+                  correct: false
+                - text: "chmod 755 /opt/compagnie/app.sh"
+                  correct: false

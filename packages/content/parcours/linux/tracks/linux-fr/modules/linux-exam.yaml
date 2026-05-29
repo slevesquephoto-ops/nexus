@@ -1,0 +1,380 @@
+module:
+  id: linux-exam-fr
+  trackId: linux-fr
+  title: "Les fondements de Linux — Examen final"
+  description: "Évaluation complète couvrant les Fondements de Linux 1, 2 et 3"
+  order: 4
+  mascot: "tux-toolbox"
+  xpReward: 100
+
+  tasks:
+
+    # ── SECTION 1 — THÉORIE ───────────────────────────────────────────────────
+    - id: linux-exam-fr-t1
+      type: task
+      title: "Section 1 — Révision théorique"
+      order: 1
+      xpReward: 20
+      sections:
+        - type: theory
+          content: |
+            ## Instructions
+
+            Cet examen couvre tout ce que tu as appris dans les Fondements de Linux 1, 2 et 3.
+
+            L'examen comporte **trois sections :**
+
+            | Section | Format | Durée | Points |
+            |---------|--------|-------|--------|
+            | Section 1 | Questions théoriques dans NEXUS | ~20 min | 20 XP |
+            | Section 2 | Pratique sur machine virtuelle | ~1h30 | 30 XP |
+            | Section 3 | Rapport écrit en anglais | ~1h | 50 XP |
+
+            **Lis toutes les instructions attentivement avant de commencer.**
+
+            Ton enseignant te fournira le lien de téléchargement de la machine
+            virtuelle au début de la Section 2.
+
+            **Bonne chance, Agent.**
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Quelle commande affiche ton emplacement actuel dans le système de fichiers Linux ?"
+              answers:
+                - text: "ls"
+                  correct: false
+                - text: "pwd"
+                  correct: true
+                - text: "cd"
+                  correct: false
+                - text: "whoami"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "Dans la chaîne de permissions '-rwxr-xr--', quelles permissions le GROUPE possède-t-il ?"
+              answers:
+                - text: "rwx — lecture, écriture, exécution"
+                  correct: false
+                - text: "r-- — lecture seulement"
+                  correct: false
+                - text: "r-x — lecture et exécution"
+                  correct: true
+                - text: "--- — aucune permission"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Quelle commande utilises-tu pour afficher TOUS les processus en cours sur le système ?"
+              answer: "ps aux"
+
+            - id: q4
+              type: qcm
+              question: "Un utilisateur obtient 'Permission non accordée' quand il essaie d'exécuter un script. Quelle est la cause la plus probable ?"
+              answers:
+                - text: "Le script contient une erreur de syntaxe"
+                  correct: false
+                - text: "Le script n'a pas la permission d'exécution"
+                  correct: true
+                - text: "L'utilisateur n'est pas connecté à internet"
+                  correct: false
+                - text: "Le fichier script est trop volumineux"
+                  correct: false
+
+            - id: q5
+              type: short_answer
+              question: "Quelle commande installe le paquet 'curl' sur Ubuntu ?"
+              answer: "sudo apt install curl"
+
+            - id: q6
+              type: qcm
+              question: "Que fait 'sudo systemctl enable apache2' ?"
+              answers:
+                - text: "Démarre apache2 immédiatement"
+                  correct: false
+                - text: "Installe apache2"
+                  correct: false
+                - text: "Configure apache2 pour démarrer automatiquement à chaque démarrage du système"
+                  correct: true
+                - text: "Vérifie si apache2 est en marche"
+                  correct: false
+
+            - id: q7
+              type: qcm
+              question: "Quelle est la différence entre '>' et '>>' dans les opérateurs shell ?"
+              answers:
+                - text: "> ajoute au fichier, >> écrase"
+                  correct: false
+                - text: "> écrase le fichier, >> ajoute à la fin"
+                  correct: true
+                - text: "Ils font la même chose"
+                  correct: false
+                - text: "> crée des répertoires, >> crée des fichiers"
+                  correct: false
+
+            - id: q8
+              type: short_answer
+              question: "Quelle commande affiche les permissions, le propriétaire et la taille des fichiers dans le répertoire actuel ?"
+              answer: "ls -l"
+
+            - id: q9
+              type: qcm
+              question: "Tu veux trouver tous les fichiers nommés 'config.txt' sur tout le système. Quelle commande utilises-tu ?"
+              answers:
+                - text: "grep config.txt /"
+                  correct: false
+                - text: "locate config.txt /"
+                  correct: false
+                - text: "find / -name config.txt"
+                  correct: true
+                - text: "search / config.txt"
+                  correct: false
+
+            - id: q10
+              type: qcm
+              question: "Quel fichier journal vérifierais-tu pour trouver des tentatives de connexion échouées ?"
+              answers:
+                - text: "/var/log/syslog"
+                  correct: false
+                - text: "/var/log/auth.log"
+                  correct: true
+                - text: "/var/log/kern.log"
+                  correct: false
+                - text: "/var/log/boot.log"
+                  correct: false
+
+    # ── SECTION 2 — PRATIQUE VM ───────────────────────────────────────────────
+    - id: linux-exam-fr-t2
+      type: task
+      title: "Section 2 — Pratique sur machine virtuelle"
+      order: 2
+      xpReward: 30
+      sections:
+        - type: theory
+          content: |
+            ## Section 2 — Pratique
+
+            Ton enseignant va maintenant te fournir le lien de téléchargement
+            de la machine virtuelle.
+
+            **Identifiants de connexion à la VM :**
+            - Nom d'utilisateur : `student`
+            - Mot de passe : `nexus2024`
+
+            **Ta mission :**
+            Tu es technicien en soutien informatique. Un poste de travail Linux
+            a été signalé avec plusieurs problèmes. Connecte-toi à la VM et
+            règle-les tous.
+
+            Une fois connecté, lis le fichier sur le bureau :
+            ```
+            cat ~/Bureau/mission-briefing.txt
+            ```
+
+            Le briefing décrit 4 problèmes à résoudre. Pour chaque problème :
+            1. Diagnostique ce qui ne va pas
+            2. Applique la correction
+            3. Vérifie que la correction a fonctionné
+            4. Note les commandes exactes utilisées — tu en auras besoin pour le rapport
+
+            **Prends ton temps. Documente tout.**
+
+        - type: theory
+          content: |
+            ## Les 4 problèmes à résoudre
+
+            | # | Description du problème | Indice |
+            |---|------------------------|--------|
+            | 1 | Un fichier caché contient des données importantes — trouve-le | Fondements 1 |
+            | 2 | Un script de sauvegarde ne peut pas être exécuté | Fondements 2 |
+            | 3 | Un utilisateur ne peut pas accéder au dossier partagé | Fondements 2 |
+            | 4 | Un service est arrêté et doit être redémarré | Fondements 3 |
+
+            Travaille dans l'ordre. Chaque problème a une **étape de vérification**
+            qui confirme que ta correction a fonctionné.
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Problème 1 — Quel est le chemin complet du fichier caché que tu as trouvé ? (commence par /home/student/)"
+              answer: "/home/student/.secret/flag.txt"
+
+            - id: q2
+              type: short_answer
+              question: "Problème 1 — Quel est le contenu de ce fichier caché ?"
+              answer: "linux-fundamentals-complete"
+
+            - id: q3
+              type: short_answer
+              question: "Problème 2 — Quelles étaient les permissions originales de 'sauvegarde.sh' ? (format : -rw-r--r--)"
+              answer: "-rw-r--r--"
+
+            - id: q4
+              type: short_answer
+              question: "Problème 2 — Quelle commande as-tu utilisée pour corriger les permissions du script de sauvegarde ?"
+              answer: "chmod u+x sauvegarde.sh"
+
+            - id: q5
+              type: short_answer
+              question: "Problème 3 — Quel groupe est requis pour accéder au dossier partagé ? (vérifie avec ls -ld /partage/)"
+              answer: "support"
+
+            - id: q6
+              type: short_answer
+              question: "Problème 3 — Quelle commande as-tu utilisée pour ajouter l'utilisateur 'student' à ce groupe ?"
+              answer: "sudo usermod -aG support student"
+
+            - id: q7
+              type: short_answer
+              question: "Problème 4 — Quel est le nom du service qui était arrêté ?"
+              answer: "cron"
+
+            - id: q8
+              type: short_answer
+              question: "Problème 4 — Quelle commande as-tu utilisée pour le démarrer et vérifier qu'il est en marche ?"
+              answer: "sudo systemctl start cron"
+
+    # ── SECTION 3 — RAPPORT ÉCRIT ─────────────────────────────────────────────
+    - id: linux-exam-fr-challenge
+      type: challenge
+      title: "Section 3 — Rapport écrit en anglais"
+      order: 3
+      xpReward: 50
+      sections:
+        - type: theory
+          content: |
+            ## Section 3 — Rapport écrit en anglais
+
+            Cette section vaut **50 XP** et sera évaluée par ton enseignant.
+
+            ---
+
+            ## Instructions
+
+            Rédige un rapport de soutien informatique complet **en anglais**
+            documentant ton travail sur la machine virtuelle de la Section 2.
+
+            Ton rapport doit couvrir **les 4 problèmes**. Pour chaque problème, écris :
+
+            1. **What I found** — décris le problème que tu as observé
+            2. **How I diagnosed it** — explique les commandes que tu as exécutées et ce qu'elles ont montré
+            3. **How I fixed it** — écris la ou les commandes exactes utilisées
+            4. **How I verified the fix** — explique comment tu as confirmé que ça fonctionne
+
+            ---
+
+            ## Modèle de rapport
+
+            Utilise cette structure pour chaque problème :
+
+            ```
+            ============================================
+            LINUX SUPPORT REPORT
+            Technician: [Ton nom]
+            Date: [La date d'aujourd'hui]
+            System: linux-exam-vm
+            ============================================
+
+            PROBLEM 1 — Hidden File Recovery
+            ---------------------------------
+            What I found:
+              [Décris quel était le problème]
+
+            How I diagnosed it:
+              [Commandes exécutées + ce qu'elles ont montré]
+
+            How I fixed it:
+              [Commande(s) exacte(s) utilisée(s)]
+
+            How I verified the fix:
+              [Ce que tu as exécuté pour confirmer que ça fonctionne]
+
+
+            PROBLEM 2 — Script Permission Error
+            ------------------------------------
+            What I found:
+              [Décris quel était le problème]
+
+            How I diagnosed it:
+              [Commandes exécutées + ce qu'elles ont montré]
+
+            How I fixed it:
+              [Commande(s) exacte(s) utilisée(s)]
+
+            How I verified the fix:
+              [Ce que tu as exécuté pour confirmer que ça fonctionne]
+
+
+            PROBLEM 3 — User Access Issue
+            ------------------------------
+            What I found:
+              [Décris quel était le problème]
+
+            How I diagnosed it:
+              [Commandes exécutées + ce qu'elles ont montré]
+
+            How I fixed it:
+              [Commande(s) exacte(s) utilisée(s)]
+
+            How I verified the fix:
+              [Ce que tu as exécuté pour confirmer que ça fonctionne]
+
+
+            PROBLEM 4 — Stopped Service
+            ----------------------------
+            What I found:
+              [Décris quel était le problème]
+
+            How I diagnosed it:
+              [Commandes exécutées + ce qu'elles ont montré]
+
+            How I fixed it:
+              [Commande(s) exacte(s) utilisée(s)]
+
+            How I verified the fix:
+              [Ce que tu as exécuté pour confirmer que ça fonctionne]
+
+
+            CONCLUSION
+            ----------
+            [2-3 phrases résumant le travail effectué et
+            l'état actuel du système]
+            ============================================
+            ```
+
+        - type: theory
+          content: |
+            ## Critères d'évaluation
+
+            Ton enseignant évaluera ton rapport selon les critères suivants :
+
+            | Critère | Description |
+            |---------|-------------|
+            | **Exactitude** | Les commandes et les observations sont-elles correctes ? |
+            | **Clarté** | Le rapport est-il facile à comprendre ? |
+            | **Qualité de l'anglais** | La langue est-elle professionnelle et grammaticalement correcte ? |
+            | **Vocabulaire technique** | Les bons termes informatiques sont-ils utilisés ? |
+            | **Exhaustivité** | Les 4 problèmes sont-ils tous documentés ? |
+
+            ## Vocabulaire utile pour ton rapport
+
+            | Situation | Expression en anglais |
+            |-----------|----------------------|
+            | Décrire un problème | *"The file was missing execute permission..."* |
+            | Décrire une commande | *"I ran the command... which showed..."* |
+            | Décrire une correction | *"I resolved the issue by running..."* |
+            | Décrire une vérification | *"I confirmed the fix by checking..."* |
+            | Décrire un service | *"The service was inactive / failed / running..."* |
+            | Décrire des permissions | *"The permissions were set to... which prevented..."* |
+            | Décrire un groupe | *"The user was not a member of the required group..."* |
+            | Décrire un fichier caché | *"I used the find command to locate a hidden file..."* |
+
+            ## Remise
+
+            Remets ton rapport à ton enseignant selon ses instructions.
+            Ton enseignant le corrigera dans le tableau de bord NEXUS.
+
+            **Bon travail, Agent. Ta mission est accomplie.**

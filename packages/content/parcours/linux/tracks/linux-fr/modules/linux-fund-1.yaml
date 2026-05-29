@@ -1,0 +1,705 @@
+module:
+  id: linux-fund-1-fr
+  trackId: linux-fr
+  title: "Les fondements de Linux 1"
+  description: "Histoire de Linux, premier contact avec le terminal, commandes de base"
+  order: 1
+  mascot: "tux-terminal"
+  xpReward: 50
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t1
+      type: task
+      title: "C'est quoi Linux ?"
+      order: 1
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## C'est quoi Linux ?
+
+            Linux est un **système d'exploitation open source** — un logiciel qui
+            gère le matériel de ton ordinateur et permet aux programmes de fonctionner.
+
+            Contrairement à Windows ou macOS, Linux a été créé collectivement par
+            des développeurs du monde entier et est **gratuit, modifiable et redistribuable**.
+
+            Linux a été créé en **1991** par un étudiant finlandais nommé **Linus Torvalds**.
+            Il a commencé comme projet personnel et a partagé le code source en ligne.
+            Des milliers de développeurs se sont joints au projet, et Linux est devenu
+            l'un des projets logiciels les plus importants de l'histoire.
+
+            Aujourd'hui, Linux fait tourner :
+            - La majorité des serveurs web dans le monde
+            - Les téléphones Android
+            - Les superordinateurs
+            - L'infrastructure infonuagique (AWS, Google Cloud, Azure)
+            - Les systèmes embarqués (routeurs, télévisions, voitures)
+
+            ## Pourquoi apprendre Linux en soutien informatique ?
+
+            Au Québec, comme partout dans le monde, les entreprises utilisent Linux
+            pour leurs serveurs. En tant que technicien en soutien informatique,
+            tu vas régulièrement travailler sur des systèmes Linux — que ce soit
+            pour configurer un serveur, diagnostiquer un problème réseau ou
+            gérer des comptes utilisateurs.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Qui a créé le noyau Linux ?"
+              answers:
+                - text: "Bill Gates"
+                  correct: false
+                - text: "Linus Torvalds"
+                  correct: true
+                - text: "Richard Stallman"
+                  correct: false
+                - text: "Steve Jobs"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "En quelle année Linux a-t-il été créé ?"
+              answers:
+                - text: "1985"
+                  correct: false
+                - text: "1991"
+                  correct: true
+                - text: "1999"
+                  correct: false
+                - text: "2001"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "Lequel de ces appareils utilise Linux ?"
+              answers:
+                - text: "iPhone"
+                  correct: false
+                - text: "Téléphone Android"
+                  correct: true
+                - text: "Xbox"
+                  correct: false
+                - text: "Nintendo Switch"
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t2
+      type: task
+      title: "Les distributions Linux"
+      order: 2
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## Les distributions Linux
+
+            Le **noyau** (kernel) Linux est le même pour tout le monde, mais différentes
+            organisations l'empaquettent différemment. Ces versions empaquetées s'appellent
+            des **distributions** (ou « distros »).
+
+            Pense à ça comme ça : le moteur est Linux, mais différents constructeurs
+            automobiles fabriquent différents véhicules autour de ce moteur.
+
+        - type: command_table
+          commands:
+            - cmd: "Ubuntu"
+              desc: "La plus populaire pour débuter. C'est celle qu'on utilise dans ce cours."
+            - cmd: "Debian"
+              desc: "Très stable, largement utilisée sur les serveurs"
+            - cmd: "Kali Linux"
+              desc: "Spécialisée pour la cybersécurité et les tests d'intrusion"
+            - cmd: "Red Hat / CentOS"
+              desc: "Axée sur les entreprises, utilisée en milieu corporatif"
+            - cmd: "Arch Linux"
+              desc: "Minimale, pour les utilisateurs avancés qui construisent leur propre système"
+
+        - type: theory
+          content: |
+            Dans ce cours, on utilise **Ubuntu 24.04 LTS**.
+
+            **LTS** signifie *Long Term Support* — ça veut dire qu'Ubuntu va recevoir
+            des mises à jour de sécurité pendant 5 ans, ce qui en fait un choix fiable
+            autant pour l'apprentissage qu'en environnement de production.
+
+            Ubuntu est aussi la distribution la plus utilisée dans les entreprises
+            québécoises qui adoptent Linux — c'est pourquoi on l'a choisie pour ce cours.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Qu'est-ce qu'une « distro » Linux ?"
+              answers:
+                - text: "Un virus Linux"
+                  correct: false
+                - text: "Une version empaquetée de Linux"
+                  correct: true
+                - text: "Une commande Linux"
+                  correct: false
+                - text: "Un format de fichier Linux"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "Quelle distribution Linux est spécialisée pour la cybersécurité ?"
+              answers:
+                - text: "Ubuntu"
+                  correct: false
+                - text: "Arch Linux"
+                  correct: false
+                - text: "Kali Linux"
+                  correct: true
+                - text: "Debian"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "Que signifie LTS dans « Ubuntu 24.04 LTS » ?"
+              answers:
+                - text: "Linux Terminal System"
+                  correct: false
+                - text: "Latest Technology Support"
+                  correct: false
+                - text: "Long Term Support"
+                  correct: true
+                - text: "Linux Transfer Standard"
+                  correct: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t3
+      type: task
+      title: "Le terminal"
+      order: 3
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## C'est quoi le terminal ?
+
+            Le **terminal** (aussi appelé *ligne de commande* ou *shell*) est une
+            interface textuelle pour interagir avec ton système Linux.
+
+            Au lieu de cliquer sur des icônes, tu **tapes des commandes** et appuies
+            sur Entrée. Le système les exécute et t'affiche le résultat.
+
+            Ça peut sembler vieux jeu, mais c'est en fait beaucoup plus **puissant
+            et précis** qu'une interface graphique. Chaque technicien en soutien
+            informatique et chaque professionnel en cybersécurité utilise le terminal
+            au quotidien.
+
+        - type: code_block
+          label: "Voici à quoi ressemble un terminal"
+          content: |
+            utilisateur@linux:~$ entre tes commandes ici
+
+        - type: theory
+          content: |
+            Décortiquons ce qu'on voit sur la ligne de commande :
+
+            - **utilisateur** → ton nom d'utilisateur (sous quel compte tu es connecté)
+            - **@linux** → le nom de la machine (nom d'hôte)
+            - **`~`** → ta position actuelle (le tilde représente ton répertoire personnel)
+            - **$** → indique que tu es un utilisateur normal (# voudrait dire root/admin)
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Quel symbole indique que tu es connecté en tant qu'utilisateur normal ?"
+              answers:
+                - text: "#"
+                  correct: false
+                - text: "@"
+                  correct: false
+                - text: "$"
+                  correct: true
+                - text: "Le tilde (~)"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "Que représente le tilde (~) dans l'invite de commande ?"
+              answers:
+                - text: "Le répertoire racine"
+                  correct: false
+                - text: "Ton répertoire personnel"
+                  correct: true
+                - text: "Un dossier caché"
+                  correct: false
+                - text: "Le répertoire système"
+                  correct: false
+
+    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t4
+      type: task
+      title: "Tes premières commandes"
+      order: 4
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Tes toutes premières commandes Linux
+
+            Commençons par deux commandes simples que tout utilisateur Linux
+            doit connaître.
+
+        - type: command_table
+          commands:
+            - cmd: "echo"
+              desc: "Affiche (imprime) le texte que tu fournis"
+            - cmd: "whoami"
+              desc: "Affiche le nom d'utilisateur sous lequel tu es connecté"
+
+        - type: code_block
+          label: "Utiliser echo"
+          content: |
+            utilisateur@linux:~$ echo Bonjour
+            Bonjour
+            utilisateur@linux:~$ echo "Bonjour le monde !"
+            Bonjour le monde !
+
+        - type: theory
+          content: |
+            **Règle importante :** si ton texte contient des **espaces**, mets-le
+            entre guillemets doubles.
+            - `echo Bonjour` → fonctionne (un seul mot)
+            - `echo Bonjour monde` → peut ne pas fonctionner comme prévu
+            - `echo "Bonjour monde"` → la bonne façon avec des espaces
+
+        - type: code_block
+          label: "Utiliser whoami"
+          content: |
+            utilisateur@linux:~$ whoami
+            etudiant
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Quelle commande utiliserais-tu pour afficher le texte 'Linux c'est cool' ?"
+              answers:
+                - text: "print 'Linux c'est cool'"
+                  correct: false
+                - text: "echo \"Linux c'est cool\""
+                  correct: true
+                - text: "display 'Linux c'est cool'"
+                  correct: false
+                - text: "show Linux"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Quelle commande affiche ton nom d'utilisateur actuel ?"
+              answer: "whoami"
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour afficher le texte : Bonjour Linux !"
+              answer: "echo \"Bonjour Linux !\""
+
+    # ── TÂCHE 5 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t5
+      type: task
+      title: "Naviguer dans le système de fichiers"
+      order: 5
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## La structure des fichiers Linux
+
+            Le système de fichiers Linux est organisé comme un **arbre**, en partant
+            d'un seul répertoire racine appelé `/` (prononcé « slash » ou « racine »).
+
+            Tout dans Linux — fichiers, programmes, paramètres — se trouve quelque part
+            dans cet arbre.
+
+        - type: command_table
+          commands:
+            - cmd: "pwd"
+              desc: "Print Working Directory — affiche où tu te trouves présentement"
+            - cmd: "ls"
+              desc: "List — affiche les fichiers et dossiers dans le répertoire actuel"
+            - cmd: "cd [répertoire]"
+              desc: "Change Directory — te déplace vers un autre emplacement"
+
+        - type: code_block
+          label: "Naviguer dans les répertoires"
+          content: |
+            utilisateur@linux:~$ pwd
+            /home/etudiant
+            utilisateur@linux:~$ ls
+            Bureau  Documents  Téléchargements  Images
+            utilisateur@linux:~$ cd Documents
+            utilisateur@linux:~/Documents$ pwd
+            /home/etudiant/Documents
+
+        - type: theory
+          content: |
+            **Deux raccourcis essentiels :**
+            - `cd ..` → monter d'un niveau (vers le répertoire parent)
+            - `cd ~` → retourner à ton **répertoire personnel** depuis n'importe où
+
+        - type: code_block
+          label: "Monter et revenir à la maison"
+          content: |
+            utilisateur@linux:~/Documents$ cd ..
+            utilisateur@linux:~$ cd /var/log
+            utilisateur@linux:/var/log$ cd ~
+            utilisateur@linux:~$
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Quelle commande affiche ton emplacement actuel dans le système de fichiers ?"
+              answers:
+                - text: "ls"
+                  correct: false
+                - text: "cd"
+                  correct: false
+                - text: "pwd"
+                  correct: true
+                - text: "dir"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Comment s'appelle le répertoire racine du système de fichiers Linux ?"
+              answer: "/"
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour monter d'un niveau dans l'arborescence."
+              answer: "cd .."
+
+            - id: q4
+              type: qcm
+              question: "Tu es dans /home/etudiant/Documents. Tu tapes 'cd ..'. Où es-tu maintenant ?"
+              answers:
+                - text: "/home"
+                  correct: false
+                - text: "/home/etudiant"
+                  correct: true
+                - text: "/"
+                  correct: false
+                - text: "/home/etudiant/Documents/cd"
+                  correct: false
+
+    # ── TÂCHE 6 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t6
+      type: task
+      title: "Lire des fichiers"
+      order: 6
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Lire le contenu des fichiers
+
+            Maintenant que tu peux naviguer dans le système de fichiers, apprenons
+            à **lire le contenu des fichiers** directement dans le terminal —
+            sans avoir besoin d'ouvrir un éditeur de texte.
+
+        - type: command_table
+          commands:
+            - cmd: "cat [fichier]"
+              desc: "Affiche le contenu complet d'un fichier"
+            - cmd: "head [fichier]"
+              desc: "Affiche les 10 premières lignes d'un fichier"
+            - cmd: "tail [fichier]"
+              desc: "Affiche les 10 dernières lignes d'un fichier"
+            - cmd: "wc -l [fichier]"
+              desc: "Compte le nombre de lignes dans un fichier"
+
+        - type: code_block
+          label: "Lire un fichier avec cat"
+          content: |
+            utilisateur@linux:~$ cat /etc/hostname
+            linux-machine
+            utilisateur@linux:~$ cat /etc/os-release
+            PRETTY_NAME="Ubuntu 24.04 LTS"
+            NAME="Ubuntu"
+            VERSION="24.04 LTS (Noble Numbat)"
+
+        - type: code_block
+          label: "Utiliser head et tail"
+          content: |
+            utilisateur@linux:~$ head /var/log/syslog
+            (les 10 premières lignes du journal système)
+            utilisateur@linux:~$ tail /var/log/syslog
+            (les 10 dernières lignes du journal système)
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Quelle commande affiche le contenu complet d'un fichier ?"
+              answers:
+                - text: "read"
+                  correct: false
+                - text: "open"
+                  correct: false
+                - text: "cat"
+                  correct: true
+                - text: "show"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour afficher le contenu d'un fichier nommé 'notes.txt'."
+              answer: "cat notes.txt"
+
+            - id: q3
+              type: qcm
+              question: "Tu as un fichier journal de 500 lignes. Tu veux voir seulement les entrées les plus récentes. Quelle commande utilises-tu ?"
+              answers:
+                - text: "head journal.txt"
+                  correct: false
+                - text: "cat journal.txt"
+                  correct: false
+                - text: "tail journal.txt"
+                  correct: true
+                - text: "wc -l journal.txt"
+                  correct: false
+
+    # ── TÂCHE 7 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t7
+      type: task
+      title: "Créer des fichiers et des répertoires"
+      order: 7
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Créer et gérer des fichiers
+
+            Apprenons maintenant à **créer** des choses — fichiers et dossiers —
+            directement depuis le terminal.
+
+        - type: command_table
+          commands:
+            - cmd: "mkdir [nom]"
+              desc: "Make Directory — crée un nouveau dossier"
+            - cmd: "touch [nom]"
+              desc: "Crée un nouveau fichier vide (ou met à jour l'horodatage s'il existe)"
+            - cmd: "rm [fichier]"
+              desc: "Remove — supprime définitivement un fichier"
+            - cmd: "rm -r [répertoire]"
+              desc: "Supprime un répertoire et tout son contenu (à utiliser avec prudence !)"
+            - cmd: "mv [source] [destination]"
+              desc: "Déplace ou renomme un fichier ou répertoire"
+            - cmd: "cp [source] [destination]"
+              desc: "Copie un fichier ou répertoire"
+
+        - type: code_block
+          label: "Créer des fichiers et des dossiers"
+          content: |
+            utilisateur@linux:~$ mkdir projets
+            utilisateur@linux:~$ ls
+            Bureau  Documents  Téléchargements  projets
+            utilisateur@linux:~$ touch projets/lisezmoi.txt
+            utilisateur@linux:~$ ls projets/
+            lisezmoi.txt
+
+        - type: code_block
+          label: "Déplacer et copier"
+          content: |
+            utilisateur@linux:~$ cp projets/lisezmoi.txt Documents/
+            utilisateur@linux:~$ mv projets/lisezmoi.txt projets/LISEZMOI.txt
+            utilisateur@linux:~$ ls projets/
+            LISEZMOI.txt
+
+        - type: theory
+          content: |
+            ⚠️ **Attention :** La commande `rm` est **permanente**. Il n'y a pas de
+            Corbeille sous Linux. Une fois qu'un fichier est supprimé avec `rm`,
+            il est perdu pour toujours.
+            Vérifie toujours deux fois avant d'utiliser `rm -r`.
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour créer un répertoire nommé 'sauvegardes'."
+              answer: "mkdir sauvegardes"
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour créer un fichier vide nommé 'config.txt'."
+              answer: "touch config.txt"
+
+            - id: q3
+              type: qcm
+              question: "Quel est le risque d'utiliser la commande 'rm' ?"
+              answers:
+                - text: "Elle déplace les fichiers vers la Corbeille"
+                  correct: false
+                - text: "Elle supprime définitivement les fichiers sans possibilité de récupération"
+                  correct: true
+                - text: "Elle fonctionne seulement sur les répertoires vides"
+                  correct: false
+                - text: "Elle nécessite des privilèges administrateur"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Écris la commande pour copier un fichier nommé 'donnees.txt' vers le répertoire '/tmp/'."
+              answer: "cp donnees.txt /tmp/"
+
+    # ── TÂCHE 8 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t8
+      type: task
+      title: "Les opérateurs shell"
+      order: 8
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Les opérateurs shell
+
+            Les opérateurs shell te permettent de **chaîner des commandes**
+            ou de **rediriger la sortie** vers des fichiers. C'est là que le
+            terminal commence à devenir vraiment puissant.
+
+        - type: command_table
+          commands:
+            - cmd: ">"
+              desc: "Redirige la sortie vers un fichier (écrase le contenu existant)"
+            - cmd: ">>"
+              desc: "Ajoute la sortie à la fin d'un fichier (sans écraser)"
+            - cmd: "|"
+              desc: "Tube (pipe) — envoie la sortie d'une commande vers une autre"
+            - cmd: "&&"
+              desc: "Exécute la deuxième commande seulement si la première a réussi"
+
+        - type: code_block
+          label: "Utiliser > et >>"
+          content: |
+            utilisateur@linux:~$ echo "Bonjour le monde" > salutation.txt
+            utilisateur@linux:~$ cat salutation.txt
+            Bonjour le monde
+            utilisateur@linux:~$ echo "Comment vas-tu ?" >> salutation.txt
+            utilisateur@linux:~$ cat salutation.txt
+            Bonjour le monde
+            Comment vas-tu ?
+
+        - type: theory
+          content: |
+            Remarque la différence :
+            - `>` **écrase** le fichier complètement à chaque fois
+            - `>>` **ajoute** à la fin du fichier sans effacer le contenu existant
+
+        - type: code_block
+          label: "Utiliser le tube (pipe) |"
+          content: |
+            utilisateur@linux:~$ ls /etc | wc -l
+            247
+            utilisateur@linux:~$ cat /etc/passwd | grep etudiant
+            etudiant:x:1000:1000::/home/etudiant:/bin/bash
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Quelle est la différence entre > et >> ?"
+              answers:
+                - text: "> ajoute au fichier, >> écrase"
+                  correct: false
+                - text: "> écrase le fichier, >> ajoute à la fin"
+                  correct: true
+                - text: "Ils font exactement la même chose"
+                  correct: false
+                - text: "> crée des dossiers, >> crée des fichiers"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour écrire 'Bonjour Linux !' dans un fichier nommé 'test.txt' (créer ou écraser)."
+              answer: "echo \"Bonjour Linux !\" > test.txt"
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour AJOUTER la ligne 'Deuxième ligne' au fichier existant 'test.txt' sans effacer son contenu."
+              answer: "echo \"Deuxième ligne\" >> test.txt"
+
+            - id: q4
+              type: qcm
+              question: "À quoi sert l'opérateur | (tube/pipe) ?"
+              answers:
+                - text: "Il supprime la sortie d'une commande"
+                  correct: false
+                - text: "Il sauvegarde la sortie dans un fichier"
+                  correct: false
+                - text: "Il envoie la sortie d'une commande comme entrée d'une autre"
+                  correct: true
+                - text: "Il exécute deux commandes simultanément"
+                  correct: false
+
+            - id: q5
+              type: short_answer
+              question: "Écris une commande qui liste tous les fichiers dans /etc et compte combien il y en a."
+              answer: "ls /etc | wc -l"
+
+    # ── DÉFI ──────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-challenge
+      type: challenge
+      title: "Défi — Premier Contact"
+      order: 9
+      xpReward: 50
+      sections:
+        - type: theory
+          content: |
+            ## Briefing de mission
+
+            Agent, ta première vraie mission commence maintenant.
+
+            On t'a donné accès à une machine Linux. Ton objectif :
+            **explorer le système et répondre aux questions ci-dessous**
+            en utilisant seulement les commandes que tu as apprises.
+
+            **Télécharge et lance ta machine virtuelle :**
+            1. Télécharge le fichier VM → [linux-fund-1-challenge.ova](#)
+            2. Importe-le dans VMware ou VirtualBox
+            3. Connexion : `student` / `nexus2024`
+            4. Réponds aux questions ci-dessous
+
+        - type: questions
+          items:
+            - id: c1
+              type: short_answer
+              question: "Quel est le chemin complet du fichier caché que tu as trouvé dans /home/student/ ?"
+              answer: "/home/student/.secret/flag.txt"
+
+            - id: c2
+              type: short_answer
+              question: "Quel est le contenu de ce fichier caché ?"
+              answer: "linux-fundamentals-complete"
+
+            - id: c3
+              type: short_answer
+              question: "Combien de lignes contient le fichier 'rapport.txt' dans le répertoire documents ? (utilise wc -l)"
+              answer: "42"
+
+            - id: c4
+              type: short_answer
+              question: "Quelle commande as-tu utilisée pour compter les lignes dans rapport.txt ?"
+              answer: "wc -l documents/rapport.txt"
+
+            - id: c5
+              type: qcm
+              question: "Tu dois copier 'notes.txt' de projets/mission1/ vers ton répertoire personnel. Quelle commande est correcte ?"
+              answers:
+                - text: "mv projets/mission1/notes.txt ~"
+                  correct: false
+                - text: "cp projets/mission1/notes.txt ~"
+                  correct: true
+                - text: "copy projets/mission1/notes.txt ~"
+                  correct: false
+                - text: "cat projets/mission1/notes.txt > ~"
+                  correct: false

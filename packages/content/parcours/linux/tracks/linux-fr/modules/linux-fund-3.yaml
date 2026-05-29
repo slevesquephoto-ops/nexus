@@ -1,0 +1,917 @@
+module:
+  id: linux-fund-3-fr
+  trackId: linux-fr
+  title: "Les fondements de Linux 3"
+  description: "Processus, services, journaux système, réseau de base, SSH et gestion des paquets"
+  order: 3
+  mascot: "tux-networking"
+  xpReward: 50
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t1
+      type: task
+      title: "Comprendre les processus"
+      order: 1
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## C'est quoi un processus ?
+
+            Un **processus** est tout programme qui tourne présentement sur ton système.
+            Chaque fois que tu ouvres un terminal, exécutes une commande ou démarres
+            une application, Linux crée un nouveau processus.
+
+            Chaque processus a un **PID (Process ID)** unique — un numéro attribué
+            par le noyau au démarrage du processus.
+
+            En soutien informatique, surveiller les processus est essentiel pour
+            répondre à des questions comme :
+            - *« Pourquoi mon serveur est-il lent ? »*
+            - *« Quel programme utilise tout mon processeur ? »*
+            - *« Est-ce que le serveur web est vraiment en marche ? »*
+
+        - type: command_table
+          commands:
+            - cmd: "ps"
+              desc: "Affiche les processus en cours dans le terminal actuel"
+            - cmd: "ps aux"
+              desc: "Affiche TOUS les processus du système avec les détails"
+            - cmd: "ps aux | grep apache"
+              desc: "Filtre la liste des processus pour trouver un programme spécifique"
+            - cmd: "top"
+              desc: "Vue en temps réel des processus (comme le Gestionnaire des tâches) — appuie sur q pour quitter"
+            - cmd: "htop"
+              desc: "Version améliorée de top avec couleurs et support de la souris"
+
+        - type: code_block
+          label: "Résultat de ps aux expliqué"
+          content: |
+            utilisateur@linux:~$ ps aux | head -5
+            USER       PID %CPU %MEM    VSZ   RSS TTY  STAT START   TIME COMMAND
+            root         1  0.0  0.1  22548  1234 ?    Ss   jan10   0:02 /sbin/init
+            root         2  0.0  0.0      0     0 ?    S    jan10   0:00 [kthreadd]
+            www-data   823  0.1  1.2  456789 12345 ?   S    jan10   1:23 apache2
+            etudiant  1042  0.0  0.3  12345  3456 pts/0 Ss  09:00   0:00 bash
+
+        - type: theory
+          content: |
+            ## Lire les colonnes de ps aux
+
+            | Colonne | Signification |
+            |---------|---------------|
+            | USER    | Qui exécute le processus |
+            | PID     | Identifiant du processus (numéro unique) |
+            | %CPU    | Pourcentage d'utilisation du processeur |
+            | %MEM    | Pourcentage d'utilisation de la mémoire |
+            | STAT    | État du processus (S=en veille, R=en cours, Z=zombie) |
+            | COMMAND | Le programme en cours d'exécution |
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Que signifie PID ?"
+              answers:
+                - text: "Program Identifier"
+                  correct: false
+                - text: "Process ID"
+                  correct: true
+                - text: "Primary Input Device"
+                  correct: false
+                - text: "Processor Instance Data"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour voir TOUS les processus qui tournent sur le système avec les détails complets."
+              answer: "ps aux"
+
+            - id: q3
+              type: qcm
+              question: "Tu veux vérifier si Apache est en marche. Quelle commande est la plus efficace ?"
+              answers:
+                - text: "top"
+                  correct: false
+                - text: "ps aux | grep apache"
+                  correct: true
+                - text: "ls /var/www"
+                  correct: false
+                - text: "cat /proc/apache"
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t2
+      type: task
+      title: "Gérer les processus"
+      order: 2
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## Arrêter et contrôler les processus
+
+            Parfois un processus se fige, consomme trop de ressources ou doit
+            être arrêté. Linux te donne plusieurs façons de le faire.
+
+        - type: command_table
+          commands:
+            - cmd: "kill PID"
+              desc: "Envoie un signal d'arrêt à un processus (arrêt en douceur)"
+            - cmd: "kill -9 PID"
+              desc: "Force l'arrêt immédiat d'un processus (à utiliser si kill seul ne fonctionne pas)"
+            - cmd: "pkill nommodule"
+              desc: "Tue un processus par son nom plutôt que par son PID"
+            - cmd: "killall nommodule"
+              desc: "Tue tous les processus portant ce nom"
+
+        - type: code_block
+          label: "Arrêter un processus"
+          content: |
+            # Trouver le PID du processus
+            utilisateur@linux:~$ ps aux | grep firefox
+            etudiant  4521  95.0  8.2  1234567 84000 ?  Rl  09:15  firefox
+
+            # Arrêt en douceur d'abord
+            utilisateur@linux:~$ kill 4521
+
+            # Si ça ne répond pas, forcer l'arrêt
+            utilisateur@linux:~$ kill -9 4521
+
+            # Ou arrêter par le nom
+            utilisateur@linux:~$ pkill firefox
+
+        - type: theory
+          content: |
+            ## Processus en arrière-plan et au premier plan
+
+            Linux permet d'exécuter des processus en **arrière-plan** pour que
+            ton terminal reste libre pour d'autres commandes.
+
+        - type: command_table
+          commands:
+            - cmd: "commande &"
+              desc: "Exécute une commande en arrière-plan"
+            - cmd: "jobs"
+              desc: "Liste les tâches en arrière-plan dans la session actuelle"
+            - cmd: "fg %1"
+              desc: "Ramène la tâche numéro 1 au premier plan"
+            - cmd: "Ctrl+C"
+              desc: "Arrête (interrompt) le processus en cours au premier plan"
+            - cmd: "Ctrl+Z"
+              desc: "Met en pause le processus en cours au premier plan"
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Un processus avec le PID 3821 est figé et ne répond pas à un kill normal. Écris la commande pour le forcer à s'arrêter."
+              answer: "kill -9 3821"
+
+            - id: q2
+              type: qcm
+              question: "Quelle est la différence entre 'kill PID' et 'kill -9 PID' ?"
+              answers:
+                - text: "Il n'y a aucune différence"
+                  correct: false
+                - text: "kill envoie un signal d'arrêt en douceur, kill -9 force l'arrêt immédiat"
+                  correct: true
+                - text: "kill -9 est plus lent que kill"
+                  correct: false
+                - text: "kill fonctionne seulement pour les processus root"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour arrêter tous les processus nommés 'python3'."
+              answer: "pkill python3"
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t3
+      type: task
+      title: "Gérer les services avec systemctl"
+      order: 3
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## C'est quoi un service ?
+
+            Un **service** (aussi appelé *démon* ou *daemon*) est un processus qui
+            tourne continuellement en arrière-plan pour fournir une fonctionnalité :
+            - `apache2` ou `nginx` — serveur web
+            - `ssh` — accès à distance
+            - `mysql` — base de données
+            - `cron` — tâches planifiées
+
+            Les services sont gérés par **systemd**, qui est le système d'initialisation
+            utilisé par Ubuntu et la plupart des distributions Linux modernes.
+
+            La commande pour interagir avec systemd est `systemctl`.
+
+        - type: command_table
+          commands:
+            - cmd: "sudo systemctl start service"
+              desc: "Démarrer un service"
+            - cmd: "sudo systemctl stop service"
+              desc: "Arrêter un service"
+            - cmd: "sudo systemctl restart service"
+              desc: "Arrêter puis redémarrer un service (pour appliquer des changements de config)"
+            - cmd: "sudo systemctl reload service"
+              desc: "Recharger la config sans redémarrage complet (si supporté)"
+            - cmd: "systemctl status service"
+              desc: "Vérifier si un service est en marche et voir les journaux récents"
+            - cmd: "sudo systemctl enable service"
+              desc: "Démarrer le service automatiquement au démarrage du système"
+            - cmd: "sudo systemctl disable service"
+              desc: "Empêcher le service de démarrer au démarrage du système"
+            - cmd: "systemctl list-units --type=service"
+              desc: "Lister tous les services et leur état"
+
+        - type: code_block
+          label: "Résultat de systemctl status"
+          content: |
+            utilisateur@linux:~$ systemctl status apache2
+            * apache2.service - The Apache HTTP Server
+                 Loaded: loaded (/lib/systemd/system/apache2.service; enabled)
+                 Active: active (running) since lun. 2024-01-10 09:00:00 UTC
+               Main PID: 823 (apache2)
+                  Tasks: 55 (limit: 4915)
+                 Memory: 12.3M
+                    CPU: 1.234s
+            jan. 10 09:00:00 linux apache2[823]: AH00558: apache2 démarré
+            jan. 10 09:00:00 linux systemd[1]: Démarrage de The Apache HTTP Server.
+
+        - type: theory
+          content: |
+            ## Lire la sortie de systemctl status
+
+            La ligne la plus importante est **Active :**
+
+            | Statut | Signification |
+            |--------|---------------|
+            | `active (running)` | Le service tourne normalement |
+            | `inactive (dead)` | Le service est arrêté |
+            | `failed` | Le service a planté ou n'a pas réussi à démarrer |
+            | `activating` | Le service est en train de démarrer |
+
+            La ligne **Loaded** indique aussi si le service est **enabled**
+            (démarrera au démarrage) ou **disabled**.
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour vérifier si le service SSH est en marche."
+              answer: "systemctl status ssh"
+
+            - id: q2
+              type: qcm
+              question: "Un serveur web vient d'être mis à jour et sa configuration doit être rechargée. Des utilisateurs sont connectés — tu ne veux pas les interrompre. Quelle commande utilises-tu ?"
+              answers:
+                - text: "sudo systemctl restart apache2"
+                  correct: false
+                - text: "sudo systemctl stop apache2"
+                  correct: false
+                - text: "sudo systemctl reload apache2"
+                  correct: true
+                - text: "sudo systemctl start apache2"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour que le service 'mysql' démarre automatiquement à chaque démarrage du serveur."
+              answer: "sudo systemctl enable mysql"
+
+            - id: q4
+              type: qcm
+              question: "systemctl status nginx affiche 'failed'. Qu'est-ce que ça signifie ?"
+              answers:
+                - text: "nginx tourne mais est lent"
+                  correct: false
+                - text: "nginx a planté ou n'a pas réussi à démarrer"
+                  correct: true
+                - text: "nginx est désactivé au démarrage"
+                  correct: false
+                - text: "nginx n'est pas installé"
+                  correct: false
+
+    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t4
+      type: task
+      title: "Lire les journaux système"
+      order: 4
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Pourquoi les journaux sont importants en soutien informatique
+
+            **Les journaux sont ton meilleur ami** pour diagnostiquer les problèmes.
+            Chaque fois que quelque chose se passe sur un système Linux — un service
+            démarre, un utilisateur se connecte, une erreur se produit — ça est
+            enregistré dans un fichier journal.
+
+            En tant que technicien en soutien informatique, lire les journaux c'est
+            comment tu trouves la réponse à :
+            - *Pourquoi le service a-t-il planté ?*
+            - *Qui s'est connecté à 3h du matin ?*
+            - *Quelle erreur cause le crash ?*
+
+        - type: theory
+          content: |
+            ## Emplacements importants des journaux
+
+            | Fichier journal | Contenu |
+            |-----------------|---------|
+            | `/var/log/syslog` | Messages système généraux |
+            | `/var/log/auth.log` | Tentatives d'authentification (connexions, sudo) |
+            | `/var/log/kern.log` | Messages du noyau (matériel, pilotes) |
+            | `/var/log/apache2/error.log` | Erreurs du serveur web Apache |
+            | `/var/log/mysql/error.log` | Erreurs de la base de données MySQL |
+
+        - type: command_table
+          commands:
+            - cmd: "journalctl"
+              desc: "Voir le journal systemd (tous les journaux système)"
+            - cmd: "journalctl -u nomservice"
+              desc: "Voir les journaux d'un service spécifique"
+            - cmd: "journalctl -f"
+              desc: "Suivre les journaux en temps réel (comme tail -f)"
+            - cmd: "journalctl --since '1 hour ago'"
+              desc: "Voir les journaux de la dernière heure"
+            - cmd: "tail -f /var/log/syslog"
+              desc: "Suivre un fichier journal en temps réel"
+            - cmd: "grep 'erreur' /var/log/syslog"
+              desc: "Chercher des erreurs dans le journal système"
+
+        - type: code_block
+          label: "Lire les journaux pour diagnostiquer un problème"
+          content: |
+            # Le service a échoué — vérifions ses journaux
+            utilisateur@linux:~$ journalctl -u apache2 --since '10 minutes ago'
+            jan. 10 09:15:32 linux apache2[1234]: AH00526: Erreur de syntaxe ligne 45
+            jan. 10 09:15:32 linux apache2[1234]: Commande invalide 'ServerNaem'
+            jan. 10 09:15:32 linux systemd[1]: apache2.service: Processus de contrôle terminé
+            jan. 10 09:15:32 linux systemd[1]: Échec du démarrage de The Apache HTTP Server.
+
+            # Problème trouvé : faute de frappe 'ServerNaem' au lieu de 'ServerName' à la ligne 45
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour voir les journaux du service 'ssh' avec journalctl."
+              answer: "journalctl -u ssh"
+
+            - id: q2
+              type: qcm
+              question: "Tu veux surveiller un fichier journal en temps réel au fur et à mesure que de nouvelles entrées sont ajoutées. Quelle commande utilises-tu ?"
+              answers:
+                - text: "cat /var/log/syslog"
+                  correct: false
+                - text: "head /var/log/syslog"
+                  correct: false
+                - text: "tail -f /var/log/syslog"
+                  correct: true
+                - text: "grep /var/log/syslog"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "Un utilisateur rapporte que sa connexion a échoué. Quel fichier journal vérifies-tu en premier ?"
+              answers:
+                - text: "/var/log/syslog"
+                  correct: false
+                - text: "/var/log/auth.log"
+                  correct: true
+                - text: "/var/log/kern.log"
+                  correct: false
+                - text: "/var/log/apache2/error.log"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Écris la commande pour chercher le mot 'echec' dans le fichier journal d'authentification."
+              answer: "grep echec /var/log/auth.log"
+
+    # ── TÂCHE 5 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t5
+      type: task
+      title: "Commandes réseau de base"
+      order: 5
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Diagnostics réseau en soutien informatique
+
+            Les problèmes réseau sont parmi les billets de soutien les plus fréquents :
+            *« Je ne peux pas me connecter à internet »*, *« Le serveur est inaccessible »*,
+            *« Le site web ne répond plus »*.
+
+            Linux possède des outils puissants intégrés pour diagnostiquer les problèmes
+            réseau depuis la ligne de commande.
+
+        - type: command_table
+          commands:
+            - cmd: "ip a"
+              desc: "Affiche toutes les interfaces réseau et leurs adresses IP"
+            - cmd: "ip r"
+              desc: "Affiche la table de routage (comment le trafic est dirigé)"
+            - cmd: "ping nomhote"
+              desc: "Teste la connectivité vers un hôte (appuie sur Ctrl+C pour arrêter)"
+            - cmd: "ping -c 4 nomhote"
+              desc: "Envoie exactement 4 paquets ping puis s'arrête"
+            - cmd: "ss -tulnp"
+              desc: "Affiche tous les ports ouverts et les services en écoute"
+            - cmd: "curl ifconfig.me"
+              desc: "Affiche ton adresse IP publique"
+            - cmd: "nslookup domaine"
+              desc: "Interroge le DNS pour résoudre un nom de domaine en adresse IP"
+
+        - type: code_block
+          label: "Résultat de ip a — lire ton adresse IP"
+          content: |
+            utilisateur@linux:~$ ip a
+            1: lo: <LOOPBACK,UP> mtu 65536
+                inet 127.0.0.1/8 scope host lo
+            2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500
+                inet 192.168.1.100/24 brd 192.168.1.255 scope global eth0
+                inet6 fe80::1/64 scope link
+
+            # Ton adresse IP : 192.168.1.100
+            # Masque de sous-réseau : /24 (255.255.255.0)
+            # Interface réseau : eth0
+
+        - type: code_block
+          label: "Diagnostiquer un problème réseau étape par étape"
+          content: |
+            # Étape 1 — Est-ce que j'ai une adresse IP ?
+            utilisateur@linux:~$ ip a | grep inet
+            inet 192.168.1.100/24   <- Oui, j'ai une IP
+
+            # Étape 2 — Est-ce que j'atteins ma passerelle ?
+            utilisateur@linux:~$ ping -c 4 192.168.1.1
+            64 octets de 192.168.1.1: icmp_seq=1 ttl=64 temps=1.23 ms
+            # La passerelle répond — le réseau local fonctionne
+
+            # Étape 3 — Est-ce que j'atteins internet ?
+            utilisateur@linux:~$ ping -c 4 8.8.8.8
+            64 octets de 8.8.8.8: icmp_seq=1 ttl=117 temps=12.3 ms
+            # Internet répond — la connexion fonctionne
+
+            # Étape 4 — Est-ce que le DNS fonctionne ?
+            utilisateur@linux:~$ nslookup google.com
+            Name: google.com
+            Address: 142.250.80.46
+            # DNS résout — tout fonctionne
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande pour afficher toutes les interfaces réseau et leurs adresses IP."
+              answer: "ip a"
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour tester la connectivité vers 'google.com' avec exactement 3 paquets."
+              answer: "ping -c 3 google.com"
+
+            - id: q3
+              type: qcm
+              question: "Un serveur n'est pas accessible depuis le réseau. Quelle est la PREMIÈRE commande que tu exécutes pour vérifier sa configuration réseau ?"
+              answers:
+                - text: "ping google.com"
+                  correct: false
+                - text: "ip a"
+                  correct: true
+                - text: "nslookup serveur"
+                  correct: false
+                - text: "ss -tulnp"
+                  correct: false
+
+            - id: q4
+              type: qcm
+              question: "Tu veux savoir quels ports sont ouverts et en écoute sur ton serveur. Quelle commande utilises-tu ?"
+              answers:
+                - text: "ip a"
+                  correct: false
+                - text: "ping localhost"
+                  correct: false
+                - text: "ss -tulnp"
+                  correct: true
+                - text: "top"
+                  correct: false
+
+    # ── TÂCHE 6 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t6
+      type: task
+      title: "Accès à distance avec SSH"
+      order: 6
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## C'est quoi SSH ?
+
+            **SSH (Secure Shell)** est un protocole qui te permet de te connecter
+            et de contrôler un ordinateur Linux distant de façon sécurisée via
+            un réseau.
+
+            En soutien informatique, SSH est utilisé quotidiennement pour :
+            - Gérer des serveurs à distance sans être physiquement présent
+            - Transférer des fichiers entre systèmes
+            - Exécuter des commandes sur des machines distantes
+
+            SSH chiffre tout — ton mot de passe, tes commandes, les résultats —
+            pour que personne ne puisse intercepter ta session.
+
+        - type: command_table
+          commands:
+            - cmd: "ssh utilisateur@nomhote"
+              desc: "Se connecter à un serveur distant en tant qu'utilisateur"
+            - cmd: "ssh utilisateur@192.168.1.100"
+              desc: "Se connecter avec une adresse IP plutôt qu'un nom d'hôte"
+            - cmd: "ssh -p 2222 utilisateur@nomhote"
+              desc: "Se connecter sur un port non standard (défaut : 22)"
+            - cmd: "exit"
+              desc: "Se déconnecter d'une session SSH"
+            - cmd: "scp fichier utilisateur@hote:/chemin/"
+              desc: "Copier un fichier vers un serveur distant de façon sécurisée"
+            - cmd: "scp utilisateur@hote:/chemin/fichier ."
+              desc: "Télécharger un fichier depuis un serveur distant vers le répertoire actuel"
+
+        - type: code_block
+          label: "Se connecter via SSH"
+          content: |
+            # Connexion à un serveur distant
+            utilisateur@linux:~$ ssh admin@192.168.1.50
+            L'authenticité de l'hôte '192.168.1.50' ne peut pas être établie.
+            Empreinte ECDSA : SHA256:abc123...
+            Êtes-vous sûr de vouloir continuer la connexion ? oui
+            Avertissement : Ajout permanent de '192.168.1.50' aux hôtes connus.
+            Mot de passe pour admin@192.168.1.50 : ****
+
+            # Tu es maintenant sur la machine distante
+            admin@serveur50:~$ hostname
+            serveur50
+            admin@serveur50:~$ exit
+            Connexion à 192.168.1.50 fermée.
+
+            # De retour sur la machine locale
+            utilisateur@linux:~$
+
+        - type: theory
+          content: |
+            ## Gestion du service SSH
+
+            Pour qu'un serveur accepte des connexions SSH, le **service SSH doit être
+            en marche** sur ce serveur. Le service s'appelle `ssh` ou `sshd`
+            (SSH Daemon).
+
+        - type: code_block
+          label: "Gérer le service SSH"
+          content: |
+            # Vérifier si SSH est en marche
+            utilisateur@linux:~$ systemctl status ssh
+            * ssh.service - OpenBSD Secure Shell server
+                 Active: active (running)
+
+            # S'il n'est pas en marche, le démarrer
+            utilisateur@linux:~$ sudo systemctl start ssh
+
+            # S'assurer qu'il démarre au démarrage du système
+            utilisateur@linux:~$ sudo systemctl enable ssh
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Écris la commande SSH pour se connecter au serveur à l'adresse 10.0.0.5 en tant qu'utilisateur 'sysadmin'."
+              answer: "ssh sysadmin@10.0.0.5"
+
+            - id: q2
+              type: qcm
+              question: "Sur quel port SSH écoute-t-il par défaut ?"
+              answers:
+                - text: "80"
+                  correct: false
+                - text: "443"
+                  correct: false
+                - text: "22"
+                  correct: true
+                - text: "8080"
+                  correct: false
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande pour copier le fichier local 'rapport.txt' vers le répertoire '/home/admin/' sur le serveur 192.168.1.10 en tant qu'utilisateur 'admin'."
+              answer: "scp rapport.txt admin@192.168.1.10:/home/admin/"
+
+            - id: q4
+              type: qcm
+              question: "Tu essaies de te connecter en SSH sur un serveur mais tu obtiens 'Connection refused'. Quelle est la cause la plus probable ?"
+              answers:
+                - text: "Ton mot de passe est incorrect"
+                  correct: false
+                - text: "Le service SSH n'est pas en marche sur le serveur distant"
+                  correct: true
+                - text: "SSH n'est pas installé sur ton ordinateur"
+                  correct: false
+                - text: "Le serveur est trop loin"
+                  correct: false
+
+    # ── TÂCHE 7 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t7
+      type: task
+      title: "Gestion des paquets avec apt"
+      order: 7
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## C'est quoi un gestionnaire de paquets ?
+
+            Sous Linux, les logiciels sont distribués en **paquets** — des ensembles
+            qui contiennent un programme et tout ce dont il a besoin pour fonctionner.
+
+            Ubuntu utilise **APT (Advanced Package Tool)** pour gérer les logiciels.
+            APT s'occupe de :
+            - Télécharger les logiciels depuis des dépôts officiels
+            - Installer automatiquement les dépendances
+            - Mettre à jour tous les logiciels installés
+            - Désinstaller les logiciels proprement
+
+            C'est différent de Windows où tu télécharges manuellement des fichiers `.exe`
+            depuis des sites web. Avec APT, tout vient de sources vérifiées et fiables.
+
+        - type: command_table
+          commands:
+            - cmd: "sudo apt update"
+              desc: "Rafraîchit la liste des paquets disponibles (toujours exécuter en premier)"
+            - cmd: "sudo apt upgrade"
+              desc: "Met à jour tous les paquets installés vers leurs dernières versions"
+            - cmd: "sudo apt install nompacquet"
+              desc: "Installe un nouveau paquet"
+            - cmd: "sudo apt remove nompacquet"
+              desc: "Désinstalle un paquet (garde les fichiers de config)"
+            - cmd: "sudo apt purge nompacquet"
+              desc: "Désinstalle un paquet et supprime ses fichiers de configuration"
+            - cmd: "apt search motcle"
+              desc: "Cherche des paquets par mot-clé"
+            - cmd: "apt show nompacquet"
+              desc: "Affiche les détails d'un paquet"
+            - cmd: "dpkg -l"
+              desc: "Liste tous les paquets installés"
+
+        - type: code_block
+          label: "Installer et gérer des logiciels avec apt"
+          content: |
+            # Toujours mettre à jour la liste des paquets en premier
+            utilisateur@linux:~$ sudo apt update
+            Atteint :1 http://archive.ubuntu.com/ubuntu noble InRelease
+            Lecture des listes de paquets... Fait
+            8 paquets peuvent être mis à jour.
+
+            # Installer un paquet
+            utilisateur@linux:~$ sudo apt install htop
+            Lecture des listes de paquets... Fait
+            Les paquets suivants seront installés : htop
+            Voulez-vous continuer ? [O/n] o
+            Configuration de htop (3.2.2-1) ...
+
+            # Chercher un paquet
+            utilisateur@linux:~$ apt search scanner réseau
+            nmap/noble 7.94+dfsg1-2 amd64
+              The Network Mapper
+
+            # Désinstaller complètement un paquet
+            utilisateur@linux:~$ sudo apt purge htop
+            Suppression de htop (3.2.2-1) ...
+
+        - type: questions
+          items:
+            - id: q1
+              type: short_answer
+              question: "Avant d'installer n'importe quel paquet, quelle commande devrais-tu toujours exécuter en premier ?"
+              answer: "sudo apt update"
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour installer le paquet 'nmap'."
+              answer: "sudo apt install nmap"
+
+            - id: q3
+              type: qcm
+              question: "Quelle est la différence entre 'apt remove' et 'apt purge' ?"
+              answers:
+                - text: "Il n'y a aucune différence"
+                  correct: false
+                - text: "remove garde les fichiers de configuration, purge supprime tout incluant la config"
+                  correct: true
+                - text: "purge fonctionne seulement pour les paquets système"
+                  correct: false
+                - text: "remove est plus rapide que purge"
+                  correct: false
+
+            - id: q4
+              type: short_answer
+              question: "Écris la commande pour mettre à jour tous les paquets installés vers leurs dernières versions."
+              answer: "sudo apt upgrade"
+
+    # ── TÂCHE 8 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-t8
+      type: task
+      title: "Scénario pratique — Serveur en panne !"
+      order: 8
+      xpReward: 15
+      sections:
+        - type: theory
+          content: |
+            ## Le flux de travail complet en soutien
+
+            Tu reçois un billet :
+
+            > *« Notre serveur web a arrêté de répondre après la fin de semaine.
+            > Le site web est hors service et on ne sait pas pourquoi.
+            > Peux-tu corriger ça d'urgence ? »*
+
+            C'est un scénario classique de soutien informatique qui combine tout
+            ce que tu as appris dans les Fondements Linux 1, 2 et 3.
+            Travaillons-le de façon méthodique.
+
+        - type: theory
+          content: |
+            ## Étape 1 — Se connecter à distance via SSH
+
+        - type: code_block
+          label: "Se connecter au serveur"
+          content: |
+            # Se connecter au serveur à distance
+            utilisateur@linux:~$ ssh admin@serveurweb-01
+            admin@serveurweb-01:~$
+
+        - type: theory
+          content: |
+            ## Étape 2 — Vérifier si le service web est en marche
+
+        - type: code_block
+          label: "Vérifier l'état du service"
+          content: |
+            admin@serveurweb-01:~$ systemctl status apache2
+            * apache2.service - The Apache HTTP Server
+                 Active: failed (Result: exit-code)
+            jan. 13 09:00:12 serveurweb-01 systemd[1]: Échec du démarrage d'Apache.
+
+            # Le service a échoué — lisons les journaux pour savoir pourquoi
+
+        - type: theory
+          content: |
+            ## Étape 3 — Lire les journaux
+
+        - type: code_block
+          label: "Diagnostiquer avec les journaux"
+          content: |
+            admin@serveurweb-01:~$ journalctl -u apache2 --since '2 days ago'
+            jan. 11 23:58:01 serveurweb-01 apache2[1234]: AH00558: Impossible d'ouvrir
+            jan. 11 23:58:01 serveurweb-01 apache2[1234]: /var/www/html/index.php
+            jan. 11 23:58:01 serveurweb-01 apache2[1234]: Permission non accordée
+
+            # Trouvé ! Apache ne peut pas lire les fichiers web — problème de permissions
+
+        - type: theory
+          content: |
+            ## Étape 4 — Corriger les permissions
+
+        - type: code_block
+          label: "Corriger et vérifier"
+          content: |
+            # Vérifier les permissions actuelles
+            admin@serveurweb-01:~$ ls -la /var/www/html/
+            -rw------- 1 root root 12345 11 jan index.php
+            # Problème : seulement root peut lire, Apache (www-data) ne peut pas
+
+            # Corriger la propriété
+            admin@serveurweb-01:~$ sudo chown -R www-data:www-data /var/www/html/
+
+            # Redémarrer le service
+            admin@serveurweb-01:~$ sudo systemctl restart apache2
+
+            # Vérifier qu'il est en marche
+            admin@serveurweb-01:~$ systemctl status apache2
+            Active: active (running)
+
+            # Tester la connectivité
+            admin@serveurweb-01:~$ curl -I http://localhost
+            HTTP/1.1 200 OK
+            # Le site web est de nouveau en ligne !
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "Dans quel ordre dois-tu diagnostiquer un problème de 'service en panne' ?"
+              answers:
+                - text: "Corriger les permissions d'abord, puis lire les journaux, puis redémarrer"
+                  correct: false
+                - text: "Redémarrer le service, vérifier l'état, lire les journaux si toujours en panne"
+                  correct: false
+                - text: "Vérifier l'état, lire les journaux pour trouver la cause, corriger la cause, redémarrer"
+                  correct: true
+                - text: "Réinstaller le service immédiatement"
+                  correct: false
+
+            - id: q2
+              type: short_answer
+              question: "Écris la commande pour vérifier les journaux du service Apache des 30 dernières minutes."
+              answer: "journalctl -u apache2 --since '30 minutes ago'"
+
+            - id: q3
+              type: short_answer
+              question: "Écris la commande qui corrige la propriété de tous les fichiers web pour Apache (utilisateur et groupe : www-data, répertoire : /var/www/html/)."
+              answer: "sudo chown -R www-data:www-data /var/www/html/"
+
+            - id: q4
+              type: qcm
+              question: "Après avoir corrigé un problème de service, que dois-tu toujours faire pour confirmer que la correction a fonctionné ?"
+              answers:
+                - text: "Redémarrer complètement le serveur"
+                  correct: false
+                - text: "Exécuter systemctl status pour vérifier que le service est active (running)"
+                  correct: true
+                - text: "Attendre 24 heures et voir si les utilisateurs se plaignent encore"
+                  correct: false
+                - text: "Supprimer les fichiers journaux"
+                  correct: false
+
+    # ── DÉFI ──────────────────────────────────────────────────────────────────
+    - id: linux-fund-3-fr-challenge
+      type: challenge
+      title: "Défi — Serveur en panne !"
+      order: 9
+      xpReward: 50
+      sections:
+        - type: theory
+          content: |
+            ## Briefing de mission
+
+            Agent, un serveur de production a plusieurs problèmes qui doivent
+            être diagnostiqués et résolus. Tu as 60 minutes.
+
+            **La situation :**
+            - Le serveur web ne répond plus
+            - Un utilisateur ne peut pas se connecter
+            - Un script important a arrêté de fonctionner
+            - Le disque est peut-être plein
+
+            **Télécharge et lance ta machine virtuelle :**
+            1. Télécharge → [linux-fund-3-challenge.ova](#)
+            2. Importe dans VMware ou VirtualBox
+            3. Connexion : `student` / `nexus2024`
+            4. Lis `/home/student/mission-briefing.txt` pour commencer
+
+            Réponds aux questions ci-dessous selon ce que tu trouves.
+
+        - type: questions
+          items:
+            - id: c1
+              type: short_answer
+              question: "Quel est l'état du service apache2 quand tu te connectes pour la première fois ? (active/inactive/failed)"
+              answer: "failed"
+
+            - id: c2
+              type: short_answer
+              question: "Quel message d'erreur apparaît dans les journaux apache2 ? (copie la partie essentielle de l'erreur)"
+              answer: "Permission denied"
+
+            - id: c3
+              type: short_answer
+              question: "Quelle commande as-tu utilisée pour corriger la propriété des fichiers web d'Apache ?"
+              answer: "sudo chown -R www-data:www-data /var/www/html/"
+
+            - id: c4
+              type: short_answer
+              question: "Après avoir corrigé apache2, sur quel port écoute-t-il ? (utilise ss -tulnp)"
+              answer: "80"
+
+            - id: c5
+              type: short_answer
+              question: "Quel est le PID du processus principal apache2 après la correction ?"
+              answer: ""
+
+            - id: c6
+              type: qcm
+              question: "La machine virtuelle du défi avait un service qui a échoué à cause d'un problème de permissions. Quelle est la leçon générale pour le soutien informatique ?"
+              answers:
+                - text: "Toujours réinstaller les services quand ils échouent"
+                  correct: false
+                - text: "Toujours lire les journaux pour trouver la cause racine avant d'appliquer des correctifs"
+                  correct: true
+                - text: "Donner la permission 777 à tous les fichiers pour éviter les erreurs de permissions"
+                  correct: false
+                - text: "Redémarrer le serveur en premier — ça règle la plupart des problèmes"
+                  correct: false
