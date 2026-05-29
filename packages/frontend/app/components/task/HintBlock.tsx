@@ -44,7 +44,7 @@ export default function HintBlock({ hints }: Props) {
               onClick={() => setRevealed(r => r + 1)}
               className="mt-1 text-xs text-nx-cyan/70 hover:text-nx-cyan border border-nx-cyan/20 hover:border-nx-cyan/40 rounded-lg px-3 py-1.5 transition-colors"
             >
-              Révéler l'indice suivant →
+              {'Révéler l\'indice suivant →'}
             </button>
           )}
 

@@ -7,6 +7,12 @@ import CodeBlock from '../task/CodeBlock'
 import CommandTable from '../task/CommandTable'
 import QuestionsSection from '../task/QuestionsSection'
 import ImageSection from '../task/ImageSection'
+import MissionBlock from '../task/MissionBlock'
+import WarningBlock from '../task/WarningBlock'
+import HintBlock from '../task/HintBlock'
+import TerminalExercise from '../task/TerminalExercise'
+import ValidationBlock from '../task/ValidationBlock'
+import TeacherNote from '../task/TeacherNote'
 import AvatarUnlockModal from '../ui/AvatarUnlockModal'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
@@ -17,6 +23,12 @@ type SectionType =
   | { type: 'command_table'; commands: { cmd: string; desc: string }[] }
   | { type: 'questions'; items: Question[] }
   | { type: 'image'; src: string; alt: string; caption?: string }
+  | { type: 'mission'; title: string; content: string }
+  | { type: 'warning'; title: string; content: string }
+  | { type: 'hints'; hints: string[] }
+  | { type: 'terminal_exercise'; title: string; instructions: string; expectedCommands?: string[] }
+  | { type: 'validation'; title: string; question: string; acceptedAnswers: string[] }
+  | { type: 'teacher_note'; content: string }
 
 type Question =
   | { id: string; type: 'qcm'; question: string; answers: { text: string; correct: boolean }[] }
@@ -323,6 +335,20 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
                         )
                       case 'image':
                         return <ImageSection key={j} src={section.src} alt={section.alt} caption={section.caption} />
+                      case 'mission':
+                        return <MissionBlock key={j} title={section.title} content={section.content} />
+                      case 'warning':
+                        return <WarningBlock key={j} title={section.title} content={section.content} />
+                      case 'hints':
+                        return <HintBlock key={j} hints={section.hints} />
+                      case 'terminal_exercise':
+                        return <TerminalExercise key={j} title={section.title} instructions={section.instructions} expectedCommands={section.expectedCommands} />
+                      case 'validation':
+                        return <ValidationBlock key={j} title={section.title} question={section.question} acceptedAnswers={section.acceptedAnswers} />
+                      case 'teacher_note':
+                        return isStaff
+                          ? <TeacherNote key={j} content={section.content} />
+                          : null
                     }
                   })}
 
