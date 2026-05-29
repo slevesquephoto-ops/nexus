@@ -192,4 +192,39 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/:id/submit', requireAuth, async (req, res) => {
+  const taskId = req.params.id;
+  const userId = req.user.id;
+  const { note, validations } = req.body;
+
+  try {
+    const task = await prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true, type: true },
+    });
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    if (task.type !== 'CHALLENGE') return res.status(400).json({ error: 'Only challenges can be submitted' });
+
+    const existing = await prisma.taskProgress.findUnique({
+      where: { userId_taskId: { userId, taskId } },
+    });
+    if (existing?.completed || existing?.score !== null) {
+      return res.status(409).json({ error: 'Challenge already graded' });
+    }
+
+    const response = JSON.stringify({ note: note ?? '', validations: validations ?? {} });
+
+    await prisma.taskProgress.upsert({
+      where: { userId_taskId: { userId, taskId } },
+      create: { userId, taskId, completed: false, submittedAt: new Date(), response },
+      update: { submittedAt: new Date(), response },
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[POST /api/tasks/:id/submit]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

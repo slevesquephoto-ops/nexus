@@ -102,6 +102,8 @@ model TaskProgress {
   completed   Boolean   @default(false)
   score       Int?
   completedAt DateTime?
+  submittedAt DateTime?
+  response    String?
   createdAt   DateTime  @default(now())
   task        Task      @relation(fields: [taskId], references: [id])
   user        User      @relation(fields: [userId], references: [id])

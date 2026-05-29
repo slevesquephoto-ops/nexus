@@ -43,6 +43,7 @@ interface Task {
   content: SectionType[] | null
   completed: boolean
   score: number | null
+  submittedAt: string | null
 }
 
 interface ModuleData {
@@ -109,12 +110,16 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
   const [mod, setMod]         = useState<ModuleData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const [completions, setCompletions] = useState<Record<string, boolean>>({})
-  const [openTasks, setOpenTasks]     = useState<Set<string>>(new Set())
-  const [answers, setAnswers]         = useState<Record<string, Record<string, string>>>({})
-  const [submitted, setSubmitted]     = useState<Record<string, Record<string, boolean>>>({})
-  const [banners, setBanners]         = useState<Record<string, { xpGained: number }>>({})
-  const [completing, setCompleting]   = useState<Record<string, boolean>>({})
+  const [completions, setCompletions]           = useState<Record<string, boolean>>({})
+  const [submissions, setSubmissions]           = useState<Record<string, boolean>>({})
+  const [openTasks, setOpenTasks]               = useState<Set<string>>(new Set())
+  const [answers, setAnswers]                   = useState<Record<string, Record<string, string>>>({})
+  const [submitted, setSubmitted]               = useState<Record<string, Record<string, boolean>>>({})
+  const [banners, setBanners]                   = useState<Record<string, { xpGained: number }>>({})
+  const [completing, setCompleting]             = useState<Record<string, boolean>>({})
+  const [challengeNotes, setChallengeNotes]     = useState<Record<string, string>>({})
+  const [validationsDone, setValidationsDone]   = useState<Record<string, Record<string, string>>>({})
+  const [submitting, setSubmitting]             = useState<Record<string, boolean>>({})
   const [newUnlockedAvatar, setNewUnlockedAvatar] = useState<{ avatarId: string; title: string; description: string; file: string } | null>(null)
 
   const loadModule = useCallback(async () => {
@@ -132,8 +137,13 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
       setMod(modData)
 
       const initCompletions: Record<string, boolean> = {}
-      modData.tasks.forEach(t => { initCompletions[t.id] = t.completed })
+      const initSubmissions: Record<string, boolean> = {}
+      modData.tasks.forEach(t => {
+        initCompletions[t.id] = t.completed
+        initSubmissions[t.id] = !!(t.submittedAt || t.completed)
+      })
       setCompletions(initCompletions)
+      setSubmissions(initSubmissions)
 
       const firstActive = modData.tasks.find(t => t.type !== 'CHALLENGE' && !t.completed)
       if (firstActive) {
@@ -159,6 +169,28 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
       else next.add(taskId)
       return next
     })
+  }
+
+  async function submitChallenge(task: Task) {
+    if (submitting[task.id]) return
+    setSubmitting(prev => ({ ...prev, [task.id]: true }))
+    try {
+      const res = await fetch(`${API_URL}/api/tasks/${task.id}/submit`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          note: challengeNotes[task.id] ?? '',
+          validations: validationsDone[task.id] ?? {},
+        }),
+      })
+      if (res.status === 401) { router.push('/login'); return }
+      if (res.ok || (await res.json()).error === 'Challenge already graded') {
+        setSubmissions(prev => ({ ...prev, [task.id]: true }))
+      }
+    } finally {
+      setSubmitting(prev => ({ ...prev, [task.id]: false }))
+    }
   }
 
   async function completeTask(task: Task) {
@@ -251,8 +283,16 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
           const totalQs   = sections.reduce<number>((acc, s) => s.type === 'questions' ? acc + s.items.length : acc, 0)
           const doneQs    = Object.keys(taskSubmitted).length
           const allQsDone = totalQs === 0 || doneQs >= totalQs
-          const alreadyDone  = completions[task.id] ?? task.completed
-          const showValidate = !isChallenge && status === 'active' && allQsDone && !alreadyDone && !banners[task.id]
+          const alreadyDone    = completions[task.id] ?? task.completed
+          const alreadySubmitted = submissions[task.id] ?? false
+          const showValidate   = !isChallenge && status === 'active' && allQsDone && !alreadyDone && !banners[task.id]
+
+          const totalValidations = isChallenge
+            ? sections.filter(s => s.type === 'validation').length
+            : 0
+          const doneValidations = Object.keys(validationsDone[task.id] ?? {}).length
+          const allValidationsDone = totalValidations === 0 || doneValidations >= totalValidations
+          const canSubmitChallenge = isChallenge && status === 'active' && allValidationsDone && !alreadySubmitted
 
           return (
             <div key={task.id} className={`rounded-xl overflow-hidden transition-all duration-200 ${cardStyles[status]}`}>
@@ -289,18 +329,18 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
 
               {isOpen && (
                 <div className="border-t border-nx-border/50">
-                  {isChallenge && (
-                    <div className="px-6 py-8 flex flex-col items-center gap-3 text-center">
-                      <span className="text-4xl">⏳</span>
-                      <p className="text-nx-text font-semibold">{task.title}</p>
-                      <p className="text-nx-text-dim text-sm max-w-sm">
-                        En attente de correction par ton enseignant.
-                      </p>
-                      {alreadyDone && (
-                        <div className="mt-2 px-4 py-2 rounded-lg border border-nx-cyan/40 bg-nx-cyan/5 text-nx-cyan text-sm font-semibold">
-                          ✓ Corrigé{task.score != null && ` — Score : ${task.score}`}
-                        </div>
-                      )}
+                  {isChallenge && alreadyDone && (
+                    <div className="px-6 py-5 flex flex-col items-center gap-2 text-center">
+                      <div className="px-4 py-2 rounded-lg border border-nx-cyan/40 bg-nx-cyan/5 text-nx-cyan text-sm font-semibold">
+                        ✓ Corrigé{task.score != null && ` — Score : ${task.score}/100`}
+                      </div>
+                    </div>
+                  )}
+
+                  {isChallenge && !alreadyDone && alreadySubmitted && (
+                    <div className="px-6 py-5 flex flex-col items-center gap-2 text-center">
+                      <span className="text-3xl">⏳</span>
+                      <p className="text-nx-text-dim text-sm">Défi soumis — en attente de correction par ton enseignant.</p>
                     </div>
                   )}
 
@@ -343,14 +383,47 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
                         return <HintBlock key={j} hints={section.hints} />
                       case 'terminal_exercise':
                         return <TerminalExercise key={j} title={section.title} instructions={section.instructions} expectedCommands={section.expectedCommands} />
-                      case 'validation':
-                        return <ValidationBlock key={j} title={section.title} question={section.question} acceptedAnswers={section.acceptedAnswers} />
+                      case 'validation': {
+                        const valId = `${task.id}-v${j}`
+                        return (
+                          <ValidationBlock
+                            key={j}
+                            id={valId}
+                            title={section.title}
+                            question={section.question}
+                            acceptedAnswers={section.acceptedAnswers}
+                            onComplete={(id, answer) => setValidationsDone(prev => ({
+                              ...prev,
+                              [task.id]: { ...(prev[task.id] ?? {}), [id]: answer },
+                            }))}
+                          />
+                        )
+                      }
                       case 'teacher_note':
                         return isStaff
                           ? <TeacherNote key={j} content={section.content} />
                           : null
                     }
                   })}
+
+                  {canSubmitChallenge && (
+                    <div className="px-6 pb-5 pt-2 space-y-3">
+                      <textarea
+                        value={challengeNotes[task.id] ?? ''}
+                        onChange={e => setChallengeNotes(prev => ({ ...prev, [task.id]: e.target.value }))}
+                        placeholder="Notes / observations optionnelles pour ton enseignant…"
+                        rows={3}
+                        className="w-full bg-nx-bg border border-nx-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-nx-gray/50 focus:outline-none focus:border-nx-yellow/50 transition-colors resize-none"
+                      />
+                      <button
+                        onClick={() => submitChallenge(task)}
+                        disabled={!!submitting[task.id]}
+                        className="w-full py-3 bg-nx-yellow text-nx-bg font-bold tracking-widest uppercase rounded-xl hover:bg-yellow-400 hover:shadow-glow-yellow active:scale-[0.98] transition-all duration-200 disabled:opacity-60"
+                      >
+                        {submitting[task.id] ? 'Soumission…' : 'Soumettre le défi ⚔️'}
+                      </button>
+                    </div>
+                  )}
 
                   {showValidate && (
                     <div className="px-6 pb-5 pt-2">

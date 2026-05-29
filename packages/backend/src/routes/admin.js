@@ -639,6 +639,7 @@ router.get('/classes/:id/challenges', requireAuth, requireTeacher, async (req, r
         taskId: { in: challenges.map(c => c.id) },
         userId: { in: students.map(s => s.id) },
       },
+      select: { userId: true, taskId: true, completed: true, score: true, submittedAt: true, response: true },
     });
 
     const progressMap = {};
@@ -646,19 +647,33 @@ router.get('/classes/:id/challenges', requireAuth, requireTeacher, async (req, r
       progressMap[`${p.userId}:${p.taskId}`] = p;
     }
 
-    const result = challenges.map(challenge => ({
-      id: challenge.id,
-      title: challenge.title,
-      moduleTitle: challenge.moduleTitle,
-      xpReward: challenge.xpReward,
-      students: students.map(student => {
-        const prog = progressMap[`${student.id}:${challenge.id}`];
-        let status = 'not_started';
-        if (prog?.completed) status = 'passed';
-        else if (prog && prog.score !== null) status = 'failed';
-        return { userId: student.id, username: student.username, status, score: prog?.score ?? null };
-      }),
-    }));
+    const result = challenges.map(challenge => {
+      const submitted = students
+        .map(student => {
+          const prog = progressMap[`${student.id}:${challenge.id}`];
+          if (!prog) return null;
+          let status = 'submitted';
+          if (prog.completed) status = 'passed';
+          else if (prog.score !== null) status = 'failed';
+          return {
+            userId: student.id,
+            username: student.username,
+            status,
+            score: prog.score ?? null,
+            submittedAt: prog.submittedAt ?? null,
+            response: prog.response ?? null,
+          };
+        })
+        .filter(Boolean);
+
+      return {
+        id: challenge.id,
+        title: challenge.title,
+        moduleTitle: challenge.moduleTitle,
+        xpReward: challenge.xpReward,
+        students: submitted,
+      };
+    });
 
     res.json({ challenges: result });
   } catch (err) {

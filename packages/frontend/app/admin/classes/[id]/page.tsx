@@ -16,7 +16,7 @@ interface ClasseDetail {
   modules: ModuleSummary[]
   students: Student[]
 }
-interface ChallengeStudent { userId: string; username: string; status: 'not_started' | 'passed' | 'failed'; score: number | null }
+interface ChallengeStudent { userId: string; username: string; status: 'submitted' | 'passed' | 'failed'; score: number | null; submittedAt: string | null; response: string | null }
 interface Challenge { id: string; title: string; moduleTitle: string; xpReward: number; students: ChallengeStudent[] }
 
 function PctCell({ pct }: { pct: number }) {
@@ -31,7 +31,7 @@ function PctCell({ pct }: { pct: number }) {
 function StatusBadge({ status, score }: { status: ChallengeStudent['status']; score: number | null }) {
   if (status === 'passed') return <span className="text-green-400 text-xs font-medium">✓ réussi{score !== null ? ` (${score}/100)` : ''}</span>
   if (status === 'failed') return <span className="text-red-400 text-xs font-medium">✗ échoué{score !== null ? ` (${score}/100)` : ''}</span>
-  return <span className="text-nx-gray text-xs">● non démarré</span>
+  return <span className="text-nx-yellow text-xs font-medium">⏳ en attente</span>
 }
 
 export default function ClassProgressPage() {
@@ -52,7 +52,7 @@ export default function ClassProgressPage() {
   const [xpError, setXpError] = useState('')
 
   // Grade modal state
-  const [gradeModal, setGradeModal] = useState<{ taskId: string; taskTitle: string; userId: string; username: string } | null>(null)
+  const [gradeModal, setGradeModal] = useState<{ taskId: string; taskTitle: string; userId: string; username: string; response: string | null } | null>(null)
   const [gradeScore, setGradeScore] = useState('100')
   const [gradePassed, setGradePassed] = useState(true)
   const [gradeSubmitting, setGradeSubmitting] = useState(false)
@@ -136,8 +136,8 @@ export default function ClassProgressPage() {
     }
   }
 
-  function openGradeModal(taskId: string, taskTitle: string, userId: string, username: string) {
-    setGradeModal({ taskId, taskTitle, userId, username })
+  function openGradeModal(taskId: string, taskTitle: string, userId: string, username: string, response: string | null) {
+    setGradeModal({ taskId, taskTitle, userId, username, response })
     setGradeScore('100')
     setGradePassed(true)
     setGradeError('')
@@ -252,11 +252,34 @@ export default function ClassProgressPage() {
       {/* Grade Modal */}
       {gradeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4 shadow-glow-cyan-sm">
+          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-md mx-4 space-y-4 shadow-glow-cyan-sm">
             <div>
               <h2 className="text-nx-text font-bold tracking-wide">Correction</h2>
               <p className="text-nx-gray text-sm mt-0.5">{gradeModal.taskTitle} · {gradeModal.username}</p>
             </div>
+            {gradeModal.response && (() => {
+              try {
+                const parsed = JSON.parse(gradeModal.response)
+                return (
+                  <div className="bg-nx-bg rounded-lg border border-nx-border p-3 space-y-2 text-sm max-h-48 overflow-y-auto">
+                    {parsed.note && (
+                      <div>
+                        <p className="text-nx-gray text-xs uppercase tracking-widest mb-1">Note de l&apos;élève</p>
+                        <p className="text-white whitespace-pre-wrap">{parsed.note}</p>
+                      </div>
+                    )}
+                    {parsed.validations && Object.keys(parsed.validations).length > 0 && (
+                      <div>
+                        <p className="text-nx-gray text-xs uppercase tracking-widest mb-1">Validations</p>
+                        {Object.entries(parsed.validations).map(([k, v]) => (
+                          <p key={k} className="text-nx-cyan font-mono text-xs">{String(v)}</p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              } catch { return null }
+            })()}
             <form onSubmit={handleGradeSubmit} className="space-y-3">
               <div>
                 <label className="text-nx-gray text-xs block mb-1">Score / 100</label>
@@ -370,12 +393,19 @@ export default function ClassProgressPage() {
             <div className="space-y-6">
               {challenges.map(challenge => (
                 <div key={challenge.id} className="bg-nx-surface border border-nx-border rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 border-b border-nx-border flex items-center justify-between">
-                    <div>
+                  <div className="px-4 py-3 border-b border-nx-border flex items-center justify-between gap-3">
+                    <div className="min-w-0">
                       <p className="text-white font-semibold text-sm">{challenge.title}</p>
                       <p className="text-nx-gray text-xs mt-0.5">{challenge.moduleTitle}</p>
                     </div>
-                    <span className="text-nx-yellow text-xs font-semibold shrink-0">{challenge.xpReward} XP</span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {challenge.students.filter(s => s.status === 'submitted').length > 0 && (
+                        <span className="text-[10px] font-bold bg-nx-yellow/10 text-nx-yellow border border-nx-yellow/30 rounded-full px-2 py-0.5">
+                          {challenge.students.filter(s => s.status === 'submitted').length} en attente
+                        </span>
+                      )}
+                      <span className="text-nx-yellow text-xs font-semibold">{challenge.xpReward} XP</span>
+                    </div>
                   </div>
                   {challenge.students.length === 0 ? (
                     <p className="text-nx-gray text-sm px-4 py-3">Aucun élève.</p>
@@ -387,9 +417,9 @@ export default function ClassProgressPage() {
                             <p className="text-white text-sm w-28 truncate">{s.username}</p>
                             <StatusBadge status={s.status} score={s.score} />
                           </div>
-                          {(s.status === 'not_started' || s.status === 'failed') && (
+                          {(s.status === 'submitted' || s.status === 'failed') && (
                             <button
-                              onClick={() => openGradeModal(challenge.id, challenge.title, s.userId, s.username)}
+                              onClick={() => openGradeModal(challenge.id, challenge.title, s.userId, s.username, s.response)}
                               className="px-3 py-1 text-xs border border-nx-yellow/50 text-nx-yellow rounded-lg hover:bg-nx-yellow/10 transition-colors"
                             >
                               Corriger
