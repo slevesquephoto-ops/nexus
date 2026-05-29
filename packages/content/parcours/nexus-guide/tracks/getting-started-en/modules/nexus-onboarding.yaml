@@ -1,6 +1,6 @@
 module:
   id: nexus-onboarding
-  trackId: getting-started
+  trackId: getting-started-en
   title: "Getting Started with NEXUS"
   description: "Learn how to use the NEXUS platform and set up your virtual machines"
   order: 1
