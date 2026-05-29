@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations, useLocale } from 'next-intl'
 import TopBar from '../components/ui/TopBar'
 import { getAvatarFile } from '../lib/avatars'
 
@@ -15,16 +16,6 @@ interface AvatarItem { id: string; name: string; file: string; isActive: boolean
 
 function xpForLevel(level: number) { return level * 200 }
 
-function relativeTime(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "à l'instant"
-  if (mins < 60) return `il y a ${mins}m`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `il y a ${hours}h`
-  return `il y a ${Math.floor(hours / 24)}j`
-}
-
 function StatCard({ value, label }: { value: number; label: string }) {
   return (
     <div className="bg-nx-surface border border-nx-border rounded-xl p-4 text-center hover:border-nx-yellow/30 transition-colors duration-200">
@@ -36,12 +27,26 @@ function StatCard({ value, label }: { value: number; label: string }) {
 
 export default function ProfilePage() {
   const router = useRouter()
+  const locale = useLocale()
+  const t = useTranslations('profile')
+  const tTime = useTranslations('time')
+  const tCommon = useTranslations('common')
   const [user,    setUser]    = useState<User | null>(null)
   const [stats,   setStats]   = useState<Stats | null>(null)
   const [logs,    setLogs]    = useState<XpLog[]>([])
   const [badges,  setBadges]  = useState<Badge[]>([])
   const [avatars, setAvatars] = useState<AvatarItem[]>([])
   const [loading, setLoading] = useState(true)
+
+  function relativeTime(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 1) return tTime('justNow')
+    if (mins < 60) return tTime('minutesAgo', { count: mins })
+    const hours = Math.floor(mins / 60)
+    if (hours < 24) return tTime('hoursAgo', { count: hours })
+    return tTime('daysAgo', { count: Math.floor(hours / 24) })
+  }
 
   const loadProfile = useCallback(async () => {
     const opts = { credentials: 'include' as const }
@@ -73,8 +78,7 @@ export default function ProfilePage() {
 
   async function selectAvatar(id: string) {
     await fetch(`${API_URL}/api/users/me/avatar`, {
-      method: 'POST',
-      credentials: 'include',
+      method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ avatarId: id }),
     })
@@ -84,16 +88,16 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-nx-bg">
-        <span className="text-nx-text-dim text-sm">Chargement…</span>
+        <span className="text-nx-text-dim text-sm">{t('loading')}</span>
       </div>
     )
   }
 
   if (!user) return null
 
-  const needed   = xpForLevel(user.level)
-  const xpInLvl  = user.xp % needed
-  const pct      = Math.min(100, (xpInLvl / needed) * 100)
+  const needed  = xpForLevel(user.level)
+  const xpInLvl = user.xp % needed
+  const pct     = Math.min(100, (xpInLvl / needed) * 100)
 
   return (
     <div className="min-h-screen bg-nx-bg">
@@ -101,64 +105,50 @@ export default function ProfilePage() {
 
       <div className="max-w-lg mx-auto px-6 py-8 space-y-8">
 
-        {/* Avatar + identité */}
         <div className="flex flex-col items-center gap-3">
           <div className="w-28 h-28 rounded-full border-4 border-nx-yellow shadow-glow-yellow-sm overflow-hidden shrink-0">
-            <img
-              src={`/avatars/${getAvatarFile(user.avatarId)}`}
-              alt="avatar"
-              className="w-full h-full object-cover object-top rounded-full"
-              style={{ mixBlendMode: 'screen' }}
-            />
+            <img src={`/avatars/${getAvatarFile(user.avatarId)}`} alt="avatar"
+              className="w-full h-full object-cover object-top rounded-full" style={{ mixBlendMode: 'screen' }} />
           </div>
           <div className="text-center">
             <p className="text-white text-xl font-bold">{user.username}</p>
-            <p className="text-nx-text-dim text-sm mt-0.5">Niveau {user.level}</p>
+            <p className="text-nx-text-dim text-sm mt-0.5">{t('level', { level: user.level })}</p>
           </div>
 
-          {/* Grande XP bar */}
           <div className="w-full max-w-xs space-y-1.5 mt-1">
             <div className="flex justify-between text-xs text-nx-text-dim">
-              <span>Niv. {user.level}</span>
+              <span>{t('levelShort', { level: user.level })}</span>
               <span>{xpInLvl} / {needed} XP</span>
             </div>
             <div className="h-3 bg-nx-surface-2 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-nx-yellow rounded-full transition-all duration-700"
-                style={{ width: `${pct}%` }}
-              />
+              <div className="h-full bg-nx-yellow rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
             </div>
             <p className="text-center text-xs text-nx-text-dim">
-              {needed - xpInLvl} XP avant Niv. {user.level + 1}
+              {t('xpUntilNext', { xp: needed - xpInLvl, next: user.level + 1 })}
             </p>
           </div>
         </div>
 
-        {/* Stats */}
         {stats && (
           <section>
-            <h2 className="text-white font-semibold mb-3">Statistiques</h2>
+            <h2 className="text-white font-semibold mb-3">{t('stats')}</h2>
             <div className="grid grid-cols-2 gap-3">
-              <StatCard value={stats.tasksCompleted}   label="tasks complétées" />
-              <StatCard value={stats.modulesCompleted} label="modules complétés" />
-              <StatCard value={stats.tracksCompleted}  label="tracks complétés" />
-              <StatCard value={stats.xp}               label="XP total" />
+              <StatCard value={stats.tasksCompleted}   label={t('tasksCompleted')} />
+              <StatCard value={stats.modulesCompleted} label={t('modulesCompleted')} />
+              <StatCard value={stats.tracksCompleted}  label={t('tracksCompleted')} />
+              <StatCard value={stats.xp}               label={t('totalXp')} />
             </div>
           </section>
         )}
 
-        {/* Badges */}
         <section>
-          <h2 className="text-white font-semibold mb-3">Mes badges</h2>
+          <h2 className="text-white font-semibold mb-3">{t('badges')}</h2>
           {badges.length === 0 ? (
-            <p className="text-nx-text-dim text-sm">Aucun badge encore.</p>
+            <p className="text-nx-text-dim text-sm">{t('noBadges')}</p>
           ) : (
             <div className="space-y-2">
               {badges.map(badge => (
-                <div
-                  key={badge.id}
-                  className="flex items-center gap-4 bg-nx-surface border border-nx-border rounded-xl p-4"
-                >
+                <div key={badge.id} className="flex items-center gap-4 bg-nx-surface border border-nx-border rounded-xl p-4">
                   <span className="text-3xl select-none shrink-0">{badge.imageUrl}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-semibold text-sm">{badge.title}</p>
@@ -171,43 +161,30 @@ export default function ProfilePage() {
           )}
         </section>
 
-        {/* Avatars */}
         <section>
-          <h2 className="text-white font-semibold mb-3">Mes avatars</h2>
+          <h2 className="text-white font-semibold mb-3">{t('avatars')}</h2>
           <div className="grid grid-cols-3 gap-3">
             {avatars.map(avatar => (
-              <button
-                key={avatar.id}
-                onClick={() => selectAvatar(avatar.id)}
-                style={{ minHeight: '140px' }}
+              <button key={avatar.id} onClick={() => selectAvatar(avatar.id)} style={{ minHeight: '140px' }}
                 className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200 cursor-pointer ${
-                  avatar.isActive
-                    ? 'border-nx-cyan bg-nx-surface-2'
-                    : 'border-nx-border bg-nx-surface hover:border-nx-yellow'
+                  avatar.isActive ? 'border-nx-cyan bg-nx-surface-2' : 'border-nx-border bg-nx-surface hover:border-nx-yellow'
                 }`}
               >
-                <img
-                  src={`/avatars/${avatar.file}`}
-                  alt={avatar.name}
-                  className="w-24 h-24 rounded-full object-cover object-top"
-                />
-                {avatar.isActive && (
-                  <span className="absolute top-2 right-2.5 text-nx-cyan text-sm font-bold">✓</span>
-                )}
+                <img src={`/avatars/${avatar.file}`} alt={avatar.name} className="w-24 h-24 rounded-full object-cover object-top" />
+                {avatar.isActive && <span className="absolute top-2 right-2.5 text-nx-cyan text-sm font-bold">✓</span>}
                 <span className="text-sm font-semibold text-nx-text-dim text-center leading-tight">{avatar.name}</span>
               </button>
             ))}
           </div>
           {avatars.length <= 1 && (
-            <p className="text-nx-text-muted text-sm text-center mt-4">Complete modules to unlock new avatars! 🐧</p>
+            <p className="text-nx-text-muted text-sm text-center mt-4">{t('avatarUnlockHint')}</p>
           )}
         </section>
 
-        {/* Historique XP */}
         <section>
-          <h2 className="text-white font-semibold mb-3">Historique XP</h2>
+          <h2 className="text-white font-semibold mb-3">{t('xpHistory')}</h2>
           {logs.length === 0 ? (
-            <p className="text-nx-text-dim text-sm">Aucune activité encore.</p>
+            <p className="text-nx-text-dim text-sm">{tCommon('noActivity')}</p>
           ) : (
             <div className="bg-nx-surface border border-nx-border rounded-xl px-4 divide-y divide-nx-border/50">
               {logs.map(log => (
@@ -216,9 +193,7 @@ export default function ProfilePage() {
                     <p className="text-nx-text text-sm truncate">{log.reason}</p>
                     <p className="text-nx-text-dim text-xs mt-0.5">{relativeTime(log.createdAt)}</p>
                   </div>
-                  <span className="text-nx-yellow text-sm font-semibold shrink-0">
-                    +{log.amount} XP
-                  </span>
+                  <span className="text-nx-yellow text-sm font-semibold shrink-0">+{log.amount} XP</span>
                 </div>
               ))}
             </div>

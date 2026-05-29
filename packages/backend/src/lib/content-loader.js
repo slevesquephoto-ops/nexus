@@ -20,10 +20,22 @@ async function loadContent() {
     .map(d => d.name);
 
   for (const parcoursId of parcoursDirs) {
+    const parcoursMetaPath = path.join(CONTENT_DIR, parcoursId, 'meta.yaml');
+    const parcoursMeta = fs.existsSync(parcoursMetaPath)
+      ? yaml.load(fs.readFileSync(parcoursMetaPath, 'utf-8'))
+      : {};
+    const parcoursTitle = parcoursMeta.title ?? parcoursId;
+    const parcoursData = {
+      title: parcoursTitle,
+      ...(parcoursMeta.description != null ? { description: parcoursMeta.description } : {}),
+      ...(parcoursMeta.language != null ? { language: parcoursMeta.language } : {}),
+      ...(parcoursMeta.order != null ? { order: parcoursMeta.order } : {}),
+    };
+
     await prisma.parcours.upsert({
       where: { id: parcoursId },
-      create: { id: parcoursId, title: parcoursId },
-      update: {},
+      create: { id: parcoursId, ...parcoursData },
+      update: parcoursData,
     });
 
     const tracksDir = path.join(CONTENT_DIR, parcoursId, 'tracks');
@@ -34,10 +46,22 @@ async function loadContent() {
       .map(d => d.name);
 
     for (const trackId of trackDirs) {
+      const trackMetaPath = path.join(tracksDir, trackId, 'meta.yaml');
+      const trackMeta = fs.existsSync(trackMetaPath)
+        ? yaml.load(fs.readFileSync(trackMetaPath, 'utf-8'))
+        : {};
+      const trackTitle = trackMeta.title ?? trackId;
+      const trackData = {
+        title: trackTitle,
+        ...(trackMeta.description != null ? { description: trackMeta.description } : {}),
+        ...(trackMeta.language != null ? { language: trackMeta.language } : {}),
+        ...(trackMeta.order != null ? { order: trackMeta.order } : {}),
+      };
+
       await prisma.track.upsert({
         where: { id: trackId },
-        create: { id: trackId, title: trackId },
-        update: {},
+        create: { id: trackId, ...trackData },
+        update: trackData,
       });
 
       await prisma.parcoursTracks.upsert({
@@ -59,11 +83,16 @@ async function loadContent() {
           const data = yaml.load(raw);
           const mod = data.module;
 
+          // Directory trackId is source of truth. If YAML declares a different
+          // trackId (e.g. a copied module), prefix IDs to avoid conflicts.
+          const trackMismatch = mod.trackId && mod.trackId !== trackId;
+          const moduleId = trackMismatch ? `${trackId}-${mod.id}` : mod.id;
+
           await prisma.module.upsert({
-            where: { id: mod.id },
+            where: { id: moduleId },
             create: {
-              id: mod.id,
-              trackId: mod.trackId,
+              id: moduleId,
+              trackId,
               title: mod.title,
               description: mod.description ?? null,
               order: mod.order,
@@ -71,6 +100,7 @@ async function loadContent() {
               mascot: mod.mascot ?? null,
             },
             update: {
+              trackId,
               title: mod.title,
               description: mod.description ?? null,
               order: mod.order,
@@ -81,11 +111,12 @@ async function loadContent() {
           totalModules++;
 
           for (const task of (mod.tasks ?? [])) {
+            const taskId = trackMismatch ? `${trackId}-${task.id}` : task.id;
             await prisma.task.upsert({
-              where: { id: task.id },
+              where: { id: taskId },
               create: {
-                id: task.id,
-                moduleId: mod.id,
+                id: taskId,
+                moduleId,
                 type: task.type.toUpperCase(),
                 title: task.title,
                 order: task.order,

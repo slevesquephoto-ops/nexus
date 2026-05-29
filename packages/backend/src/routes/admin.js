@@ -205,8 +205,9 @@ router.get('/teachers', requireAuth, requireAdmin, async (req, res) => {
 
 // ─── Classes ──────────────────────────────────────────────────────────────────
 
-const PARCOURS_INCLUDE = {
+const CLASSE_INCLUDE = {
   parcours: { include: { parcours: { select: { id: true, title: true } } } },
+  trackRestrictions: { include: { track: { select: { id: true, title: true } } } },
   _count: { select: { members: true } },
 };
 
@@ -215,7 +216,16 @@ function formatClasse(c) {
     id: c.id,
     name: c.name,
     inviteCode: c.inviteCode,
-    parcours: c.parcours.map(cp => cp.parcours),
+    parcours: c.parcours.map(cp => {
+      const restricted = (c.trackRestrictions ?? []).filter(tr => tr.parcoursId === cp.parcoursId);
+      return {
+        id: cp.parcours.id,
+        title: cp.parcours.title,
+        restrictedTracks: restricted.length > 0
+          ? restricted.map(tr => ({ id: tr.trackId, title: tr.track.title }))
+          : null,
+      };
+    }),
     memberCount: c._count.members,
     createdAt: c.createdAt,
   };
@@ -232,7 +242,7 @@ router.get('/classes', requireAuth, requireTeacher, async (req, res) => {
   try {
     const classes = await prisma.classe.findMany({
       where: { teacherId: req.user.id },
-      include: PARCOURS_INCLUDE,
+      include: CLASSE_INCLUDE,
       orderBy: { createdAt: 'desc' },
     });
     res.json(classes.map(formatClasse));
@@ -269,7 +279,7 @@ router.post('/classes', requireAuth, requireTeacher, async (req, res) => {
 
     const classe = await prisma.classe.findUnique({
       where: { id: created.id },
-      include: PARCOURS_INCLUDE,
+      include: CLASSE_INCLUDE,
     });
 
     res.status(201).json(formatClasse(classe));
@@ -338,6 +348,63 @@ router.delete('/classes/:id/parcours/:parcoursId', requireAuth, requireTeacher, 
     res.json({ ok: true });
   } catch (err) {
     console.error('[DELETE /api/admin/classes/:id/parcours/:parcoursId]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.put('/classes/:id/parcours/:parcoursId/tracks', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    const { trackIds } = req.body;
+    if (!Array.isArray(trackIds)) return res.status(400).json({ error: 'trackIds must be an array' });
+
+    await prisma.$transaction([
+      prisma.classeParcoursTrack.deleteMany({ where: { classeId: req.params.id, parcoursId: req.params.parcoursId } }),
+      ...(trackIds.length > 0 ? [prisma.classeParcoursTrack.createMany({
+        data: trackIds.map(trackId => ({ classeId: req.params.id, parcoursId: req.params.parcoursId, trackId })),
+        skipDuplicates: true,
+      })] : []),
+    ]);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[PUT /api/admin/classes/:id/parcours/:parcoursId/tracks]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/classes/:id/parcours/:parcoursId/tracks/:trackId', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    await prisma.classeParcoursTrack.upsert({
+      where: { classeId_parcoursId_trackId: { classeId: req.params.id, parcoursId: req.params.parcoursId, trackId: req.params.trackId } },
+      create: { classeId: req.params.id, parcoursId: req.params.parcoursId, trackId: req.params.trackId },
+      update: {},
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[POST /api/admin/classes/:id/parcours/:parcoursId/tracks/:trackId]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/classes/:id/parcours/:parcoursId/tracks/:trackId', requireAuth, requireTeacher, async (req, res) => {
+  try {
+    const classe = await prisma.classe.findUnique({ where: { id: req.params.id } });
+    if (!classe) return res.status(404).json({ error: 'Class not found' });
+    if (classe.teacherId !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
+
+    await prisma.classeParcoursTrack.deleteMany({
+      where: { classeId: req.params.id, parcoursId: req.params.parcoursId, trackId: req.params.trackId },
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DELETE /api/admin/classes/:id/parcours/:parcoursId/tracks/:trackId]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

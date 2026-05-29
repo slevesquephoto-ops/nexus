@@ -1,0 +1,99 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "close": "Close",
+    "add": "Add",
+    "create": "Create",
+    "creating": "Creating…",
+    "noActivity": "No activity yet."
+  },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
+  },
+  "login": {
+    "title": "Sign in",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "errorDefault": "Login error",
+    "errorServer": "Unable to reach the server"
+  },
+  "nav": {
+    "myMap": "My map",
+    "map": "Map",
+    "profile": "Profile",
+    "classe": "Class",
+    "admin": "Admin"
+  },
+  "sidebar": {
+    "navigation": "Navigation",
+    "loading": "Loading…",
+    "noClass": "No courses assigned.",
+    "contactTeacher": "Contact your teacher to join a class."
+  },
+  "profile": {
+    "loading": "Loading…",
+    "level": "Level {level}",
+    "levelShort": "Lvl. {level}",
+    "xpUntilNext": "{xp} XP until Lvl. {next}",
+    "stats": "Statistics",
+    "tasksCompleted": "tasks completed",
+    "modulesCompleted": "modules completed",
+    "tracksCompleted": "tracks completed",
+    "totalXp": "total XP",
+    "badges": "My badges",
+    "noBadges": "No badges yet.",
+    "avatars": "My avatars",
+    "avatarUnlockHint": "Complete modules to unlock new avatars! 🐧",
+    "xpHistory": "XP History"
+  },
+  "map": {
+    "selectTrack": "Select a track in the sidebar to get started.",
+    "locked": "Locked",
+    "lockedHint": "Complete the prerequisite course first"
+  },
+  "classe": {
+    "title": "My class",
+    "loading": "Loading your class…",
+    "noClass": "You are not in any class.",
+    "xp": "XP",
+    "you": "you"
+  },
+  "admin": {
+    "classes": "Classes",
+    "students": "Students",
+    "profs": "Teachers",
+    "dashboard": "Dashboard",
+    "loading": "Loading…",
+    "noClasses": "No classes yet",
+    "noClassesHint": "Create your first class to get started.",
+    "newClass": "+ New class",
+    "createClass": "Create a class",
+    "className": "Class name",
+    "selectParcours": "Select a course (optional)…",
+    "inviteCode": "Invite code",
+    "copy": "Copy",
+    "copied": "✓ Copied",
+    "progression": "Progress →",
+    "assignedParcours": "Assigned courses",
+    "noParcours": "No courses assigned.",
+    "addParcours": "+ Add a course",
+    "chooseParcours": "Choose a course…",
+    "allTracks": "All tracks",
+    "manageTracks": "Manage",
+    "closeTracks": "Close",
+    "trackHint": "Check the tracks visible for this class. If all checked → no restriction.",
+    "loadingTracks": "Loading tracks…",
+    "noTracks": "No tracks in this course.",
+    "deleteClass": "Delete",
+    "confirmDelete": "Confirm"
+  }
+}

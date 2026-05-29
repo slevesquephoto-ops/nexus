@@ -30,30 +30,33 @@ model User {
 }
 
 model Parcours {
-  id             String           @id
-  title          String
-  description    String?
-  language       String           @default("fr")
-  isPublic       Boolean          @default(false)
-  order          Int              @default(0)
-  prerequisiteId String?
-  createdAt      DateTime         @default(now())
-  classes        ClasseParcours[]
-  enrollments    Enrollment[]
-  tracks         ParcoursTracks[]
-  prerequisite   Parcours?        @relation("ParcoursPrerequisite", fields: [prerequisiteId], references: [id])
-  dependents     Parcours[]       @relation("ParcoursPrerequisite")
+  id                String                @id
+  title             String
+  description       String?
+  language          String                @default("fr")
+  isPublic          Boolean               @default(false)
+  order             Int                   @default(0)
+  prerequisiteId    String?
+  createdAt         DateTime              @default(now())
+  classes           ClasseParcours[]
+  trackRestrictions ClasseParcoursTrack[]
+  enrollments       Enrollment[]
+  tracks            ParcoursTracks[]
+  prerequisite      Parcours?             @relation("ParcoursPrerequisite", fields: [prerequisiteId], references: [id])
+  dependents        Parcours[]            @relation("ParcoursPrerequisite")
 }
 
 model Track {
-  id          String           @id
-  title       String
-  description String?
-  icon        String?
-  order       Int              @default(0)
-  createdAt   DateTime         @default(now())
-  modules     Module[]
-  parcours    ParcoursTracks[]
+  id                String                @id
+  title             String
+  description       String?
+  language          String                @default("fr")
+  icon              String?
+  order             Int                   @default(0)
+  createdAt         DateTime              @default(now())
+  modules           Module[]
+  parcours          ParcoursTracks[]
+  classRestrictions ClasseParcoursTrack[]
 }
 
 model ParcoursTracks {
@@ -107,14 +110,15 @@ model TaskProgress {
 }
 
 model Classe {
-  id         String           @id @default(cuid())
-  name       String
-  teacherId  String
-  inviteCode String           @unique @default(cuid())
-  createdAt  DateTime         @default(now())
-  teacher    User             @relation("TeacherClasses", fields: [teacherId], references: [id])
-  members    ClasseMember[]
-  parcours   ClasseParcours[]
+  id                String                @id @default(cuid())
+  name              String
+  teacherId         String
+  inviteCode        String                @unique @default(cuid())
+  createdAt         DateTime              @default(now())
+  teacher           User                  @relation("TeacherClasses", fields: [teacherId], references: [id])
+  members           ClasseMember[]
+  parcours          ClasseParcours[]
+  trackRestrictions ClasseParcoursTrack[]
 }
 
 model ClasseParcours {
@@ -124,6 +128,17 @@ model ClasseParcours {
   parcours   Parcours @relation(fields: [parcoursId], references: [id])
 
   @@id([classeId, parcoursId])
+}
+
+model ClasseParcoursTrack {
+  classeId   String
+  parcoursId String
+  trackId    String
+  classe     Classe   @relation(fields: [classeId], references: [id], onDelete: Cascade)
+  parcours   Parcours @relation(fields: [parcoursId], references: [id])
+  track      Track    @relation(fields: [trackId], references: [id])
+
+  @@id([classeId, parcoursId, trackId])
 }
 
 model ClasseMember {
