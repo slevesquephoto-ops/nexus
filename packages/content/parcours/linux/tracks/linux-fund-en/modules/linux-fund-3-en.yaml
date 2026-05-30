@@ -1,0 +1,543 @@
+module:
+  id: linux-fund-3-en
+  trackId: linux-en
+  title: Linux Fundamentals 3 — Searching, Filtering and Redirecting
+  description: Find files, search text, filter command output, redirect results and produce a short analysis report.
+  order: 3
+  mascot: tux-search
+  xpReward: 150
+  estimatedDuration: 90 to 120 minutes with classroom demonstration
+  language: en
+  targetEnvironment:
+    distribution: Ubuntu 24.04 LTS
+    user: student
+    notes: 'This module assumes linux-fund-1 and linux-fund-2 are complete: the student can orient themselves, navigate, read, create, edit, copy, move and delete files carefully.'
+  prerequisites:
+  - Use pwd, ls, ls -la, cd, cat, head, tail, wc -l, less and file.
+  - Understand absolute and relative paths.
+  - Understand Linux case sensitivity.
+  - Create and organize simple files and directories with mkdir, touch, nano, cp, mv and rm.
+  pedagogicalIntent:
+  - Move from file manipulation to information analysis.
+  - Build the habit of searching methodically instead of opening everything manually.
+  - Introduce find for file names and grep for file content.
+  - Introduce wildcards, pipes and redirections without entering system administration.
+  - Prepare future support modules involving logs and services.
+  gradingPolicy:
+    sectionQuestions: No penalty; students may try again.
+    challengeQuestions: Penalty applied according to NEXUS rules.
+    xp: For gamification only; it does not directly represent an official grade.
+  tasks:
+  - id: linux-fund-3-en-t1
+    type: task
+    title: NEXUS Briefing — Find useful information
+    order: 1
+    xpReward: 10
+    objectives:
+    - Move from file manipulation to information analysis.
+    - Understand the purpose of search and filtering.
+    sections:
+    - type: mission
+      title: Mission Briefing
+      content: Agent, your next mission is to find useful information quickly inside folders, files and command outputs.
+    - type: theory
+      title: Module goal
+      content: You will search for files with `find`, search text with `grep`, filter command output with `|`, redirect results with `>` and `>>`, and produce a short report.
+    - type: warning
+      title: No administration yet
+      content: This module does not use sudo, services, networking or package management.
+    - type: teacher_note
+      title: Teacher note
+      content: This module prepares future support scenarios where students will inspect logs and outputs.
+    - type: questions
+      items:
+      - type: qcm
+        question: What is the main focus of this module?
+        answers:
+        - text: Installing packages.
+          correct: false
+        - text: Searching, filtering and redirecting information.
+          correct: true
+        - text: Creating Linux users.
+          correct: false
+        - text: Configuring SSH.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-3-en-t2
+    type: task
+    title: Review — Read before searching
+    order: 2
+    xpReward: 10
+    objectives:
+    - Reactivate reading commands.
+    - Start from observation before broad searches.
+    sections:
+    - type: theory
+      title: Observe first
+      content: Before searching everywhere, check where you are, what is visible, and what files can be read.
+    - type: terminal_exercise
+      title: Review commands
+      instructions: 'Run:'
+      commands:
+      - pwd
+      - ls -la
+      - cat notes.txt
+      - less notes.txt
+      - wc -l notes.txt
+      expectedObservation: Use available files in your lab folder.
+    - type: validation
+      title: Validation
+      question: Which command counts lines in a file?
+      answerType: short_answer
+      acceptedAnswers:
+      - wc -l
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - It was seen in linux-fund-1.
+  - id: linux-fund-3-en-t3
+    type: task
+    title: Find a file with find
+    order: 3
+    xpReward: 15
+    objectives:
+    - Use find from a starting point.
+    - Search by name.
+    - Differentiate files and directories.
+    sections:
+    - type: theory
+      title: find
+      content: '`find` searches from a starting directory. Example: `find . -name "report.txt"`. The `.` means start from the current directory.'
+    - type: code_block
+      title: Examples
+      language: bash
+      code: 'find . -name "report.txt"
+
+        find . -name "*.txt"
+
+        find . -type f
+
+        find . -type d'
+    - type: terminal_exercise
+      title: Practice find
+      instructions: 'Run:'
+      commands:
+      - cd ~
+      - find . -name "*.txt"
+      - find . -type d
+      expectedObservation: You should see matching paths.
+    - type: warning
+      title: Avoid searching from / at first
+      content: '`find /` searches the whole system and can produce many permission errors.'
+    - type: validation
+      title: Validation
+      question: What does the `.` mean in `find . -name "*.txt"`?
+      answerType: short_answer
+      acceptedAnswers:
+      - current directory
+      - the current directory
+      - .
+      - répertoire courant
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - It is the starting point of the search.
+  - id: linux-fund-3-en-t4
+    type: task
+    title: Use wildcards with *
+    order: 4
+    xpReward: 10
+    objectives:
+    - Understand the * wildcard.
+    - Use patterns with ls and find.
+    - Remember case sensitivity.
+    sections:
+    - type: theory
+      title: Wildcard
+      content: '`*` replaces zero, one or many characters. `*.txt` matches names ending with `.txt`.'
+    - type: warning
+      title: Case still matters
+      content: '`*.txt` may not match `Report.TXT` on a case-sensitive Linux filesystem.'
+    - type: terminal_exercise
+      title: Practice wildcards
+      instructions: 'Run:'
+      commands:
+      - ls *.txt
+      - find . -name "*.log"
+      - find . -name "report*"
+      - find . -name "*final*"
+      expectedObservation: Compare how each pattern changes the results.
+    - type: questions
+      items:
+      - type: qcm
+        question: What does `*` mean in a search pattern?
+        answers:
+        - text: Delete everything.
+          correct: false
+        - text: Replace zero, one or many characters.
+          correct: true
+        - text: Run as administrator.
+          correct: false
+        - text: Show permissions only.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-3-en-t5
+    type: task
+    title: Search text with grep
+    order: 5
+    xpReward: 15
+    objectives:
+    - Search text inside a file.
+    - Use quotes for search text with spaces.
+    sections:
+    - type: theory
+      title: grep
+      content: '`grep` searches for text. Example: `grep "error" log.txt`. It searches inside the file content, not just file names.'
+    - type: terminal_exercise
+      title: Practice grep
+      instructions: 'Run:'
+      commands:
+      - grep "error" journal.txt
+      - grep "client" report.txt
+      - grep "password reset" notes.txt
+      expectedObservation: Use files provided by the lab or create simple ones.
+    - type: warning
+      title: File search vs text search
+      content: Use `find` to search for file names. Use `grep` to search inside files.
+    - type: validation
+      title: Validation
+      question: Which command searches for the word error in journal.txt?
+      answerType: short_answer
+      acceptedAnswers:
+      - grep "error" journal.txt
+      - grep error journal.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Use grep followed by the pattern and file.
+  - id: linux-fund-3-en-t6
+    type: task
+    title: Useful grep options
+    order: 6
+    xpReward: 15
+    objectives:
+    - Use -i, -n and -r.
+    - Combine grep options.
+    sections:
+    - type: theory
+      title: Common options
+      content: '`grep -i` ignores case. `grep -n` shows line numbers. `grep -r` searches recursively through directories.'
+    - type: terminal_exercise
+      title: Practice options
+      instructions: 'Run:'
+      commands:
+      - grep -i "error" journal.txt
+      - grep -n "error" journal.txt
+      - grep -r "error" .
+      - grep -in "error" journal.txt
+      expectedObservation: Observe the difference between the options.
+    - type: questions
+      items:
+      - type: qcm
+        question: Which option shows line numbers with grep?
+        answers:
+        - text: -i
+          correct: false
+        - text: -n
+          correct: true
+        - text: -r
+          correct: false
+        - text: -a
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-3-en-t7
+    type: task
+    title: Filter output with the pipe |
+    order: 7
+    xpReward: 15
+    objectives:
+    - Understand standard output piping.
+    - Filter command results.
+    sections:
+    - type: theory
+      title: Pipe
+      content: The pipe `|` sends the output of one command into another command. It is useful when a command produces too much text.
+    - type: code_block
+      title: Examples
+      language: bash
+      code: 'ls -la | grep ".txt"
+
+        history | grep "mkdir"
+
+        find . -name "*.txt" | grep "report"'
+    - type: warning
+      title: Avoid useless cat
+      content: '`cat file | grep word` works, but `grep word file` is usually better when grep can read the file directly.'
+    - type: terminal_exercise
+      title: Practice pipe
+      instructions: 'Run:'
+      commands:
+      - ls -la | grep ".txt"
+      - history | grep "mkdir"
+      - find . -name "*.txt" | grep "report"
+      expectedObservation: You should see filtered output.
+    - type: validation
+      title: Validation
+      question: What symbol sends one command’s output to another command?
+      answerType: short_answer
+      acceptedAnswers:
+      - '|'
+      - pipe
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - It is a vertical bar.
+  - id: linux-fund-3-en-t8
+    type: task
+    title: Redirect output with >
+    order: 8
+    xpReward: 15
+    objectives:
+    - Create a file from command output.
+    - Understand that > overwrites.
+    sections:
+    - type: theory
+      title: Redirection
+      content: '`>` sends command output to a file. If the file already exists, its content is replaced.'
+    - type: warning
+      title: Overwrite warning
+      content: 'Be careful: `>` can erase previous content in the destination file.'
+    - type: terminal_exercise
+      title: Practice >
+      instructions: 'Run:'
+      commands:
+      - echo "Mission report" > report.txt
+      - ls -la > file-list.txt
+      - find . -name "*.txt" > text-files.txt
+      - cat report.txt
+      expectedObservation: '> creates or replaces the file content.'
+    - type: questions
+      items:
+      - type: qcm
+        question: What does `>` do if the destination file already exists?
+        answers:
+        - text: It asks for confirmation.
+          correct: false
+        - text: It replaces the file content.
+          correct: true
+        - text: It changes permissions.
+          correct: false
+        - text: It searches text.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-3-en-t9
+    type: task
+    title: Append to a file with >>
+    order: 9
+    xpReward: 15
+    objectives:
+    - Append output without erasing previous content.
+    - Compare > and >>.
+    sections:
+    - type: theory
+      title: Append redirection
+      content: '`>>` adds output to the end of a file without erasing existing content.'
+    - type: terminal_exercise
+      title: Practice >>
+      instructions: 'Run:'
+      commands:
+      - echo "First line" > report-append.txt
+      - echo "Second line" >> report-append.txt
+      - date >> report-append.txt
+      - cat report-append.txt
+      expectedObservation: The file should contain all lines.
+    - type: validation
+      title: Validation
+      question: Which symbol appends output without erasing existing content?
+      answerType: short_answer
+      acceptedAnswers:
+      - '>>'
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - It is the double redirection symbol.
+  - id: linux-fund-3-en-t10
+    type: task
+    title: Chain two commands with &&
+    order: 10
+    xpReward: 10
+    objectives:
+    - Understand conditional chaining.
+    - Use && safely.
+    sections:
+    - type: theory
+      title: '&&'
+      content: '`&&` runs the second command only if the first command succeeds.'
+    - type: terminal_exercise
+      title: Practice &&
+      instructions: 'Run:'
+      commands:
+      - mkdir analysis && cd analysis
+      - pwd
+      - cd ..
+      expectedObservation: The directory change happens only if mkdir succeeds.
+    - type: warning
+      title: Keep it simple
+      content: This module only introduces `&&`. Other operators such as `;` and `||` come later if needed.
+    - type: validation
+      title: Validation
+      question: What does `&&` do between two commands?
+      answerType: short_answer
+      acceptedAnswers:
+      - runs the second command only if the first succeeds
+      - execute second command only if first succeeds
+      - if the first succeeds
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - It is a conditional chain.
+  - id: linux-fund-3-en-t11
+    type: task
+    title: Sort and remove duplicates with sort and uniq
+    order: 11
+    xpReward: 15
+    objectives:
+    - Sort lines.
+    - Remove consecutive duplicates.
+    - Understand why sort is commonly used before uniq.
+    sections:
+    - type: theory
+      title: sort and uniq
+      content: '`sort` sorts lines. `uniq` removes repeated adjacent lines. This is why `sort file | uniq` is a common combination.'
+    - type: terminal_exercise
+      title: Practice sort and uniq
+      instructions: 'Run:'
+      commands:
+      - printf "beta\nalpha\nbeta\ngamma\nalpha\n" > names.txt
+      - sort names.txt
+      - sort names.txt | uniq
+      - sort names.txt | uniq > unique-names.txt
+      - cat unique-names.txt
+      expectedObservation: The final file should contain sorted unique names.
+    - type: questions
+      items:
+      - type: qcm
+        question: Why is `sort` often used before `uniq`?
+        answers:
+        - text: Because uniq removes only adjacent duplicates.
+          correct: true
+        - text: Because sort deletes files.
+          correct: false
+        - text: Because uniq changes permissions.
+          correct: false
+        - text: Because sort requires sudo.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-3-en-t12
+    type: task
+    title: Mini-lab — Produce a search report
+    order: 12
+    xpReward: 20
+    objectives:
+    - Combine find, grep and redirection.
+    - Produce a short report.
+    sections:
+    - type: mission
+      title: Scenario
+      content: A client folder contains several files. You must find text files, search for errors and produce a report.
+    - type: terminal_exercise
+      title: Create the report
+      instructions: 'Run the required commands:'
+      commands:
+      - find . -name "*.txt"
+      - grep -r "error" .
+      - grep -r "error" . > error-report.txt
+      - wc -l error-report.txt
+      - less error-report.txt
+      expectedObservation: The report should contain matching error lines.
+    - type: validation
+      title: Validation
+      question: Which file did you create to store the error search results?
+      answerType: short_answer
+      acceptedAnswers:
+      - error-report.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Look at the command with `>`.
+  - id: linux-fund-3-en-t13
+    type: challenge
+    title: Challenge — Traces of the incident
+    order: 13
+    xpReward: 35
+    challenge: true
+    objectives:
+    - Find files.
+    - Search for keywords.
+    - Filter results.
+    - Create a report.
+    sections:
+    - type: mission
+      title: Challenge Briefing
+      content: Agent, a NEXUS machine contains traces of an incident. Files are scattered across multiple directories. Find the right files, identify the keyword and produce a short analysis report.
+    - type: warning
+      title: Stay within the mission folder
+      content: Do not search or modify the whole system. Work in the challenge directory.
+    - type: terminal_exercise
+      title: Start carefully
+      instructions: Begin with observation and then use search commands.
+      commands:
+      - pwd
+      - ls -la
+      - find . -name "*.log"
+      - grep -r -i "error" .
+      expectedObservation: Use the output to answer the questions.
+    - type: hint
+      items:
+      - Start by listing the folder.
+      - Use find for file names.
+      - Use grep for text inside files.
+    - type: validation
+      title: Question 1
+      question: Which command searches recursively for the word error from the current directory?
+      answerType: short_answer
+      acceptedAnswers:
+      - grep -r "error" .
+      - grep -r error .
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Use grep recursively.
+    - type: validation
+      title: Question 2
+      question: Which symbol redirects output to a new or replaced file?
+      answerType: short_answer
+      acceptedAnswers:
+      - '>'
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - Single redirection overwrites.
+    - type: validation
+      title: Question 3
+      question: Which command finds all .log files from the current directory?
+      answerType: short_answer
+      acceptedAnswers:
+      - find . -name "*.log"
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Use find with a wildcard pattern.
+    - type: teacher_note
+      title: Suggested VM
+      content: Prepare scattered .log and .txt files with a specific keyword and require students to create a report file.

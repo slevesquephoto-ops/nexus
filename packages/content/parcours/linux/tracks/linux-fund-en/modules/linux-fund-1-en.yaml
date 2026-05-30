@@ -1,0 +1,494 @@
+module:
+  id: linux-fund-1-en
+  trackId: linux-en
+  title: Linux Fundamentals 1 — First Contact
+  description: Discover Linux, understand the terminal, orient yourself in the file tree and read files without modifying the system.
+  order: 1
+  mascot: tux-terminal
+  xpReward: 120
+  estimatedDuration: 60 to 90 minutes with classroom demonstration
+  language: en
+  targetEnvironment:
+    distribution: Ubuntu 24.04 LTS
+    user: student
+    notes: Ubuntu 24.04 LTS is used as a stable base to avoid frequent VM changes.
+  pedagogicalIntent:
+  - Demystify Linux.
+  - Practice the first terminal commands.
+  - Build the foundation required before file manipulation.
+  - Evaluate a minimal ability to orient oneself in the terminal.
+  - Introduce the NEXUS universe without overloading the theory.
+  gradingPolicy:
+    sectionQuestions: No penalty; students may try again.
+    challengeQuestions: Penalty applied according to NEXUS rules.
+    xp: For gamification only; it does not directly represent an official grade.
+  tasks:
+  - id: linux-fund-1-en-t1
+    type: task
+    title: NEXUS Briefing — First Contact
+    order: 1
+    xpReward: 10
+    objectives:
+    - Understand the purpose of this first Linux module.
+    - Use the NEXUS context without overloading the theory.
+    - Identify what will and will not be modified.
+    sections:
+    - type: mission
+      title: Mission Briefing
+      content: Agent, this is your first controlled contact with a Linux system. Your goal is not to repair everything yet. Your goal is to observe, understand where you are, move safely, and read information without changing the system.
+    - type: theory
+      title: What this module covers
+      content: You will learn what Linux is, what a distribution is, how the terminal and shell work, how the Linux file tree is organized, and how to read simple files.
+    - type: warning
+      title: Read-only mindset
+      content: In this first module, you mainly observe and read. File creation, deletion, redirection, permissions and administration commands will come later.
+    - type: teacher_note
+      title: Teacher note
+      content: Demonstrate the VM, terminal launch, prompt, and the difference between reading a file and modifying a file.
+    - type: questions
+      items:
+      - type: qcm
+        question: What is the main goal of this first Linux Fundamentals module?
+        answers:
+        - text: Install a full Linux server.
+          correct: false
+        - text: Learn how to safely orient yourself and read basic information.
+          correct: true
+        - text: Create users and configure sudo.
+          correct: false
+        - text: Configure networking services.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t2
+    type: task
+    title: What is Linux?
+    order: 2
+    xpReward: 10
+    objectives:
+    - Define Linux with proper technical nuance.
+    - Differentiate the kernel from a complete distribution.
+    - Understand why people often say Linux for the whole system.
+    sections:
+    - type: theory
+      title: Linux, kernel and system
+      content: 'Strictly speaking, Linux is the kernel: the central component that helps software communicate with hardware. In everyday language, people often say “Linux” to refer to a full operating system built around the Linux kernel.'
+    - type: theory
+      title: A distribution
+      content: A Linux distribution combines the Linux kernel with system tools, libraries, a package manager, services, documentation, and often a graphical interface. Ubuntu, Debian, Fedora and Linux Mint are examples of Linux distributions.
+    - type: theory
+      title: Layered view
+      content: 'A useful mental model is: hardware → Linux kernel → system tools and libraries → shell and services → graphical interface and applications → user.'
+    - type: questions
+      items:
+      - type: qcm
+        question: Technically, what is Linux first?
+        answers:
+        - text: A web browser.
+          correct: false
+        - text: A kernel.
+          correct: true
+        - text: A keyboard shortcut.
+          correct: false
+        - text: A Windows edition.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t3
+    type: task
+    title: Linux distributions and Ubuntu 24.04 LTS
+    order: 3
+    xpReward: 10
+    objectives:
+    - Understand what a distribution is.
+    - Know why Ubuntu 24.04 LTS is used in class.
+    - Compare a few common distributions.
+    sections:
+    - type: theory
+      title: Why Ubuntu 24.04 LTS?
+      content: Ubuntu 24.04 LTS is a stable long-term support version. Using it in prepared VMs helps avoid frequent changes during class activities.
+    - type: command_table
+      commands:
+      - command: Ubuntu
+        description: Popular distribution for learning, workstations, servers and cloud environments.
+      - command: Debian
+        description: Stable distribution that is also the base for Ubuntu.
+      - command: Fedora
+        description: Modern distribution often used to test newer Linux technologies.
+      - command: Linux Mint
+        description: User-friendly desktop distribution, often comfortable for users coming from Windows.
+    - type: theory
+      title: Same family, different choices
+      content: Distributions may use the Linux kernel, but they can choose different versions, package managers, update policies, desktop environments and default tools.
+    - type: questions
+      items:
+      - type: qcm
+        question: Why is Ubuntu 24.04 LTS a good choice for classroom VMs?
+        answers:
+        - text: It changes every day.
+          correct: false
+        - text: It is stable and supported for a long period.
+          correct: true
+        - text: It removes the terminal.
+          correct: false
+        - text: It only works on phones.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t4
+    type: task
+    title: Terminal, shell and command prompt
+    order: 4
+    xpReward: 15
+    objectives:
+    - Distinguish terminal, shell and command line.
+    - Recognize the prompt.
+    - Run a first simple command.
+    sections:
+    - type: theory
+      title: Three related ideas
+      content: The terminal is the application window where you type commands. The shell is the program that interprets your commands, often Bash. The command line is the text-based way of interacting with the system.
+    - type: code_block
+      title: Example command
+      language: bash
+      code: echo "Hello NEXUS"
+    - type: theory
+      title: The prompt
+      content: The prompt often shows your username, the machine name and your current location. It waits for your next command.
+    - type: warning
+      title: Spacing and spelling matter
+      content: Linux commands are usually case-sensitive. `LS` is not the same as `ls`. Spaces also separate command arguments.
+    - type: terminal_exercise
+      title: Run your first command
+      instructions: 'Open a terminal in the VM and run:'
+      commands:
+      - echo "Hello NEXUS"
+      expectedObservation: The terminal should display Hello NEXUS.
+    - type: questions
+      items:
+      - type: qcm
+        question: What does the shell do?
+        answers:
+        - text: It interprets commands.
+          correct: true
+        - text: It is the physical keyboard.
+          correct: false
+        - text: It deletes hidden files.
+          correct: false
+        - text: It replaces the Linux kernel.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t5
+    type: task
+    title: 'First landmarks: whoami, pwd, clear, history'
+    order: 5
+    xpReward: 15
+    objectives:
+    - Identify the current user.
+    - Display the current location.
+    - Clear the screen.
+    - Review command history.
+    sections:
+    - type: theory
+      title: Technician reflexes
+      content: Before acting, a technician should know who they are logged in as and where they are in the file system.
+    - type: command_table
+      commands:
+      - command: whoami
+        description: Displays the current user.
+      - command: pwd
+        description: Prints the current working directory.
+      - command: clear
+        description: Clears the terminal display.
+      - command: history
+        description: Shows previously used commands.
+    - type: terminal_exercise
+      title: Practice the first landmarks
+      instructions: 'Run the following commands:'
+      commands:
+      - whoami
+      - pwd
+      - clear
+      - history
+      expectedObservation: You should be able to identify your user and current directory.
+    - type: validation
+      title: Validation — current directory
+      question: Which command displays your current location in the file system?
+      answerType: short_answer
+      acceptedAnswers:
+      - pwd
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - It prints the working directory.
+    - type: questions
+      items:
+      - type: qcm
+        question: Which command displays the current user?
+        answers:
+        - text: pwd
+          correct: false
+        - text: whoami
+          correct: true
+        - text: history
+          correct: false
+        - text: clear
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t6
+    type: task
+    title: Understanding the Linux file tree
+    order: 6
+    xpReward: 15
+    objectives:
+    - Understand /, /home and ~.
+    - Differentiate absolute and relative paths.
+    - Use . and ...
+    sections:
+    - type: theory
+      title: Linux file tree
+      content: Linux uses a single tree that starts at `/`, called the root directory. User files are commonly stored under `/home`.
+    - type: theory
+      title: Important path symbols
+      content: '`/` is the root of the file system. `~` represents your home directory. `.` means the current directory. `..` means the parent directory.'
+    - type: command_table
+      commands:
+      - command: /
+        description: Root of the file system.
+      - command: /home/student
+        description: Typical home directory for the student user.
+      - command: '~'
+        description: Shortcut for the current user’s home directory.
+      - command: .
+        description: Current directory.
+      - command: ..
+        description: Parent directory.
+    - type: teacher_note
+      title: Windows comparison
+      content: Compare `/home/student` with `C:\Users\student`, while emphasizing that Linux does not use drive letters in the same way.
+    - type: questions
+      items:
+      - type: qcm
+        question: What does `~` usually represent?
+        answers:
+        - text: The root directory.
+          correct: false
+        - text: The current user’s home directory.
+          correct: true
+        - text: A deleted file.
+          correct: false
+        - text: A network cable.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t7
+    type: task
+    title: 'Listing content: ls, ls -l, ls -a'
+    order: 7
+    xpReward: 15
+    objectives:
+    - List visible content.
+    - Use long listing format.
+    - Reveal hidden files.
+    sections:
+    - type: theory
+      title: Listing files
+      content: '`ls` lists the content of a directory. Options change the display.'
+    - type: command_table
+      commands:
+      - command: ls
+        description: Lists visible files and directories.
+      - command: ls -l
+        description: Displays a detailed list.
+      - command: ls -a
+        description: Shows hidden files too.
+      - command: ls -la
+        description: Detailed list including hidden files.
+    - type: theory
+      title: Hidden files
+      content: In Linux, a file or directory whose name starts with a dot is hidden by default. It is not encrypted or protected; it is only hidden from normal listing.
+    - type: terminal_exercise
+      title: Practice listing
+      instructions: 'Run these commands in your home directory:'
+      commands:
+      - cd ~
+      - ls
+      - ls -l
+      - ls -a
+      - ls -la
+      expectedObservation: Compare the results, especially hidden files.
+    - type: questions
+      items:
+      - type: qcm
+        question: Which command shows hidden files?
+        answers:
+        - text: ls
+          correct: false
+        - text: ls -a
+          correct: true
+        - text: pwd
+          correct: false
+        - text: cat
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t8
+    type: task
+    title: Navigating with cd and paths
+    order: 8
+    xpReward: 15
+    objectives:
+    - Move between directories.
+    - Use absolute and relative paths.
+    - Return to the home directory.
+    sections:
+    - type: theory
+      title: Changing directories
+      content: '`cd` changes your current directory. You can use absolute paths, relative paths and shortcuts like `~` or `..`.'
+    - type: command_table
+      commands:
+      - command: cd ~
+        description: Goes to your home directory.
+      - command: cd /
+        description: Goes to the root directory.
+      - command: cd ..
+        description: Goes to the parent directory.
+      - command: cd /home/student
+        description: Uses an absolute path.
+    - type: terminal_exercise
+      title: Practice navigation
+      instructions: 'Run the commands and watch how `pwd` changes:'
+      commands:
+      - cd ~
+      - pwd
+      - cd /
+      - pwd
+      - cd /home/student
+      - pwd
+      - cd ..
+      - pwd
+      - cd ~
+      expectedObservation: You should see your current directory change after each cd.
+    - type: validation
+      title: Validation — go home
+      question: Which command can return you to your home directory?
+      answerType: short_answer
+      acceptedAnswers:
+      - cd ~
+      - cd
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - The tilde represents your home directory.
+    - type: questions
+      items:
+      - type: qcm
+        question: What type of path starts with `/`?
+        answers:
+        - text: Relative path.
+          correct: false
+        - text: Absolute path.
+          correct: true
+        - text: Temporary path.
+          correct: false
+        - text: Hidden path.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-t9
+    type: task
+    title: 'Reading without modifying: cat, head, tail, wc -l'
+    order: 9
+    xpReward: 15
+    objectives:
+    - Display a full file.
+    - Read the beginning or end of a file.
+    - Count lines.
+    sections:
+    - type: theory
+      title: Reading files safely
+      content: These commands help you inspect files without editing them.
+    - type: command_table
+      commands:
+      - command: cat file.txt
+        description: Displays the full file.
+      - command: head file.txt
+        description: Displays the first lines.
+      - command: tail file.txt
+        description: Displays the last lines.
+      - command: wc -l file.txt
+        description: Counts the number of lines.
+    - type: terminal_exercise
+      title: Practice reading
+      instructions: 'Use safe read-only commands:'
+      commands:
+      - cat /etc/hostname
+      - head /etc/os-release
+      - tail /etc/os-release
+      - wc -l /etc/os-release
+      expectedObservation: You should be able to read information without modifying files.
+    - type: questions
+      items:
+      - type: qcm
+        question: Which command counts the number of lines in a file?
+        answers:
+        - text: cat
+          correct: false
+        - text: wc -l
+          correct: true
+        - text: cd
+          correct: false
+        - text: clear
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+  - id: linux-fund-1-en-challenge
+    type: challenge
+    title: Challenge — First Contact
+    order: 10
+    xpReward: 30
+    challenge: true
+    objectives:
+    - Use navigation and reading commands in a real VM.
+    - Find a hidden file.
+    - Answer validation questions in NEXUS.
+    sections:
+    - type: mission
+      title: Challenge Briefing
+      content: Agent, a Linux VM contains a first contact trace. Explore carefully, do not modify the system, and recover the requested information.
+    - type: warning
+      title: Do not modify files
+      content: Use only read and navigation commands from this module.
+    - type: theory
+      title: Expected skills
+      content: Use `pwd`, `ls`, `ls -a`, `cd`, `cat`, `head`, `tail` and `wc -l` as needed.
+    - type: questions
+      items:
+      - type: qcm
+        question: What should you do before exploring an unknown directory?
+        answers:
+        - text: Run rm -r.
+          correct: false
+        - text: Check where you are and list content.
+          correct: true
+        - text: Install packages.
+          correct: false
+        - text: Change permissions.
+          correct: false
+        feedback:
+          correct: Correct.
+          incorrect: Review the concept and try again.
+    - type: teacher_note
+      title: Suggested VM
+      content: Prepare a hidden file such as `/home/student/.secret/flag.txt` and ask students to find its full path and content.
