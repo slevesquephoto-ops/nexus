@@ -51,7 +51,8 @@ module:
       content: Insist that terminal deletion is not the same as dragging a file to a recycle bin.
     - type: questions
       items:
-      - type: qcm
+      - id: t1-q1
+        type: qcm
         question: What is the safest reflex before modifying or deleting files?
         answers:
         - text: Run the command quickly.
@@ -186,7 +187,8 @@ module:
       expectedObservation: The nested structure should exist.
     - type: questions
       items:
-      - type: qcm
+      - id: t4-q1
+        type: qcm
         question: What does `mkdir -p` help with?
         answers:
         - text: It deletes folders.
@@ -267,7 +269,8 @@ module:
       expectedObservation: Add a few lines, save and verify with cat.
     - type: questions
       items:
-      - type: qcm
+      - id: t6-q1
+        type: qcm
         question: How do you save in nano?
         answers:
         - text: Ctrl+O
@@ -344,7 +347,8 @@ module:
       expectedObservation: The no-extension file should still be identified as text.
     - type: questions
       items:
-      - type: qcm
+      - id: t8-q1
+        type: qcm
         question: Why is `file` useful?
         answers:
         - text: It deletes files.
@@ -388,7 +392,8 @@ module:
       expectedObservation: You should see copied files and a copied directory.
     - type: questions
       items:
-      - type: qcm
+      - id: t9-q1
+        type: qcm
         question: Which option copies a directory recursively?
         answers:
         - text: -r
@@ -481,7 +486,8 @@ module:
       expectedObservation: The file and empty folder should be gone after confirmation.
     - type: questions
       items:
-      - type: qcm
+      - id: t11-q1
+        type: qcm
         question: Which rm option asks for confirmation?
         answers:
         - text: -i
@@ -522,7 +528,8 @@ module:
       expectedObservation: Practice quitting with q.
     - type: questions
       items:
-      - type: qcm
+      - id: t12-q1
+        type: qcm
         question: Which key quits a man page?
         answers:
         - text: q

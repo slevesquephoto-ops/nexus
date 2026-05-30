@@ -47,7 +47,8 @@ module:
       content: Demonstrate the VM, terminal launch, prompt, and the difference between reading a file and modifying a file.
     - type: questions
       items:
-      - type: qcm
+      - id: t1-q1
+        type: qcm
         question: What is the main goal of this first Linux Fundamentals module?
         answers:
         - text: Install a full Linux server.
@@ -82,7 +83,8 @@ module:
       content: 'A useful mental model is: hardware → Linux kernel → system tools and libraries → shell and services → graphical interface and applications → user.'
     - type: questions
       items:
-      - type: qcm
+      - id: t2-q1
+        type: qcm
         question: Technically, what is Linux first?
         answers:
         - text: A web browser.
@@ -124,7 +126,8 @@ module:
       content: Distributions may use the Linux kernel, but they can choose different versions, package managers, update policies, desktop environments and default tools.
     - type: questions
       items:
-      - type: qcm
+      - id: t3-q1
+        type: qcm
         question: Why is Ubuntu 24.04 LTS a good choice for classroom VMs?
         answers:
         - text: It changes every day.
@@ -169,7 +172,8 @@ module:
       expectedObservation: The terminal should display Hello NEXUS.
     - type: questions
       items:
-      - type: qcm
+      - id: t4-q1
+        type: qcm
         question: What does the shell do?
         answers:
         - text: It interprets commands.
@@ -228,7 +232,8 @@ module:
       - It prints the working directory.
     - type: questions
       items:
-      - type: qcm
+      - id: t5-q1
+        type: qcm
         question: Which command displays the current user?
         answers:
         - text: pwd
@@ -275,7 +280,8 @@ module:
       content: Compare `/home/student` with `C:\Users\student`, while emphasizing that Linux does not use drive letters in the same way.
     - type: questions
       items:
-      - type: qcm
+      - id: t6-q1
+        type: qcm
         question: What does `~` usually represent?
         answers:
         - text: The root directory.
@@ -327,7 +333,8 @@ module:
       expectedObservation: Compare the results, especially hidden files.
     - type: questions
       items:
-      - type: qcm
+      - id: t7-q1
+        type: qcm
         question: Which command shows hidden files?
         answers:
         - text: ls
@@ -391,7 +398,8 @@ module:
       - The tilde represents your home directory.
     - type: questions
       items:
-      - type: qcm
+      - id: t8-q1
+        type: qcm
         question: What type of path starts with `/`?
         answers:
         - text: Relative path.
@@ -439,7 +447,8 @@ module:
       expectedObservation: You should be able to read information without modifying files.
     - type: questions
       items:
-      - type: qcm
+      - id: t9-q1
+        type: qcm
         question: Which command counts the number of lines in a file?
         answers:
         - text: cat
@@ -475,7 +484,8 @@ module:
       content: Use `pwd`, `ls`, `ls -a`, `cd`, `cat`, `head`, `tail` and `wc -l` as needed.
     - type: questions
       items:
-      - type: qcm
+      - id: t9-q1
+        type: qcm
         question: What should you do before exploring an unknown directory?
         answers:
         - text: Run rm -r.

@@ -51,7 +51,8 @@ module:
       content: This module prepares future support scenarios where students will inspect logs and outputs.
     - type: questions
       items:
-      - type: qcm
+      - id: t1-q1
+        type: qcm
         question: What is the main focus of this module?
         answers:
         - text: Installing packages.
@@ -171,7 +172,8 @@ module:
       expectedObservation: Compare how each pattern changes the results.
     - type: questions
       items:
-      - type: qcm
+      - id: t4-q1
+        type: qcm
         question: What does `*` mean in a search pattern?
         answers:
         - text: Delete everything.
@@ -242,7 +244,8 @@ module:
       expectedObservation: Observe the difference between the options.
     - type: questions
       items:
-      - type: qcm
+      - id: t6-q1
+        type: qcm
         question: Which option shows line numbers with grep?
         answers:
         - text: -i
@@ -324,7 +327,8 @@ module:
       expectedObservation: '> creates or replaces the file content.'
     - type: questions
       items:
-      - type: qcm
+      - id: t8-q1
+        type: qcm
         question: What does `>` do if the destination file already exists?
         answers:
         - text: It asks for confirmation.
@@ -429,7 +433,8 @@ module:
       expectedObservation: The final file should contain sorted unique names.
     - type: questions
       items:
-      - type: qcm
+      - id: t11-q1
+        type: qcm
         question: Why is `sort` often used before `uniq`?
         answers:
         - text: Because uniq removes only adjacent duplicates.

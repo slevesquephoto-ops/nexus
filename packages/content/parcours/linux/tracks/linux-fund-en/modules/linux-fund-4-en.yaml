@@ -53,7 +53,8 @@ module:
       content: This module closes Linux Fundamentals before the integrated exam.
     - type: questions
       items:
-      - type: qcm
+      - id: t1-q1
+        type: qcm
         question: What is the main goal of this module?
         answers:
         - text: Configure Samba.
@@ -142,7 +143,8 @@ module:
       - A directory begins with d.
     - type: questions
       items:
-      - type: qcm
+      - id: t3-q1
+        type: qcm
         question: In `-rw-r--r--`, what does the first `-` indicate?
         answers:
         - text: Regular file.
@@ -216,7 +218,8 @@ module:
       expectedObservation: The script probably does not yet have execute permission.
     - type: questions
       items:
-      - type: qcm
+      - id: t5-q1
+        type: qcm
         question: In `rw-`, which permission is missing?
         answers:
         - text: read
@@ -307,7 +310,8 @@ module:
       - Use chmod, u and x.
     - type: questions
       items:
-      - type: qcm
+      - id: t7-q1
+        type: qcm
         question: What does `g-w` mean in chmod?
         answers:
         - text: Add write to group.
@@ -361,7 +365,8 @@ module:
       - 4 + 2 + 1.
     - type: questions
       items:
-      - type: qcm
+      - id: t8-q1
+        type: qcm
         question: What does `chmod 644 file.txt` usually mean?
         answers:
         - text: Owner can read/write; group and others can read.
@@ -395,7 +400,8 @@ module:
       content: Common choices include 644 for public text files, 600 for private files, 755 for scripts/directories and 700 for private directories.
     - type: questions
       items:
-      - type: qcm
+      - id: t9-q1
+        type: qcm
         question: Why is chmod 777 usually dangerous?
         answers:
         - text: It deletes the file.
@@ -489,7 +495,8 @@ module:
       - Use chmod u+x.
     - type: questions
       items:
-      - type: qcm
+      - id: t11-q1
+        type: qcm
         question: Why is `chmod u+x` better than `chmod 777` here?
         answers:
         - text: It gives only the needed right to the owner.
@@ -583,7 +590,8 @@ module:
       - It contains 777.
     - type: questions
       items:
-      - type: qcm
+      - id: t12-q1
+        type: qcm
         question: Why correct only what is necessary?
         answers:
         - text: Because of the principle of least privilege.

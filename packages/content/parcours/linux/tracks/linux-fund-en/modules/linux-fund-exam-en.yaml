@@ -159,7 +159,8 @@ module:
       - Read the objectives file.
     - type: questions
       items:
-      - type: qcm
+      - id: t2-q1
+        type: qcm
         question: Which command confirms your current location before modifying files?
         answers:
         - text: pwd
@@ -219,7 +220,8 @@ module:
       - Use cat on the hidden file.
     - type: questions
       items:
-      - type: qcm
+      - id: t3-q1
+        type: qcm
         question: In Linux, are `Report.txt` and `report.txt` always the same file?
         answers:
         - text: Yes, Linux always ignores case.
@@ -338,7 +340,8 @@ module:
       - Search for *gamma*.
     - type: questions
       items:
-      - type: qcm
+      - id: t5-q1
+        type: qcm
         question: In `find clients -name "*.log"`, what does `*` represent?
         answers:
         - text: It deletes all .log files.
@@ -409,7 +412,8 @@ module:
       - It starts with a dash.
     - type: questions
       items:
-      - type: qcm
+      - id: t6-q1
+        type: qcm
         question: What does the pipe `|` do?
         answers:
         - text: Sends one command’s output to another command.
@@ -481,7 +485,8 @@ module:
       - Use sort then uniq.
     - type: questions
       items:
-      - type: qcm
+      - id: t7-q1
+        type: qcm
         question: Why is sort often used before uniq?
         answers:
         - text: Because uniq removes only adjacent duplicates.
@@ -554,7 +559,8 @@ module:
       - Combine -l and -d.
     - type: questions
       items:
-      - type: qcm
+      - id: t8-q1
+        type: qcm
         question: Why would `chmod 777 scripts/start-diagnostic.sh` be a bad correction?
         answers:
         - text: It gives all rights to everyone.
@@ -604,7 +610,8 @@ module:
       - Interactive mode.
     - type: questions
       items:
-      - type: qcm
+      - id: t9-q1
+        type: qcm
         question: Why should you verify with ls before deleting?
         answers:
         - text: To confirm you target the correct file or folder.
@@ -665,7 +672,8 @@ module:
       - Use wc -l.
     - type: questions
       items:
-      - type: qcm
+      - id: t10-q1
+        type: qcm
         question: Which set of concepts does this exam mainly validate?
         answers:
         - text: Navigation, files, search, redirection and permissions.
