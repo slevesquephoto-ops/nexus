@@ -1,6 +1,6 @@
 module:
   id: linux-fund-1-fr
-  trackId: linux-fr
+  trackId: linux-fund-1-fr
   title: "Linux Fundamentals 1 — Premier contact"
   description: "Découvrir Linux, comprendre le terminal, se repérer dans l’arborescence et lire des fichiers sans modifier le système."
   order: 1
@@ -54,13 +54,9 @@ module:
           content: |
             Bienvenue dans ton premier module Linux de NEXUS.
 
-            Tu viens d’obtenir un accès contrôlé à une machine Linux. Pour l’instant,
-            ton objectif n’est pas de réparer, pirater, supprimer ou modifier le système.
-            Ton objectif est beaucoup plus important : **apprendre à te repérer**.
+            Tu viens d’obtenir un accès contrôlé à une machine Linux. Pour l’instant, ton objectif n’est pas de réparer, pirater, supprimer ou modifier le système. Ton objectif est beaucoup plus important : **apprendre à te repérer**.
 
-            Un bon technicien ne commence pas par taper des commandes au hasard.
-            Il observe, vérifie où il se trouve, identifie le compte utilisé, comprend
-            l’arborescence, puis lit les informations disponibles avant d’agir.
+            Un bon technicien ne commence pas par taper des commandes au hasard. Il observe, vérifie où il se trouve, identifie le compte utilisé, comprend l’arborescence, puis lit les informations disponibles avant d’agir.
 
         - type: theory
           title: "Ce que tu vas apprendre"
@@ -146,8 +142,10 @@ module:
             5. **Gestionnaire de paquets** : installation et mise à jour des logiciels.
             6. **Interface graphique et applications** : environnement utilisé par l’humain.
 
-            Image suggérée pour NEXUS : un diagramme circulaire ou en couches avec le
-            noyau Linux au centre, puis les couches autour.
+        - type: image
+          src: "/content-images/linux-conept.webp"
+          alt: "Concept Distro Linux"
+          caption: "Diagramme du concept de distribution Linux"
 
         - type: theory
           title: "Pourquoi apprendre Linux ?"

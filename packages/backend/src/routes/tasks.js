@@ -195,7 +195,7 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
 router.post('/:id/submit', requireAuth, async (req, res) => {
   const taskId = req.params.id;
   const userId = req.user.id;
-  const { note, validations } = req.body;
+  const { note, validations, questionAnswers } = req.body;
 
   try {
     const task = await prisma.task.findUnique({
@@ -208,11 +208,11 @@ router.post('/:id/submit', requireAuth, async (req, res) => {
     const existing = await prisma.taskProgress.findUnique({
       where: { userId_taskId: { userId, taskId } },
     });
-    if (existing?.completed || existing?.score !== null) {
+    if (existing && (existing.completed || existing.score !== null)) {
       return res.status(409).json({ error: 'Challenge already graded' });
     }
 
-    const response = JSON.stringify({ note: note ?? '', validations: validations ?? {} });
+    const response = JSON.stringify({ note: note ?? '', validations: validations ?? {}, questionAnswers: questionAnswers ?? {} });
 
     await prisma.taskProgress.upsert({
       where: { userId_taskId: { userId, taskId } },
@@ -228,3 +228,4 @@ router.post('/:id/submit', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
+module.exports.checkAvatarRewards = checkAvatarRewards;

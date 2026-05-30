@@ -25,7 +25,7 @@ type SectionType =
   | { type: 'image'; src: string; alt: string; caption?: string }
   | { type: 'mission'; title: string; content: string }
   | { type: 'warning'; title: string; content: string }
-  | { type: 'hints'; hints: string[] }
+  | { type: 'hints' | 'hint'; hints: string[] }
   | { type: 'terminal_exercise'; title: string; instructions: string; expectedCommands?: string[] }
   | { type: 'validation'; title: string; question: string; acceptedAnswers: string[] }
   | { type: 'teacher_note'; content: string }
@@ -118,8 +118,9 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
   const [banners, setBanners]                   = useState<Record<string, { xpGained: number }>>({})
   const [completing, setCompleting]             = useState<Record<string, boolean>>({})
   const [challengeNotes, setChallengeNotes]     = useState<Record<string, string>>({})
-  const [validationsDone, setValidationsDone]   = useState<Record<string, Record<string, string>>>({})
+  const [validationsDone, setValidationsDone]   = useState<Record<string, Record<string, { question: string; answer: string }>>>({})
   const [submitting, setSubmitting]             = useState<Record<string, boolean>>({})
+  const [submitError, setSubmitError]           = useState<Record<string, string>>({})
   const [newUnlockedAvatar, setNewUnlockedAvatar] = useState<{ avatarId: string; title: string; description: string; file: string } | null>(null)
 
   const loadModule = useCallback(async () => {
@@ -174,7 +175,22 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
   async function submitChallenge(task: Task) {
     if (submitting[task.id]) return
     setSubmitting(prev => ({ ...prev, [task.id]: true }))
+    setSubmitError(prev => ({ ...prev, [task.id]: '' }))
     try {
+      // Build question answers from QuestionsSection state
+      const sections: { type: string; items?: { id: string; question: string; type: string }[] }[] = task.content ?? []
+      const questionAnswers: Record<string, { question: string; answer: string }> = {}
+      const taskAns = answers[task.id] ?? {}
+      sections.forEach(s => {
+        if ((s.type === 'questions' || s.type === 'validation') && s.items) {
+          s.items.forEach(item => {
+            if (taskAns[item.id] !== undefined) {
+              questionAnswers[item.id] = { question: item.question, answer: taskAns[item.id] }
+            }
+          })
+        }
+      })
+
       const res = await fetch(`${API_URL}/api/tasks/${task.id}/submit`, {
         method: 'POST',
         credentials: 'include',
@@ -182,12 +198,18 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
         body: JSON.stringify({
           note: challengeNotes[task.id] ?? '',
           validations: validationsDone[task.id] ?? {},
+          questionAnswers,
         }),
       })
       if (res.status === 401) { router.push('/login'); return }
-      if (res.ok || (await res.json()).error === 'Challenge already graded') {
+      const data = await res.json()
+      if (res.ok || data.error === 'Challenge already graded') {
         setSubmissions(prev => ({ ...prev, [task.id]: true }))
+      } else {
+        setSubmitError(prev => ({ ...prev, [task.id]: data.error ?? 'Erreur lors de la soumission' }))
       }
+    } catch {
+      setSubmitError(prev => ({ ...prev, [task.id]: 'Erreur réseau — réessaie.' }))
     } finally {
       setSubmitting(prev => ({ ...prev, [task.id]: false }))
     }
@@ -287,12 +309,7 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
           const alreadySubmitted = submissions[task.id] ?? false
           const showValidate   = !isChallenge && status === 'active' && allQsDone && !alreadyDone && !banners[task.id]
 
-          const totalValidations = isChallenge
-            ? sections.filter(s => s.type === 'validation').length
-            : 0
-          const doneValidations = Object.keys(validationsDone[task.id] ?? {}).length
-          const allValidationsDone = totalValidations === 0 || doneValidations >= totalValidations
-          const canSubmitChallenge = isChallenge && status === 'active' && allValidationsDone && !alreadySubmitted
+          const canSubmitChallenge = isChallenge && status === 'active' && !alreadySubmitted
 
           return (
             <div key={task.id} className={`rounded-xl overflow-hidden transition-all duration-200 ${cardStyles[status]}`}>
@@ -348,7 +365,7 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
                     <p className="px-6 py-4 text-nx-text-dim text-sm">Aucun contenu.</p>
                   )}
 
-                  {!isChallenge && sections.map((section, j) => {
+                  {(!isChallenge || (!alreadyDone && !alreadySubmitted)) && sections.map((section, j) => {
                     switch (section.type) {
                       case 'theory':
                         return <TheorySection key={j} content={section.content} />
@@ -380,10 +397,23 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
                       case 'warning':
                         return <WarningBlock key={j} title={section.title} content={section.content} />
                       case 'hints':
+                      case 'hint':
                         return <HintBlock key={j} hints={section.hints} />
                       case 'terminal_exercise':
-                        return <TerminalExercise key={j} title={section.title} instructions={section.instructions} expectedCommands={section.expectedCommands} />
+                        return <TerminalExercise key={j} title={section.title} instructions={section.instructions} expectedCommands={section.commands ?? section.expectedCommands} />
                       case 'validation': {
+                        if (section.items) {
+                          return (
+                            <QuestionsSection
+                              key={j}
+                              items={section.items}
+                              answers={taskAnswers}
+                              submitted={taskSubmitted}
+                              onAnswer={(qId, val) => setAnswers(prev => ({ ...prev, [task.id]: { ...(prev[task.id] ?? {}), [qId]: val } }))}
+                              onSubmit={(qId, correct) => setSubmitted(prev => ({ ...prev, [task.id]: { ...(prev[task.id] ?? {}), [qId]: correct } }))}
+                            />
+                          )
+                        }
                         const valId = `${task.id}-v${j}`
                         return (
                           <ValidationBlock
@@ -391,10 +421,10 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
                             id={valId}
                             title={section.title}
                             question={section.question}
-                            acceptedAnswers={section.acceptedAnswers}
-                            onComplete={(id, answer) => setValidationsDone(prev => ({
+                            acceptedAnswers={section.acceptedAnswers ?? []}
+                            onComplete={(id, answer, question) => setValidationsDone(prev => ({
                               ...prev,
-                              [task.id]: { ...(prev[task.id] ?? {}), [id]: answer },
+                              [task.id]: { ...(prev[task.id] ?? {}), [id]: { question, answer } },
                             }))}
                           />
                         )
@@ -422,6 +452,9 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
                       >
                         {submitting[task.id] ? 'Soumission…' : 'Soumettre le défi ⚔️'}
                       </button>
+                      {submitError[task.id] && (
+                        <p className="text-red-400 text-xs text-center">{submitError[task.id]}</p>
+                      )}
                     </div>
                   )}
 

@@ -173,13 +173,42 @@ router.get('/:id', async (req, res) => {
       }
     }
 
+    // Complétion par track pour l'utilisateur connecté
+    let trackCompletionMap = {};
+    if (userId) {
+      const trackIds = tracks.map(pt => pt.trackId);
+      const modulesWithTasks = await prisma.module.findMany({
+        where: { trackId: { in: trackIds } },
+        select: {
+          trackId: true,
+          tasks: { select: { id: true } },
+        },
+      });
+      const allTaskIds = modulesWithTasks.flatMap(m => m.tasks.map(t => t.id));
+      const completedProgress = await prisma.taskProgress.findMany({
+        where: { userId, taskId: { in: allTaskIds }, completed: true },
+        select: { taskId: true },
+      });
+      const completedSet = new Set(completedProgress.map(p => p.taskId));
+      for (const mod of modulesWithTasks) {
+        if (!trackCompletionMap[mod.trackId]) trackCompletionMap[mod.trackId] = true;
+        if (mod.tasks.length === 0 || !mod.tasks.every(t => completedSet.has(t.id))) {
+          trackCompletionMap[mod.trackId] = false;
+        }
+      }
+    }
+
     res.json({
       id: parcours.id,
       title: parcours.title,
       description: parcours.description,
       language: parcours.language,
       order: parcours.order,
-      tracks: tracks.map(pt => ({ ...pt.track, orderInParcours: pt.order })),
+      tracks: tracks.map(pt => ({
+        ...pt.track,
+        orderInParcours: pt.order,
+        completed: trackCompletionMap[pt.trackId] ?? false,
+      })),
     });
   } catch (err) {
     console.error('[GET /api/parcours/:id]', err);

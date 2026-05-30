@@ -142,7 +142,7 @@ router.get('/me/current-position', requireAuth, async (req, res) => {
 
 router.get('/class', requireAuth, async (req, res) => {
   try {
-    const membership = await prisma.classeMember.findFirst({
+    const memberships = await prisma.classeMember.findMany({
       where: { userId: req.user.id },
       include: {
         classe: {
@@ -166,23 +166,22 @@ router.get('/class', requireAuth, async (req, res) => {
       },
     });
 
-    if (!membership) return res.json({ classe: null, members: [] });
+    const classes = memberships.map(m => ({
+      id: m.classe.id,
+      name: m.classe.name,
+      members: m.classe.members
+        .map(cm => ({
+          id: cm.user.id,
+          username: cm.user.username,
+          xp: cm.user.xp,
+          level: cm.user.level,
+          avatarId: cm.user.avatarId,
+          tasksCompleted: cm.user.taskProgress.length,
+        }))
+        .sort((a, b) => b.xp - a.xp),
+    }));
 
-    const members = membership.classe.members
-      .map(m => ({
-        id: m.user.id,
-        username: m.user.username,
-        xp: m.user.xp,
-        level: m.user.level,
-        avatarId: m.user.avatarId,
-        tasksCompleted: m.user.taskProgress.length,
-      }))
-      .sort((a, b) => b.xp - a.xp);
-
-    res.json({
-      classe: { id: membership.classe.id, name: membership.classe.name },
-      members,
-    });
+    res.json({ classes });
   } catch (err) {
     console.error('[GET /api/users/class]', err);
     res.status(500).json({ error: 'Internal server error' });

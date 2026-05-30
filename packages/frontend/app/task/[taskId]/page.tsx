@@ -24,7 +24,7 @@ type Section =
   | { type: 'image'; src: string; alt: string; caption?: string }
   | { type: 'mission'; title: string; content: string }
   | { type: 'warning'; title: string; content: string }
-  | { type: 'hints'; hints: string[] }
+  | { type: 'hints' | 'hint'; hints: string[] }
   | { type: 'terminal_exercise'; title: string; instructions: string; expectedCommands?: string[] }
   | { type: 'validation'; title: string; question: string; acceptedAnswers: string[] }
   | { type: 'teacher_note'; content: string }
@@ -216,11 +216,24 @@ export default function TaskPage() {
             case 'warning':
               return <WarningBlock key={i} title={section.title} content={section.content} />
             case 'hints':
+            case 'hint':
               return <HintBlock key={i} hints={section.hints} />
             case 'terminal_exercise':
-              return <TerminalExercise key={i} title={section.title} instructions={section.instructions} expectedCommands={section.expectedCommands} />
+              return <TerminalExercise key={i} title={section.title} instructions={section.instructions} expectedCommands={section.commands ?? section.expectedCommands} />
             case 'validation':
-              return <ValidationBlock key={i} title={section.title} question={section.question} acceptedAnswers={section.acceptedAnswers} />
+              if (section.items) {
+                return (
+                  <QuestionsSection
+                    key={i}
+                    items={section.items}
+                    answers={answers}
+                    submitted={submitted}
+                    onAnswer={(qId, val) => setAnswers(prev => ({ ...prev, [qId]: val }))}
+                    onSubmit={(qId, correct) => setSubmitted(prev => ({ ...prev, [qId]: correct }))}
+                  />
+                )
+              }
+              return <ValidationBlock key={i} title={section.title} question={section.question} acceptedAnswers={section.acceptedAnswers ?? []} />
             case 'teacher_note':
               return (userRole === 'TEACHER' || userRole === 'ADMIN')
                 ? <TeacherNote key={i} content={section.content} />

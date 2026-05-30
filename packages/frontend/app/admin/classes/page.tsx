@@ -47,6 +47,10 @@ export default function ClassesPage() {
   const [addingParcours, setAddingParcours] = useState(false)
   const [trackManager, setTrackManager] = useState<TrackManagerState | null>(null)
   const [togglingTrack, setTogglingTrack] = useState<string | null>(null)
+  const [addMemberClassId, setAddMemberClassId] = useState<string | null>(null)
+  const [addMemberUsername, setAddMemberUsername] = useState('')
+  const [addingMember, setAddingMember] = useState(false)
+  const [addMemberError, setAddMemberError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -180,6 +184,27 @@ export default function ClassesPage() {
       }))
     } finally {
       setTogglingTrack(null)
+    }
+  }
+
+  async function handleAddMember(classeId: string) {
+    if (!addMemberUsername.trim() || addingMember) return
+    setAddingMember(true)
+    setAddMemberError('')
+    try {
+      const res = await fetch(`${API_URL}/api/admin/classes/${classeId}/students`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ username: addMemberUsername.trim() }),
+      })
+      const body = await res.json()
+      if (!res.ok) { setAddMemberError(body.error ?? 'Erreur'); return }
+      setClasses(prev => prev.map(c => c.id === classeId ? { ...c, memberCount: c.memberCount + 1 } : c))
+      setAddMemberUsername('')
+      setAddMemberClassId(null)
+    } finally {
+      setAddingMember(false)
     }
   }
 
@@ -364,6 +389,43 @@ export default function ClassesPage() {
                       + Ajouter un parcours
                     </button>
                   ) : null}
+                </div>
+
+                {/* Add member */}
+                <div className="pt-3 border-t border-nx-border">
+                  {addMemberClassId === c.id ? (
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={addMemberUsername}
+                          onChange={e => setAddMemberUsername(e.target.value)}
+                          placeholder="Nom d'utilisateur…"
+                          onKeyDown={e => e.key === 'Enter' && handleAddMember(c.id)}
+                          className="flex-1 bg-nx-bg border border-nx-border rounded-lg px-3 py-1.5 text-sm text-white placeholder-nx-gray/50 focus:outline-none focus:border-nx-yellow/50 transition-colors"
+                        />
+                        <button
+                          onClick={() => handleAddMember(c.id)}
+                          disabled={!addMemberUsername.trim() || addingMember}
+                          className="px-3 py-1.5 bg-nx-yellow text-nx-bg text-xs font-semibold rounded-lg hover:brightness-110 disabled:opacity-50 transition-all shrink-0"
+                        >
+                          {addingMember ? '…' : 'Ajouter'}
+                        </button>
+                        <button onClick={() => { setAddMemberClassId(null); setAddMemberUsername(''); setAddMemberError('') }}
+                          className="text-nx-gray hover:text-white text-sm transition-colors shrink-0">
+                          ✕
+                        </button>
+                      </div>
+                      {addMemberError && <p className="text-red-400 text-xs">{addMemberError}</p>}
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setAddMemberClassId(c.id); setAddMemberUsername(''); setAddMemberError('') }}
+                      className="text-xs text-nx-gray hover:text-nx-yellow transition-colors"
+                    >
+                      + Ajouter un élève
+                    </button>
+                  )}
                 </div>
 
                 {/* Invite code */}

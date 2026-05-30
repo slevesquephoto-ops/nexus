@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const prisma = require('../lib/prisma');
 const { requireAuth, requireTeacher, requireAdmin } = require('../middleware/auth');
 const { calculateLevel } = require('../lib/levels');
+const { checkAvatarRewards } = require('./tasks');
 
 const router = express.Router();
 
@@ -409,6 +410,38 @@ router.delete('/classes/:id/parcours/:parcoursId/tracks/:trackId', requireAuth, 
   }
 });
 
+router.post('/classes/join-by-code', requireAuth, async (req, res) => {
+  const { inviteCode } = req.body;
+  if (!inviteCode?.trim()) return res.status(400).json({ error: 'inviteCode is required' });
+
+  try {
+    const classe = await prisma.classe.findFirst({
+      where: { inviteCode: inviteCode.trim().toUpperCase() },
+      include: { parcours: { select: { parcoursId: true } } },
+    });
+    if (!classe) return res.status(404).json({ error: 'Code invalide ou classe introuvable' });
+
+    await prisma.classeMember.upsert({
+      where: { userId_classeId: { userId: req.user.id, classeId: classe.id } },
+      create: { userId: req.user.id, classeId: classe.id },
+      update: {},
+    });
+
+    for (const { parcoursId } of classe.parcours) {
+      await prisma.enrollment.upsert({
+        where: { userId_parcoursId: { userId: req.user.id, parcoursId } },
+        create: { userId: req.user.id, parcoursId },
+        update: {},
+      });
+    }
+
+    res.json({ ok: true, classe: { id: classe.id, name: classe.name } });
+  } catch (err) {
+    console.error('[POST /api/admin/classes/join-by-code]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/classes/:id', requireAuth, requireTeacher, async (req, res) => {
   try {
     const classe = await prisma.classe.findUnique({
@@ -733,6 +766,11 @@ router.patch('/tasks/:taskId/grade', requireAuth, requireTeacher, async (req, re
         if (newLevel !== updated.level) {
           await prisma.user.update({ where: { id: userId }, data: { level: newLevel } });
         }
+        try {
+          await checkAvatarRewards(userId, req.params.taskId);
+        } catch (avatarErr) {
+          console.warn('[grade] Avatar reward skipped:', avatarErr.message);
+        }
       }
     } else {
       await prisma.taskProgress.upsert({
@@ -745,6 +783,22 @@ router.patch('/tasks/:taskId/grade', requireAuth, requireTeacher, async (req, re
     res.json({ progress: { completed: passed, score }, xpAwarded });
   } catch (err) {
     console.error('[PATCH /api/admin/tasks/:taskId/grade]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.delete('/tasks/:taskId/progress/:userId', requireAuth, requireTeacher, async (req, res) => {
+  const { taskId, userId } = req.params;
+  try {
+    const studentMembership = await prisma.classeMember.findFirst({
+      where: { userId, classe: { teacherId: req.user.id } },
+    });
+    if (!studentMembership) return res.status(403).json({ error: 'Forbidden: student not in your class' });
+
+    await prisma.taskProgress.deleteMany({ where: { userId, taskId } });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DELETE /api/admin/tasks/:taskId/progress/:userId]', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

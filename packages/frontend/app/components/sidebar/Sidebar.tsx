@@ -17,6 +17,7 @@ interface Track {
   title: string
   language?: string
   orderInParcours: number
+  completed?: boolean
 }
 
 interface SidebarProps {
@@ -39,6 +40,8 @@ function TrackItem({ track, isActive, onClick }: { track: Track; isActive: boole
       className={`w-full text-left py-2.5 text-base transition-all duration-200 tracking-wide flex items-center gap-2 pr-3 ${
         isActive
           ? 'bg-nx-surface-2 border-l-2 border-nx-yellow text-white font-semibold pl-[24px]'
+          : track.completed
+          ? 'text-nx-yellow hover:brightness-125 hover:bg-nx-surface-2/60 pl-7'
           : 'text-nx-text-dim hover:text-nx-text hover:bg-nx-surface-2/60 pl-7'
       }`}
     >

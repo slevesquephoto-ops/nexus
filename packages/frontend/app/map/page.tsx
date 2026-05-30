@@ -11,7 +11,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
 interface User { id: string; username: string; xp: number; level: number; avatarId?: string | null; role: string }
 interface Parcours { id: string; title: string; order: number; _count: { tracks: number }; prerequisiteId?: string | null; prerequisiteCompleted?: boolean }
-interface Track { id: string; title: string; language?: string; orderInParcours: number }
+interface Track { id: string; title: string; language?: string; orderInParcours: number; completed?: boolean }
 interface Module {
   id: string
   title: string

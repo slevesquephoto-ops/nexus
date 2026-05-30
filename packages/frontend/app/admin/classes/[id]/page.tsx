@@ -41,8 +41,6 @@ export default function ClassProgressPage() {
   const [data, setData] = useState<ClasseDetail | null>(null)
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [loading, setLoading] = useState(true)
-  const [copiedCode, setCopiedCode] = useState(false)
-
   // XP modal state
   const [xpModal, setXpModal] = useState<{ userId: string; username: string } | null>(null)
   const [xpAmount, setXpAmount] = useState('')
@@ -57,11 +55,9 @@ export default function ClassProgressPage() {
   const [gradePassed, setGradePassed] = useState(true)
   const [gradeSubmitting, setGradeSubmitting] = useState(false)
   const [gradeError, setGradeError] = useState('')
+  const [resetConfirm, setResetConfirm] = useState(false)
+  const [resetSubmitting, setResetSubmitting] = useState(false)
 
-  // Add member state
-  const [addUsername, setAddUsername] = useState('')
-  const [addingUser, setAddingUser] = useState(false)
-  const [addError, setAddError] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
 
   const loadData = useCallback(() => {
@@ -81,13 +77,6 @@ export default function ClassProgressPage() {
   }, [id, router])
 
   useEffect(() => { loadData() }, [loadData])
-
-  function copyCode() {
-    if (!data) return
-    navigator.clipboard.writeText(data.classe.inviteCode)
-    setCopiedCode(true)
-    setTimeout(() => setCopiedCode(false), 1500)
-  }
 
   function exportCSV() {
     if (!data) return
@@ -141,6 +130,22 @@ export default function ClassProgressPage() {
     setGradeScore('100')
     setGradePassed(true)
     setGradeError('')
+    setResetConfirm(false)
+  }
+
+  async function handleReset() {
+    if (!gradeModal) return
+    setResetSubmitting(true)
+    try {
+      await fetch(`${API_URL}/api/admin/tasks/${gradeModal.taskId}/progress/${gradeModal.userId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      setGradeModal(null)
+      loadData()
+    } finally {
+      setResetSubmitting(false)
+    }
   }
 
   async function handleGradeSubmit(e: React.FormEvent) {
@@ -163,27 +168,6 @@ export default function ClassProgressPage() {
       loadData()
     } finally {
       setGradeSubmitting(false)
-    }
-  }
-
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault()
-    if (!addUsername.trim()) return
-    setAddingUser(true)
-    setAddError('')
-    try {
-      const res = await fetch(`${API_URL}/api/admin/classes/${id}/students`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ username: addUsername.trim() }),
-      })
-      const body = await res.json()
-      if (!res.ok) { setAddError(body.error ?? 'Erreur'); return }
-      setAddUsername('')
-      loadData()
-    } finally {
-      setAddingUser(false)
     }
   }
 
@@ -260,19 +244,25 @@ export default function ClassProgressPage() {
             {gradeModal.response && (() => {
               try {
                 const parsed = JSON.parse(gradeModal.response)
+                const validationEntries = Object.entries(parsed.validations ?? {}) as [string, { question: string; answer: string }][]
+                const questionEntries = Object.entries(parsed.questionAnswers ?? {}) as [string, { question: string; answer: string }][]
+                const allAnswers = [...validationEntries, ...questionEntries].filter(([, v]) => v && v.answer && v.answer !== '✓')
                 return (
-                  <div className="bg-nx-bg rounded-lg border border-nx-border p-3 space-y-2 text-sm max-h-48 overflow-y-auto">
+                  <div className="bg-nx-bg rounded-lg border border-nx-border p-3 space-y-3 text-sm max-h-64 overflow-y-auto">
                     {parsed.note && (
                       <div>
                         <p className="text-nx-gray text-xs uppercase tracking-widest mb-1">Note de l&apos;élève</p>
-                        <p className="text-white whitespace-pre-wrap">{parsed.note}</p>
+                        <p className="text-white whitespace-pre-wrap text-sm">{parsed.note}</p>
                       </div>
                     )}
-                    {parsed.validations && Object.keys(parsed.validations).length > 0 && (
-                      <div>
-                        <p className="text-nx-gray text-xs uppercase tracking-widest mb-1">Validations</p>
-                        {Object.entries(parsed.validations).map(([k, v]) => (
-                          <p key={k} className="text-nx-cyan font-mono text-xs">{String(v)}</p>
+                    {allAnswers.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-nx-gray text-xs uppercase tracking-widest">Réponses</p>
+                        {allAnswers.map(([k, v]) => (
+                          <div key={k} className="space-y-0.5">
+                            <p className="text-nx-gray text-xs">{v.question}</p>
+                            <p className="text-nx-cyan font-mono text-xs bg-nx-surface px-2 py-1 rounded">{v.answer}</p>
+                          </div>
                         ))}
                       </div>
                     )}
@@ -303,6 +293,27 @@ export default function ClassProgressPage() {
                 </button>
               </div>
             </form>
+            <div className="border-t border-nx-border pt-3">
+              {!resetConfirm ? (
+                <button
+                  type="button"
+                  onClick={() => setResetConfirm(true)}
+                  className="w-full py-2 text-xs text-nx-gray hover:text-red-400 transition-colors tracking-wide"
+                >
+                  Réinitialiser le défi (permettre une nouvelle soumission)
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs text-red-400 text-center">La soumission sera supprimée. L&apos;élève pourra soumettre à nouveau.</p>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setResetConfirm(false)} className="flex-1 py-2 border border-nx-border text-nx-gray rounded-lg text-xs hover:text-white transition-colors">Annuler</button>
+                    <button type="button" onClick={handleReset} disabled={resetSubmitting} className="flex-1 py-2 bg-red-500/20 border border-red-500/40 text-red-400 rounded-lg text-xs hover:bg-red-500/30 transition-colors disabled:opacity-50">
+                      {resetSubmitting ? '…' : 'Confirmer'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -318,15 +329,6 @@ export default function ClassProgressPage() {
             </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="text-right">
-              <p className="text-nx-gray text-xs">Code d&apos;invitation</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-white text-sm font-mono">{classe.inviteCode}</span>
-                <button onClick={copyCode} className="px-2 py-1 bg-nx-surface border border-nx-border text-xs rounded-lg hover:border-nx-cyan/50 text-nx-gray hover:text-white transition-colors">
-                  {copiedCode ? '✓' : 'Copier'}
-                </button>
-              </div>
-            </div>
             {students.length > 0 && (
               <button onClick={exportCSV} className="px-3 py-1.5 bg-nx-surface border border-nx-border text-xs text-nx-gray hover:text-white rounded-lg hover:border-nx-yellow/50 transition-colors self-end">
                 Exporter CSV
@@ -438,18 +440,6 @@ export default function ClassProgressPage() {
         {/* Tab: Membres */}
         {activeTab === 'membres' && (
           <div className="space-y-4">
-            <form onSubmit={handleAdd} className="flex gap-2">
-              <input
-                type="text" placeholder="Ajouter par nom d'utilisateur…" value={addUsername}
-                onChange={e => setAddUsername(e.target.value)}
-                className="flex-1 bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
-              />
-              <button type="submit" disabled={addingUser || !addUsername.trim()} className="px-4 py-2.5 bg-nx-surface border border-nx-yellow/50 text-nx-yellow text-sm font-semibold rounded-lg hover:bg-nx-yellow/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap">
-                {addingUser ? '…' : 'Ajouter'}
-              </button>
-            </form>
-            {addError && <p className="text-red-400 text-xs">{addError}</p>}
-
             {students.length === 0 ? (
               <p className="text-nx-gray text-sm">Aucun élève dans cette classe.</p>
             ) : (

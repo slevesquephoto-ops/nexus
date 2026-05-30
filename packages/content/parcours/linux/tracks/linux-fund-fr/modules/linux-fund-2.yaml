@@ -1,879 +1,1215 @@
 module:
   id: linux-fund-2-fr
   trackId: linux-fr
-  title: "Les fondements de Linux 2"
-  description: "Permissions de fichiers, utilisateurs, groupes, sudo et recherche de fichiers"
+  title: Linux Fundamentals 2 — Manipuler fichiers et dossiers
+  description: Créer, modifier, copier, déplacer, supprimer prudemment, respecter les noms de fichiers Linux et consulter l’aide des commandes.
   order: 2
-  mascot: "tux-security"
-  xpReward: 50
-
+  mascot: tux-filesystem
+  xpReward: 140
+  estimatedDuration: 75 à 105 minutes avec démonstration en classe
+  language: fr
+  targetEnvironment:
+    distribution: Ubuntu 24.04 LTS
+    user: student
+    notes: 'Ce module suppose que linux-fund-1 est complété : l’élève sait se repérer, lister, naviguer et lire des fichiers simples.'
+  prerequisites:
+  - Comprendre le rôle du terminal et du shell.
+  - Utiliser whoami, pwd, ls, ls -l, ls -a, cd, cat, head, tail et wc -l.
+  - Comprendre les chemins absolus, les chemins relatifs, /, ~, . et ...
+  pedagogicalIntent:
+  - Faire passer l’élève de l’observation à la manipulation contrôlée.
+  - 'Développer des réflexes de technicien : vérifier l’emplacement avant d’agir.'
+  - Faire comprendre que Linux distingue les majuscules/minuscules et que les espaces dans les noms exigent des guillemets ou de l’échappement.
+  - Créer et organiser une arborescence simple liée à un dossier client.
+  - Introduire la suppression sécuritaire sans banaliser les commandes destructives.
+  - Initier l’autonomie avec man et --help.
+  gradingPolicy:
+    sectionQuestions: Sans pénalité; les élèves peuvent recommencer.
+    challengeQuestions: Avec pénalité selon les règles de NEXUS.
+    xp: Ludique seulement; ne correspond pas directement à une pondération officielle.
   tasks:
-
-    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t1
-      type: task
-      title: "Comprendre les permissions de fichiers"
-      order: 1
-      xpReward: 10
-      sections:
-        - type: theory
-          content: |
-            ## Pourquoi les permissions sont importantes
-
-            Sous Linux, **chaque fichier et répertoire possède des permissions**
-            qui contrôlent qui peut le lire, le modifier ou l'exécuter.
-
-            C'est fondamental en soutien informatique — la plupart des erreurs
-            « Permission refusée » que tu vas rencontrer sont causées par des
-            permissions incorrectes.
-
-            Il existe trois types de permissions :
-
-            | Permission | Symbole | Signification |
-            |------------|---------|---------------|
-            | Lecture    | `r`     | Voir le contenu d'un fichier ou lister un répertoire |
-            | Écriture   | `w`     | Modifier un fichier ou créer/supprimer des fichiers dans un répertoire |
-            | Exécution  | `x`     | Lancer un fichier comme programme, ou entrer dans un répertoire |
-
-            Et trois catégories d'utilisateurs :
-
-            | Catégorie    | Signification |
-            |--------------|---------------|
-            | **Propriétaire** | L'utilisateur qui a créé le fichier |
-            | **Groupe**       | Les utilisateurs appartenant au groupe du fichier |
-            | **Autres**       | Tous les autres utilisateurs du système |
-
-        - type: questions
-          items:
-            - id: q1
-              type: qcm
-              question: "Que permet la permission 'exécution' sur un répertoire ?"
-              answers:
-                - text: "Lancer des scripts dans le répertoire"
-                  correct: false
-                - text: "Entrer dans le répertoire avec cd"
-                  correct: true
-                - text: "Supprimer le répertoire"
-                  correct: false
-                - text: "Lister le contenu du répertoire"
-                  correct: false
-
-            - id: q2
-              type: qcm
-              question: "Un fichier donne la permission d'écriture au propriétaire seulement. Qui peut le modifier ?"
-              answers:
-                - text: "Tout le monde sur le système"
-                  correct: false
-                - text: "Seulement les membres du groupe du fichier"
-                  correct: false
-                - text: "Seulement le propriétaire du fichier"
-                  correct: true
-                - text: "Personne"
-                  correct: false
-
-            - id: q3
-              type: qcm
-              question: "Quelle permission te permet de voir le contenu d'un fichier ?"
-              answers:
-                - text: "Exécution (x)"
-                  correct: false
-                - text: "Écriture (w)"
-                  correct: false
-                - text: "Lecture (r)"
-                  correct: true
-                - text: "Ouverture (o)"
-                  correct: false
-
-    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t2
-      type: task
-      title: "Lire les permissions avec ls -l"
-      order: 2
-      xpReward: 15
-      sections:
-        - type: theory
-          content: |
-            ## Lire la chaîne de permissions
-
-            Utilise `ls -l` pour voir les informations détaillées des fichiers,
-            incluant les permissions.
-
-        - type: code_block
-          label: "Résultat de ls -l"
-          content: |
-            utilisateur@linux:~$ ls -l
-            -rwxr-xr-- 1 alice devs  1234 10 jan 09:00 script.sh
-            drwxr-x--- 2 alice devs  4096 10 jan 09:00 projets/
-            -rw-r--r-- 1 bob   staff  512 10 jan 08:00 lisezmoi.txt
-
-        - type: theory
-          content: |
-            Décortiquons la chaîne de permissions `-rwxr-xr--` :
-
-            ```
-            - rwx r-x r--
-            │ │││ │││ │││
-            │ │││ │││ └┴┴── Autres      : r-- (lecture seulement)
-            │ │││ └┴┴────── Groupe      : r-x (lecture + exécution)
-            │ └┴┴────────── Propriétaire: rwx (lecture + écriture + exécution)
-            └────────────── Type        : - (fichier) ou d (répertoire)
-            ```
-
-            Le premier caractère indique le **type** :
-            - `-` → fichier ordinaire
-            - `d` → répertoire
-            - `l` → lien symbolique
-
-        - type: theory
-          content: |
-            ## Les autres colonnes
-
-            ```
-            -rwxr-xr-- 1 alice devs 1234 10 jan 09:00 script.sh
-                       │ │     │    │    │             │
-                       │ │     │    │    └── Date de modification
-                       │ │     │    └─────── Taille (octets)
-                       │ │     └──────────── Groupe propriétaire
-                       │ └────────────────── Propriétaire
-                       └──────────────────── Nombre de liens physiques
-            ```
-
-        - type: questions
-          items:
-            - id: q1
-              type: qcm
-              question: "Dans la chaîne 'drwxr-xr--', que signifie le 'd' ?"
-              answers:
-                - text: "Le fichier a été supprimé"
-                  correct: false
-                - text: "L'élément est un répertoire"
-                  correct: true
-                - text: "Le fichier est dangereux"
-                  correct: false
-                - text: "Le fichier appartient à root"
-                  correct: false
-
-            - id: q2
-              type: qcm
-              question: "Un fichier affiche '-rw-r--r--'. Les membres du groupe peuvent-ils modifier ce fichier ?"
-              answers:
-                - text: "Oui"
-                  correct: false
-                - text: "Non"
-                  correct: true
-                - text: "Seulement avec sudo"
-                  correct: false
-                - text: "Seulement root peut écrire"
-                  correct: false
-
-            - id: q3
-              type: short_answer
-              question: "Quelle commande affiche les permissions de tous les fichiers dans ton répertoire actuel ?"
-              answer: "ls -l"
-
-            - id: q4
-              type: qcm
-              question: "Un fichier affiche '-rwxr-xr--'. Les 'Autres' peuvent-ils exécuter ce fichier ?"
-              answers:
-                - text: "Oui — les autres ont r-x"
-                  correct: false
-                - text: "Non — les autres ont seulement r-- (pas d'exécution)"
-                  correct: true
-                - text: "Oui — tout le monde peut toujours exécuter"
-                  correct: false
-                - text: "Seulement le propriétaire peut exécuter"
-                  correct: false
-
-    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t3
-      type: task
-      title: "Modifier les permissions avec chmod"
-      order: 3
-      xpReward: 15
-      sections:
-        - type: theory
-          content: |
-            ## chmod — Modifier les permissions
-
-            `chmod` te permet de modifier les permissions d'un fichier ou répertoire.
-            Il y a deux façons de l'utiliser : **symbolique** et **numérique (octal)**.
-
-            ### Méthode symbolique
-
-            Format : `chmod [qui][opérateur][permission] fichier`
-
-            | Qui | Signification |
-            |-----|---------------|
-            | `u` | User (propriétaire) |
-            | `g` | Group (groupe) |
-            | `o` | Others (autres) |
-            | `a` | All (tous : u+g+o) |
-
-            | Opérateur | Signification |
-            |-----------|---------------|
-            | `+` | Ajouter une permission |
-            | `-` | Retirer une permission |
-            | `=` | Définir exactement les permissions |
-
-        - type: code_block
-          label: "Exemples chmod symbolique"
-          content: |
-            utilisateur@linux:~$ chmod u+x script.sh       # ajouter exécution pour le propriétaire
-            utilisateur@linux:~$ chmod g-w rapport.txt     # retirer écriture du groupe
-            utilisateur@linux:~$ chmod o=r lisezmoi.txt    # mettre autres en lecture seule
-            utilisateur@linux:~$ chmod a+r public.txt      # ajouter lecture pour tout le monde
-
-        - type: theory
-          content: |
-            ### Méthode numérique (octale)
-
-            Chaque permission a une valeur numérique :
-
-            | Permission   | Valeur |
-            |--------------|--------|
-            | Lecture (r)  | 4      |
-            | Écriture (w) | 2      |
-            | Exécution (x)| 1      |
-            | Aucune (-)   | 0      |
-
-            On additionne les valeurs pour chaque catégorie (propriétaire, groupe, autres) :
-
-            | Exemple | Calcul | Résultat |
-            |---------|--------|----------|
-            | `rwx`   | 4+2+1  | 7        |
-            | `r-x`   | 4+0+1  | 5        |
-            | `r--`   | 4+0+0  | 4        |
-            | `---`   | 0+0+0  | 0        |
-
-            Donc `chmod 755 fichier` signifie : propriétaire=rwx(7), groupe=r-x(5), autres=r-x(5)
-
-        - type: code_block
-          label: "Exemples chmod numérique"
-          content: |
-            utilisateur@linux:~$ chmod 755 script.sh    # rwxr-xr-x
-            utilisateur@linux:~$ chmod 644 config.txt   # rw-r--r--
-            utilisateur@linux:~$ chmod 600 prive.key    # rw-------
-            utilisateur@linux:~$ chmod 777 partage/     # rwxrwxrwx (dangereux !)
-
-        - type: questions
-          items:
-            - id: q1
-              type: short_answer
-              question: "Écris la commande pour ajouter la permission d'exécution pour le propriétaire du fichier 'deploiement.sh'."
-              answer: "chmod u+x deploiement.sh"
-
-            - id: q2
-              type: qcm
-              question: "Quelle valeur numérique représente les permissions 'rwx' ?"
-              answers:
-                - text: "5"
-                  correct: false
-                - text: "6"
-                  correct: false
-                - text: "7"
-                  correct: true
-                - text: "4"
-                  correct: false
-
-            - id: q3
-              type: qcm
-              question: "Que fait 'chmod 644 rapport.txt' ?"
-              answers:
-                - text: "Propriétaire : rw-, Groupe : r--, Autres : r--"
-                  correct: true
-                - text: "Propriétaire : rwx, Groupe : r-x, Autres : r--"
-                  correct: false
-                - text: "Propriétaire : rw-, Groupe : rw-, Autres : r--"
-                  correct: false
-                - text: "Propriétaire : r--, Groupe : r--, Autres : r--"
-                  correct: false
-
-            - id: q4
-              type: short_answer
-              question: "Écris la commande chmod pour donner au propriétaire tous les droits, au groupe lecture+exécution, et aucun droit aux autres. Utilise le format numérique."
-              answer: "chmod 750 "
-
-    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t4
-      type: task
-      title: "Propriété — chown et chgrp"
-      order: 4
-      xpReward: 10
-      sections:
-        - type: theory
-          content: |
-            ## Changer la propriété des fichiers
-
-            Les permissions n'ont de sens qu'avec la **propriété**.
-            Chaque fichier a un **propriétaire** (utilisateur) et un **groupe propriétaire**.
-
-        - type: command_table
-          commands:
-            - cmd: "chown utilisateur fichier"
-              desc: "Change le propriétaire d'un fichier"
-            - cmd: "chown utilisateur:groupe fichier"
-              desc: "Change le propriétaire et le groupe en même temps"
-            - cmd: "chgrp groupe fichier"
-              desc: "Change seulement le groupe propriétaire"
-            - cmd: "chown -R utilisateur:groupe rep/"
-              desc: "Change récursivement la propriété d'un répertoire et tout son contenu"
-
-        - type: code_block
-          label: "Exemples chown"
-          content: |
-            utilisateur@linux:~$ ls -l rapport.txt
-            -rw-r--r-- 1 alice staff 512 10 jan rapport.txt
-
-            utilisateur@linux:~$ sudo chown bob rapport.txt
-            utilisateur@linux:~$ ls -l rapport.txt
-            -rw-r--r-- 1 bob staff 512 10 jan rapport.txt
-
-            utilisateur@linux:~$ sudo chown bob:devs rapport.txt
-            utilisateur@linux:~$ ls -l rapport.txt
-            -rw-r--r-- 1 bob devs 512 10 jan rapport.txt
-
-        - type: theory
-          content: |
-            ## Pourquoi utiliser -R (récursif) ?
-
-            Quand tu as un répertoire avec plusieurs fichiers, `-R` applique
-            le changement de propriété à **tous les fichiers et sous-répertoires**
-            en une seule commande.
-
-            C'est très courant en soutien informatique pour corriger des problèmes
-            de serveur web :
-
-        - type: code_block
-          label: "Corriger un problème de propriété sur un serveur web"
-          content: |
-            # Les fichiers du site appartiennent au mauvais utilisateur
-            # Apache ne peut pas les lire
-            utilisateur@linux:~$ sudo chown -R www-data:www-data /var/www/html/
-            # Maintenant Apache (qui tourne en tant que www-data) peut accéder aux fichiers
-
-        - type: questions
-          items:
-            - id: q1
-              type: short_answer
-              question: "Écris la commande pour changer le propriétaire de 'config.txt' vers l'utilisateur 'admin'."
-              answer: "sudo chown admin config.txt"
-
-            - id: q2
-              type: qcm
-              question: "Que fait 'chown -R alice:devs /home/alice/' ?"
-              answers:
-                - text: "Change seulement la propriété du répertoire"
-                  correct: false
-                - text: "Change récursivement la propriété du répertoire et de tous les fichiers à l'intérieur"
-                  correct: true
-                - text: "Supprime toutes les permissions récursivement"
-                  correct: false
-                - text: "Crée un nouvel utilisateur nommé alice"
-                  correct: false
-
-            - id: q3
-              type: short_answer
-              question: "Écris la commande pour changer le propriétaire à 'bob' ET le groupe à 'staff' pour le fichier 'donnees.csv'."
-              answer: "sudo chown bob:staff donnees.csv"
-
-    # ── TÂCHE 5 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t5
-      type: task
-      title: "Utilisateurs et groupes"
-      order: 5
-      xpReward: 10
-      sections:
-        - type: theory
-          content: |
-            ## Gestion des utilisateurs
-
-            Linux est un **système multi-utilisateurs** — plusieurs personnes peuvent
-            être connectées et travailler simultanément. Comprendre les utilisateurs
-            et les groupes est essentiel pour le soutien informatique.
-
-        - type: command_table
-          commands:
-            - cmd: "whoami"
-              desc: "Affiche ton nom d'utilisateur actuel"
-            - cmd: "id"
-              desc: "Affiche ton ID utilisateur (uid), ID groupe (gid) et tous tes groupes"
-            - cmd: "groups"
-              desc: "Liste tous les groupes auxquels tu appartiens"
-            - cmd: "who"
-              desc: "Affiche qui est connecté sur le système"
-            - cmd: "cat /etc/passwd"
-              desc: "Liste tous les comptes utilisateurs du système"
-            - cmd: "cat /etc/group"
-              desc: "Liste tous les groupes du système"
-
-        - type: code_block
-          label: "Commandes d'information utilisateur"
-          content: |
-            utilisateur@linux:~$ whoami
-            etudiant
-
-            utilisateur@linux:~$ id
-            uid=1000(etudiant) gid=1000(etudiant) groups=1000(etudiant),27(sudo),1001(devs)
-
-            utilisateur@linux:~$ groups
-            etudiant sudo devs
-
-        - type: theory
-          content: |
-            ## Créer et gérer des utilisateurs
-
-            Ces commandes nécessitent les **privilèges sudo** (administrateur) :
-
-        - type: command_table
-          commands:
-            - cmd: "sudo adduser nomutilisateur"
-              desc: "Crée un nouvel utilisateur de façon interactive (recommandé)"
-            - cmd: "sudo passwd nomutilisateur"
-              desc: "Change le mot de passe d'un utilisateur"
-            - cmd: "sudo usermod -aG groupe utilisateur"
-              desc: "Ajoute un utilisateur à un groupe (-a = ajouter, -G = groupes)"
-            - cmd: "sudo deluser nomutilisateur"
-              desc: "Supprime un compte utilisateur"
-
-        - type: code_block
-          label: "Créer un utilisateur et l'ajouter à un groupe"
-          content: |
-            utilisateur@linux:~$ sudo adduser jean
-            Ajout de l'utilisateur 'jean' ...
-            Nouveau mot de passe : ****
-            Retapez le nouveau mot de passe : ****
-            passwd : le mot de passe a été mis à jour
-
-            utilisateur@linux:~$ sudo usermod -aG sudo jean
-            # jean peut maintenant utiliser les commandes sudo
-
-        - type: questions
-          items:
-            - id: q1
-              type: short_answer
-              question: "Quelle commande affiche ton ID utilisateur et tous les groupes auxquels tu appartiens ?"
-              answer: "id"
-
-            - id: q2
-              type: qcm
-              question: "Que fait 'sudo usermod -aG devs alice' ?"
-              answers:
-                - text: "Retire alice du groupe devs"
-                  correct: false
-                - text: "Crée un nouveau groupe nommé devs"
-                  correct: false
-                - text: "Ajoute alice au groupe devs sans la retirer de ses autres groupes"
-                  correct: true
-                - text: "Change le groupe principal d'alice pour devs"
-                  correct: false
-
-            - id: q3
-              type: short_answer
-              question: "Écris la commande pour créer un nouvel utilisateur nommé 'techsupport'."
-              answer: "sudo adduser techsupport"
-
-            - id: q4
-              type: qcm
-              question: "Un collègue dit qu'il ne peut pas se connecter. Quel fichier vérifies-tu pour confirmer que son compte existe ?"
-              answers:
-                - text: "/etc/group"
-                  correct: false
-                - text: "/etc/shadow"
-                  correct: false
-                - text: "/etc/passwd"
-                  correct: true
-                - text: "/var/log/users"
-                  correct: false
-
-    # ── TÂCHE 6 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t6
-      type: task
-      title: "Sudo et root"
-      order: 6
-      xpReward: 15
-      sections:
-        - type: theory
-          content: |
-            ## L'utilisateur root
-
-            Sous Linux, **root** est le superutilisateur — le compte administrateur
-            qui a un **accès illimité** à chaque fichier et commande du système.
-
-            Root peut :
-            - Lire, écrire et exécuter n'importe quel fichier
-            - Créer et supprimer n'importe quel utilisateur
-            - Installer et désinstaller des logiciels
-            - Modifier les fichiers de configuration du système
-
-            **Root est puissant et dangereux.** Une seule mauvaise commande en root
-            peut détruire tout le système. C'est pourquoi sous Linux moderne,
-            on évite de se connecter directement en root.
-
-        - type: theory
-          content: |
-            ## sudo — Superuser Do
-
-            `sudo` permet aux utilisateurs autorisés d'**exécuter une seule commande
-            en tant que root** sans être connecté comme root.
-
-            C'est plus sécuritaire parce que :
-            - Chaque commande sudo est **enregistrée dans les journaux** (traçabilité)
-            - Tu élèves tes privilèges seulement pour une commande à la fois
-            - Une faute de frappe ne va pas accidentellement détruire le système
-
-        - type: command_table
-          commands:
-            - cmd: "sudo commande"
-              desc: "Exécute une seule commande en tant que root"
-            - cmd: "sudo -l"
-              desc: "Liste les commandes que tu as le droit d'exécuter avec sudo"
-            - cmd: "sudo su"
-              desc: "Ouvre un shell root (à utiliser avec extrême prudence)"
-            - cmd: "su nomutilisateur"
-              desc: "Changer de compte utilisateur"
-
-        - type: code_block
-          label: "Utiliser sudo"
-          content: |
-            utilisateur@linux:~$ cat /etc/shadow
-            cat: /etc/shadow: Permission non accordée
-
-            utilisateur@linux:~$ sudo cat /etc/shadow
-            [sudo] mot de passe pour etudiant :
-            root:*:19000:0:99999:7:::
-            etudiant:$6$abc123...:19000:0:99999:7:::
-
-        - type: theory
-          content: |
-            ## Qui peut utiliser sudo ?
-
-            Seulement les utilisateurs dans le **groupe sudo** (ou **wheel** sur
-            certaines distributions) peuvent utiliser sudo. Tu peux vérifier avec :
-
-            ```
-            groups etudiant
-            ```
-
-            Si `sudo` apparaît dans la liste — cet utilisateur a les privilèges sudo.
-
-        - type: questions
-          items:
-            - id: q1
-              type: qcm
-              question: "Pourquoi est-il plus sécuritaire d'utiliser 'sudo' plutôt que de se connecter directement en root ?"
-              answers:
-                - text: "sudo est plus rapide que root"
-                  correct: false
-                - text: "Les commandes sudo sont enregistrées et n'élèvent les privilèges que pour une commande"
-                  correct: true
-                - text: "sudo donne plus de permissions que root"
-                  correct: false
-                - text: "Root ne peut pas exécuter toutes les commandes"
-                  correct: false
-
-            - id: q2
-              type: short_answer
-              question: "Écris la commande pour vérifier quelles commandes sudo l'utilisateur actuel est autorisé à exécuter."
-              answer: "sudo -l"
-
-            - id: q3
-              type: qcm
-              question: "Un utilisateur obtient 'Permission non accordée' en essayant de modifier /etc/hosts. Quelle est la cause la plus probable ?"
-              answers:
-                - text: "Le fichier est corrompu"
-                  correct: false
-                - text: "L'utilisateur n'est pas dans le groupe sudo ou n'a pas utilisé sudo"
-                  correct: true
-                - text: "Le fichier n'existe pas"
-                  correct: false
-                - text: "L'utilisateur doit redémarrer le système"
-                  correct: false
-
-    # ── TÂCHE 7 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t7
-      type: task
-      title: "Rechercher des fichiers"
-      order: 7
-      xpReward: 15
-      sections:
-        - type: theory
-          content: |
-            ## Trouver des fichiers sous Linux
-
-            En soutien informatique, tu vas constamment avoir besoin de localiser
-            des fichiers — fichiers de configuration, journaux, scripts.
-            Deux commandes sont essentielles :
-
-            - `find` — recherche par nom, type, permissions, propriétaire, date...
-            - `grep` — recherche du texte **à l'intérieur** des fichiers
-
-        - type: command_table
-          commands:
-            - cmd: "find / -name nomfichier"
-              desc: "Cherche sur tout le système un fichier par son nom"
-            - cmd: "find /home -name '*.txt'"
-              desc: "Trouve tous les fichiers .txt dans /home"
-            - cmd: "find / -user alice"
-              desc: "Trouve tous les fichiers appartenant à l'utilisateur alice"
-            - cmd: "find / -perm 777"
-              desc: "Trouve tous les fichiers avec la permission 777 (audit de sécurité)"
-            - cmd: "find / -type d -name config"
-              desc: "Trouve les répertoires nommés 'config'"
-
-        - type: code_block
-          label: "Exemples find"
-          content: |
-            utilisateur@linux:~$ find /home -name "*.log"
-            /home/etudiant/app/erreur.log
-            /home/etudiant/app/acces.log
-
-            utilisateur@linux:~$ find / -name "sshd_config" 2>/dev/null
-            /etc/ssh/sshd_config
-
-            utilisateur@linux:~$ find / -perm 777 2>/dev/null
-            /tmp/script_suspect.sh
-
-        - type: theory
-          content: |
-            ## grep — Rechercher dans les fichiers
-
-            `grep` recherche un **motif** à l'intérieur des fichiers. C'est
-            extrêmement utile pour lire les journaux et les fichiers de configuration.
-
-        - type: command_table
-          commands:
-            - cmd: "grep 'motif' fichier"
-              desc: "Cherche le motif dans un fichier"
-            - cmd: "grep -r 'motif' repertoire/"
-              desc: "Recherche récursivement dans tous les fichiers d'un répertoire"
-            - cmd: "grep -i 'motif' fichier"
-              desc: "Recherche sans tenir compte de la casse (majuscules/minuscules)"
-            - cmd: "grep -n 'motif' fichier"
-              desc: "Affiche les numéros de ligne avec les résultats"
-            - cmd: "grep -v 'motif' fichier"
-              desc: "Affiche les lignes qui NE correspondent PAS au motif"
-
-        - type: code_block
-          label: "Exemples grep"
-          content: |
-            utilisateur@linux:~$ grep "erreur" /var/log/syslog
-            jan 10 09:15:32 linux kernel: [ERREUR] lecture disque échouée
-
-            utilisateur@linux:~$ grep -r "password" /etc/ 2>/dev/null
-            /etc/mysql/mysql.conf:password = secret123
-
-            utilisateur@linux:~$ grep -i "echec" /var/log/auth.log | tail -5
-            jan 10 09:00:01 linux sshd: Échec mot de passe pour root depuis 192.168.1.50
-
-        - type: questions
-          items:
-            - id: q1
-              type: short_answer
-              question: "Écris la commande pour trouver tous les fichiers nommés 'config.txt' sur tout le système."
-              answer: "find / -name config.txt"
-
-            - id: q2
-              type: short_answer
-              question: "Écris la commande pour chercher le mot 'erreur' dans le fichier '/var/log/syslog'."
-              answer: "grep erreur /var/log/syslog"
-
-            - id: q3
-              type: qcm
-              question: "Tu veux trouver tous les fichiers avec la permission 777 pour un audit de sécurité. Quelle commande utilises-tu ?"
-              answers:
-                - text: "ls -l / | grep 777"
-                  correct: false
-                - text: "find / -perm 777"
-                  correct: true
-                - text: "chmod -l 777"
-                  correct: false
-                - text: "grep -r 777 /"
-                  correct: false
-
-            - id: q4
-              type: short_answer
-              question: "Écris la commande pour chercher récursivement le mot 'password' dans tous les fichiers sous /etc/."
-              answer: "grep -r password /etc/"
-
-    # ── TÂCHE 8 ───────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-t8
-      type: task
-      title: "Scénario pratique — Permission refusée !"
-      order: 8
-      xpReward: 15
-      sections:
-        - type: theory
-          content: |
-            ## Mettons tout ça ensemble
-
-            Simulons un vrai scénario de soutien informatique. Un utilisateur t'appelle :
-
-            > *« Je ne peux pas accéder au dossier partagé, et mon script a arrêté
-            > de fonctionner après la mise à jour du serveur. Peux-tu m'aider ? »*
-
-            C'est le type de billet de soutien le plus fréquent lié aux permissions.
-            Travaillons-le étape par étape.
-
-        - type: theory
-          content: |
-            ## Étape 1 — Identifier le problème
-
-        - type: code_block
-          label: "Diagnostiquer un problème de permission"
-          content: |
-            # Vérifier qui on est
-            utilisateur@linux:~$ whoami
-            etudiant
-
-            # Essayer d'accéder au dossier partagé
-            utilisateur@linux:~$ ls /partage/
-            ls: impossible d'ouvrir le répertoire '/partage/': Permission non accordée
-
-            # Vérifier les permissions
-            utilisateur@linux:~$ ls -ld /partage/
-            drwxrwx--- 2 root equipedev 4096 10 jan /partage/
-
-            # Vérifier ses groupes
-            utilisateur@linux:~$ groups
-            etudiant sudo
-
-            # Problème identifié : /partage/ nécessite le groupe 'equipedev'
-            # mais 'etudiant' n'est pas dans 'equipedev'
-
-        - type: theory
-          content: |
-            ## Étape 2 — Corriger le problème
-
-        - type: code_block
-          label: "Résoudre le problème de permission"
-          content: |
-            # Ajouter etudiant au groupe equipedev
-            utilisateur@linux:~$ sudo usermod -aG equipedev etudiant
-
-            # Se déconnecter et se reconnecter pour que les changements prennent effet
-            # OU utiliser : newgrp equipedev
-
-            # Vérifier la correction
-            utilisateur@linux:~$ groups
-            etudiant sudo equipedev
-
-            utilisateur@linux:~$ ls /partage/
-            projet1/  projet2/  rapports/
-            # Problème résolu !
-
-        - type: theory
-          content: |
-            ## Étape 3 — Corriger le script brisé
-
-        - type: code_block
-          label: "Corriger un script qui a perdu sa permission d'exécution"
-          content: |
-            utilisateur@linux:~$ ./sauvegarde.sh
-            bash: ./sauvegarde.sh: Permission non accordée
-
-            utilisateur@linux:~$ ls -l sauvegarde.sh
-            -rw-r--r-- 1 etudiant etudiant 256 10 jan sauvegarde.sh
-            # La permission d'exécution manque !
-
-            utilisateur@linux:~$ chmod u+x sauvegarde.sh
-            utilisateur@linux:~$ ./sauvegarde.sh
-            Sauvegarde démarrée...
-            Sauvegarde terminée avec succès.
-
-        - type: questions
-          items:
-            - id: q1
-              type: qcm
-              question: "Un utilisateur obtient 'Permission refusée' sur un répertoire. Quelle est la PREMIÈRE chose à vérifier ?"
-              answers:
-                - text: "Redémarrer le serveur"
-                  correct: false
-                - text: "Les permissions du répertoire avec ls -ld et les groupes de l'utilisateur avec 'groups'"
-                  correct: true
-                - text: "Supprimer et recréer le répertoire"
-                  correct: false
-                - text: "Donner la permission 777 à tout le monde"
-                  correct: false
-
-            - id: q2
-              type: short_answer
-              question: "Un script nommé 'deploiement.sh' donne 'Permission refusée' quand tu essaies de le lancer. Écris la commande pour corriger ça pour le propriétaire."
-              answer: "chmod u+x deploiement.sh"
-
-            - id: q3
-              type: qcm
-              question: "Après avoir ajouté un utilisateur à un nouveau groupe avec usermod -aG, quand les changements prennent-ils effet ?"
-              answers:
-                - text: "Immédiatement, aucune action nécessaire"
-                  correct: false
-                - text: "Après que l'utilisateur se déconnecte et se reconnecte"
-                  correct: true
-                - text: "Après un redémarrage du serveur"
-                  correct: false
-                - text: "Après avoir exécuté chmod"
-                  correct: false
-
-            - id: q4
-              type: short_answer
-              question: "Écris la commande complète pour vérifier les permissions du répertoire '/var/www/html/' (pas son contenu)."
-              answer: "ls -ld /var/www/html/"
-
-    # ── DÉFI ──────────────────────────────────────────────────────────────────
-    - id: linux-fund-2-fr-challenge
-      type: challenge
-      title: "Défi — Permission refusée !"
-      order: 9
-      xpReward: 50
-      sections:
-        - type: theory
-          content: |
-            ## Briefing de mission
-
-            Agent, un serveur Linux a été mal configuré après une mise à jour système.
-            Plusieurs problèmes de permissions empêchent les utilisateurs de faire
-            leur travail.
-
-            **Ta mission :** Connecte-toi à la machine virtuelle du défi, diagnostique
-            et corrige tous les problèmes de permissions, puis réponds aux questions
-            ci-dessous.
-
-            **Télécharge et lance ta machine virtuelle :**
-            1. Télécharge → [linux-fund-2-challenge.ova](#)
-            2. Importe dans VMware ou VirtualBox
-            3. Connexion : `student` / `nexus2024`
-            4. Lis le fichier `/home/student/mission-briefing.txt` pour commencer
-
-        - type: questions
-          items:
-            - id: c1
-              type: short_answer
-              question: "Quelles sont les permissions actuelles du fichier '/home/student/secret/rapport.txt' ? (format : -rwxr-xr--)"
-              answer: "----------"
-
-            - id: c2
-              type: short_answer
-              question: "Qui est le propriétaire du fichier '/opt/compagnie/app.sh' ?"
-              answer: "root"
-
-            - id: c3
-              type: short_answer
-              question: "À quel groupe appartient l'utilisateur 'operateur' ? (vérifie avec : id operateur)"
-              answer: "operateurs"
-
-            - id: c4
-              type: short_answer
-              question: "Après avoir corrigé les permissions sur '/home/student/secret/', quelle commande as-tu utilisée pour donner les permissions lecture et écriture au propriétaire ?"
-              answer: "chmod u+rw /home/student/secret/rapport.txt"
-
-            - id: c5
-              type: qcm
-              question: "Le fichier '/opt/compagnie/app.sh' doit être exécutable par son propriétaire seulement. Quelle commande chmod est la plus précise ?"
-              answers:
-                - text: "chmod 777 /opt/compagnie/app.sh"
-                  correct: false
-                - text: "chmod u+x /opt/compagnie/app.sh"
-                  correct: true
-                - text: "chmod +x /opt/compagnie/app.sh"
-                  correct: false
-                - text: "chmod 755 /opt/compagnie/app.sh"
-                  correct: false
+  - id: linux-fund-2-fr-t1
+    type: task
+    title: Briefing NEXUS — Manipuler sans casser
+    order: 1
+    xpReward: 10
+    objectives:
+    - Comprendre le rôle du module.
+    - Adopter une méthode prudente avant de modifier des fichiers.
+    - Identifier les commandes principales qui seront vues.
+    sections:
+    - type: mission
+      title: Briefing de mission
+      content: |
+        Agent, tu sais maintenant te repérer dans une machine Linux.
+
+        Dans ce module, tu passes à l’étape suivante : **manipuler des fichiers
+        et des dossiers**. Tu vas créer une arborescence, produire des fichiers,
+        copier, déplacer, renommer et supprimer prudemment.
+
+        Ton objectif n’est pas d’aller vite. Ton objectif est de travailler comme
+        un technicien fiable : vérifier où tu es, observer le contenu, choisir la
+        bonne commande, puis valider le résultat.
+    - type: theory
+      title: Ce que tu vas apprendre
+      content: |
+        Dans ce module, tu vas apprendre à :
+
+        - créer des dossiers avec `mkdir`;
+        - créer des dossiers imbriqués avec `mkdir -p`;
+        - créer des fichiers vides avec `touch`;
+        - écrire dans un fichier avec `nano`;
+        - lire un long fichier avec `less`;
+        - identifier le type réel d’un fichier avec `file`;
+        - copier des fichiers et des dossiers avec `cp`;
+        - déplacer ou renommer avec `mv`;
+        - supprimer prudemment avec `rm`, `rm -i`, `rmdir` et `rm -r`;
+        - consulter l’aide avec `man` et `--help`.
+    - type: warning
+      title: Nouvelle responsabilité
+      content: |
+        Contrairement au premier module, certaines commandes de ce module peuvent
+        modifier ou supprimer des données.
+
+        Avant une commande qui change quelque chose, applique ce réflexe :
+
+        1. `pwd` — vérifier où tu es;
+        2. `ls -la` — observer ce qui se trouve dans le dossier;
+        3. taper la commande;
+        4. refaire `ls -la` pour valider le résultat.
+    - type: teacher_note
+      title: Intention pédagogique
+      content: |
+        Ce module sert de pont entre la navigation et l’administration Linux.
+        Ne pas introduire sudo, chmod, chown, grep ou find ici, sauf si un élève
+        demande une démonstration rapide. Ces notions sont prévues plus tard.
+    - type: questions
+      items:
+      - id: t1-q1
+        type: qcm
+        question: Avant de supprimer ou déplacer un fichier, quel réflexe est le plus professionnel ?
+        answers:
+        - text: Taper la commande rapidement pour gagner du temps.
+          correct: false
+        - text: Utiliser sudo pour éviter les erreurs.
+          correct: false
+        - text: Vérifier l’emplacement avec pwd et observer avec ls -la.
+          correct: true
+        - text: Redémarrer la VM avant chaque commande.
+          correct: false
+        feedback:
+          correct: Exact. On vérifie avant d’agir.
+          incorrect: Un technicien fiable valide toujours le contexte avant une commande qui modifie le système.
+  - id: linux-fund-2-fr-t2
+    type: task
+    title: Rappel — Où suis-je avant d’agir ?
+    order: 2
+    xpReward: 10
+    objectives:
+    - Réactiver les commandes de repérage vues dans linux-fund-1.
+    - Préparer l’élève à manipuler les fichiers dans un dossier contrôlé.
+    sections:
+    - type: theory
+      title: Toujours vérifier le contexte
+      content: |
+        Les commandes de manipulation de fichiers dépendent souvent de l’endroit
+        où tu te trouves.
+
+        Par exemple, ces deux commandes peuvent avoir des conséquences différentes
+        selon ton dossier actuel :
+
+        ```bash
+        rm notes.txt
+        mv rapport.txt archives/
+        ```
+
+        Avant de manipuler des fichiers, commence par :
+
+        ```bash
+        pwd
+        ls -la
+        ```
+
+        `pwd` te dit où tu es. `ls -la` te montre le contenu détaillé, incluant
+        les fichiers cachés.
+    - type: terminal_exercise
+      title: Préparer ton espace de travail
+      instructions: |
+        Dans ta VM, retourne dans ton répertoire personnel, vérifie ton emplacement,
+        puis observe le contenu.
+      commands:
+      - cd ~
+      - pwd
+      - ls -la
+      expectedObservation: Le chemin devrait être /home/student ou un chemin équivalent selon le compte utilisé.
+    - type: validation
+      title: Validation
+      question: Quelle commande affiche ton emplacement actuel dans le terminal ?
+      answerType: short_answer
+      acceptedAnswers:
+      - pwd
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Cette commande a été vue dans linux-fund-1.
+      - Elle affiche le chemin du dossier courant.
+      feedback:
+        correct: Exact. pwd signifie print working directory.
+        incorrect: La commande attendue affiche le dossier courant.
+  - id: linux-fund-2-fr-t3
+    type: task
+    title: Noms de fichiers — casse, espaces et précision
+    order: 3
+    xpReward: 10
+    objectives:
+    - Comprendre que Linux distingue les majuscules et les minuscules.
+    - Comprendre pourquoi les espaces dans les noms changent l’interprétation d’une commande.
+    - Adopter des conventions de nommage sécuritaires pour les exercices.
+    sections:
+    - type: theory
+      title: Linux est sensible à la casse
+      content: |-
+        Sous Linux, les noms de commandes, de fichiers et de dossiers sont généralement **sensibles à la casse**.
+
+        Cela veut dire que les majuscules et les minuscules comptent.
+
+        Ces trois noms peuvent représenter trois éléments différents :
+
+        ```text
+        rapport.txt
+        Rapport.txt
+        RAPPORT.txt
+        ```
+
+        Même chose pour les dossiers :
+
+        ```text
+        client
+        Client
+        CLIENT
+        ```
+
+        Pour un technicien, c’est une différence très importante avec certaines habitudes Windows. Sous Linux, une erreur de majuscule peut donner l’impression qu’un fichier n’existe pas, alors qu’il est simplement écrit autrement.
+    - type: warning
+      title: Orthographe exacte obligatoire
+      content: |-
+        Quand tu utilises `mkdir`, `cp`, `mv`, `rm`, `cat`, `less` ou `file`, le nom doit correspondre exactement.
+
+        Exemple :
+
+        ```bash
+        cat Rapport.txt
+        ```
+
+        n’est pas équivalent à :
+
+        ```bash
+        cat rapport.txt
+        ```
+
+        Si le fichier s’appelle `rapport.txt`, la première commande peut produire une erreur du type `No such file or directory`.
+    - type: theory
+      title: Les espaces dans les noms
+      content: |-
+        Le shell sépare les arguments avec des espaces.
+
+        Donc cette commande :
+
+        ```bash
+        mkdir Mon Repertoire
+        ```
+
+        ne crée pas un seul dossier nommé `Mon Repertoire`.
+
+        Elle crée plutôt deux dossiers :
+
+        ```text
+        Mon
+        Repertoire
+        ```
+
+        Pour créer un seul dossier avec un espace dans son nom, il faut protéger le nom avec des guillemets :
+
+        ```bash
+        mkdir "Mon Repertoire"
+        ```
+
+        On peut aussi utiliser une barre oblique inversée pour échapper l’espace :
+
+        ```bash
+        mkdir Mon\ Repertoire
+        ```
+
+        Dans les exercices, on va surtout privilégier des noms simples, sans espaces, par exemple :
+
+        ```text
+        mon-repertoire
+        mon_repertoire
+        rapport-client.txt
+        ```
+
+        C’est plus facile à automatiser, à corriger et à dépanner.
+    - type: terminal_exercise
+      title: Observer la différence
+      instructions: Dans ton répertoire personnel, crée un dossier de test et observe comment Linux réagit aux majuscules et aux espaces.
+      commands:
+      - cd ~
+      - mkdir test-noms-linux
+      - cd test-noms-linux
+      - mkdir rapport Rapport
+      - ls
+      - mkdir Mon Repertoire
+      - ls
+      - mkdir "Dossier Client"
+      - ls
+      expectedObservation: Tu devrais voir que rapport et Rapport sont deux dossiers différents. Tu devrais aussi voir que Mon Repertoire a créé deux dossiers, tandis que "Dossier Client" a créé un seul dossier.
+    - type: warning
+      title: Bonne pratique pour le cours
+      content: |-
+        Pour les modules NEXUS, utilise autant que possible des noms :
+
+        - en minuscules;
+        - sans accents;
+        - sans espaces;
+        - avec des traits d’union `-` ou des soulignés `_` au besoin.
+
+        Exemples recommandés :
+
+        ```text
+        notes-client.txt
+        rapport-final.txt
+        sauvegarde_01
+        mission-client
+        ```
+
+        Ce n’est pas parce que Linux ne peut pas gérer les espaces ou les accents. C’est parce qu’en soutien informatique, des noms simples réduisent les erreurs et facilitent les scripts.
+    - type: validation
+      title: Validation — casse
+      question: Sous Linux, est-ce que rapport.txt et Rapport.txt représentent toujours le même fichier ?
+      answerType: short_answer
+      acceptedAnswers:
+      - non
+      - Non
+      - NON
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - Observe la majuscule au début du deuxième nom.
+      - Linux distingue généralement les majuscules et les minuscules.
+    - type: validation
+      title: Validation — espace
+      question: Quelle commande crée un seul dossier nommé Mon Repertoire ?
+      answerType: short_answer
+      acceptedAnswers:
+      - mkdir "Mon Repertoire"
+      - mkdir 'Mon Repertoire'
+      - mkdir Mon\ Repertoire
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Le shell sépare les arguments avec des espaces.
+      - Protège le nom complet avec des guillemets ou échappe l’espace.
+    - type: teacher_note
+      title: Démonstration recommandée
+      content: |-
+        Faire la démonstration en classe avec `mkdir Mon Repertoire`, puis `ls`, afin que les élèves voient immédiatement l’erreur. Ensuite, refaire avec `mkdir "Mon Repertoire"`.
+
+        Insister sur le fait que les scripts, les chemins et les corrections automatisées sont beaucoup plus fiables avec des noms simples : minuscules, sans espaces, sans accents.
+  - id: linux-fund-2-fr-t4
+    type: task
+    title: Créer des dossiers avec mkdir
+    order: 4
+    xpReward: 10
+    objectives:
+    - Créer un dossier simple.
+    - Créer une arborescence imbriquée avec mkdir -p.
+    - Comprendre l’erreur produite quand un dossier parent n’existe pas.
+    sections:
+    - type: theory
+      title: mkdir — make directory
+      content: |
+        La commande `mkdir` sert à créer un nouveau répertoire, donc un dossier.
+
+        Exemple :
+
+        ```bash
+        mkdir dossier-test
+        ```
+
+        Après la commande, tu peux valider avec :
+
+        ```bash
+        ls
+        ```
+    - type: code_block
+      label: Créer plusieurs niveaux avec -p
+      content: |
+        mkdir -p support-client/rapports/2026
+    - type: theory
+      title: Pourquoi utiliser -p ?
+      content: |
+        Sans l’option `-p`, Linux peut refuser de créer un dossier si le dossier
+        parent n’existe pas encore.
+
+        Avec `mkdir -p`, Linux crée automatiquement les dossiers parents nécessaires.
+
+        Exemple :
+
+        ```bash
+        mkdir -p support-client/rapports/2026
+        ```
+
+        Cette commande crée `support-client`, puis `rapports`, puis `2026` si ces
+        dossiers n’existent pas déjà.
+    - type: terminal_exercise
+      title: Créer une arborescence de travail
+      instructions: |
+        Crée un dossier de travail pour le module et trois sous-dossiers.
+      commands:
+      - cd ~
+      - mkdir -p nexus-fund2/notes
+      - mkdir -p nexus-fund2/rapports
+      - mkdir -p nexus-fund2/sauvegardes
+      - ls -la nexus-fund2
+      expectedObservation: Les dossiers notes, rapports et sauvegardes doivent apparaître.
+    - type: questions
+      items:
+      - id: t3-q1
+        type: qcm
+        question: À quoi sert la commande mkdir ?
+        answers:
+        - text: À lire un fichier texte.
+          correct: false
+        - text: À créer un dossier.
+          correct: true
+        - text: À supprimer un dossier.
+          correct: false
+        - text: À déplacer un fichier.
+          correct: false
+        feedback:
+          correct: Exact. mkdir signifie make directory.
+          incorrect: Pense à l’expression anglaise make directory.
+      - id: t3-q2
+        type: short_answer
+        question: Quelle option de mkdir permet de créer automatiquement les dossiers parents nécessaires ?
+        acceptedAnswers:
+        - -p
+        - p
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - C’est une option courte composée d’un tiret et d’une lettre.
+        - 'Exemple : mkdir -p dossier/sous-dossier.'
+  - id: linux-fund-2-fr-t5
+    type: task
+    title: Créer des fichiers avec touch
+    order: 5
+    xpReward: 10
+    objectives:
+    - Créer un fichier vide.
+    - Distinguer un fichier vide d’un dossier.
+    - Comprendre que touch peut aussi modifier l’horodatage d’un fichier.
+    sections:
+    - type: theory
+      title: touch — créer rapidement un fichier vide
+      content: |
+        La commande `touch` permet de créer un fichier vide rapidement.
+
+        Exemple :
+
+        ```bash
+        touch notes.txt
+        ```
+
+        Si le fichier n’existe pas, il est créé. S’il existe déjà, `touch` met à
+        jour sa date de modification sans modifier son contenu.
+    - type: code_block
+      label: Différence visible avec ls -l
+      content: |
+        utilisateur@linux:~$ touch notes.txt
+        utilisateur@linux:~$ ls -l notes.txt
+        -rw-r--r-- 1 utilisateur utilisateur 0 mai 29 10:00 notes.txt
+    - type: theory
+      title: Fichier vide ne veut pas dire dossier
+      content: |
+        Un fichier vide peut avoir une taille de 0 octet. Il reste quand même un
+        fichier.
+
+        Dans `ls -l`, le premier caractère aide à distinguer le type :
+
+        - `-` indique généralement un fichier ordinaire;
+        - `d` indique un répertoire.
+
+        Les permissions seront étudiées plus tard, mais tu peux déjà observer cette
+        différence.
+    - type: terminal_exercise
+      title: Créer des fichiers de travail
+      instructions: |
+        Crée trois fichiers dans ton arborescence de module.
+      commands:
+      - cd ~/nexus-fund2
+      - touch notes/intervention.txt
+      - touch rapports/rapport-final.txt
+      - touch sauvegardes/README.txt
+      - ls -l notes rapports sauvegardes
+      expectedObservation: Les trois fichiers doivent exister, probablement avec une taille de 0 octet.
+    - type: validation
+      title: Validation
+      question: Quelle commande permet de créer rapidement un fichier vide nommé test.txt ?
+      answerType: short_answer
+      acceptedAnswers:
+      - touch test.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - La commande commence par touch.
+      - Le nom du fichier vient après la commande.
+  - id: linux-fund-2-fr-t6
+    type: task
+    title: Écrire et modifier avec nano
+    order: 6
+    xpReward: 15
+    objectives:
+    - Ouvrir un fichier texte avec nano.
+    - Sauvegarder et quitter correctement.
+    - Valider le contenu avec cat.
+    sections:
+    - type: theory
+      title: nano — un éditeur texte simple dans le terminal
+      content: |
+        `nano` est un éditeur de texte utilisable directement dans le terminal.
+        Il est souvent plus simple pour débuter que des éditeurs comme `vim`.
+
+        Pour ouvrir ou créer un fichier :
+
+        ```bash
+        nano notes.txt
+        ```
+
+        Dans nano, les raccourcis importants sont :
+
+        | Raccourci | Action |
+        |-----------|--------|
+        | `Ctrl + O` | Sauvegarder le fichier |
+        | `Entrée` | Confirmer le nom du fichier lors de la sauvegarde |
+        | `Ctrl + X` | Quitter nano |
+        | `Ctrl + K` | Couper une ligne |
+        | `Ctrl + U` | Coller une ligne coupée |
+    - type: warning
+      title: Ctrl ne veut pas dire écrire ^
+      content: |
+        Quand nano affiche `^O`, cela veut dire `Ctrl + O`.
+        Il ne faut pas taper le symbole `^`.
+    - type: terminal_exercise
+      title: Rédiger une note d’intervention
+      instructions: |
+        Ouvre le fichier d’intervention, écris quelques lignes, sauvegarde, quitte,
+        puis valide le résultat avec cat.
+      commands:
+      - cd ~/nexus-fund2
+      - nano notes/intervention.txt
+      - cat notes/intervention.txt
+      expectedContent:
+      - 'Nom du client: Demo NEXUS'
+      - 'Probleme: dossier mal organise'
+      - 'Action: creation d’une structure de classement'
+      notes: Les accents sont acceptés, mais on peut aussi utiliser une version sans accents si le clavier de la VM est mal configuré.
+    - type: questions
+      items:
+      - id: t5-q1
+        type: qcm
+        question: Dans nano, quel raccourci sert à sauvegarder le fichier ?
+        answers:
+        - text: Ctrl + X
+          correct: false
+        - text: Ctrl + O
+          correct: true
+        - text: Ctrl + S
+          correct: false
+        - text: Alt + F4
+          correct: false
+        feedback:
+          correct: Exact. Dans nano, Ctrl + O permet d’écrire le fichier sur le disque.
+          incorrect: Dans nano, le raccourci de sauvegarde affiché en bas est ^O, donc Ctrl + O.
+      - id: t5-q2
+        type: qcm
+        question: Dans nano, quel raccourci sert à quitter ?
+        answers:
+        - text: Ctrl + Q
+          correct: false
+        - text: Ctrl + X
+          correct: true
+        - text: Ctrl + O
+          correct: false
+        - text: Échap deux fois
+          correct: false
+  - id: linux-fund-2-fr-t7
+    type: task
+    title: Lire un long fichier avec less
+    order: 7
+    xpReward: 10
+    objectives:
+    - Comprendre pourquoi cat n’est pas toujours le bon outil.
+    - Naviguer dans un fichier long avec less.
+    - Quitter less correctement.
+    sections:
+    - type: theory
+      title: cat, head, tail... et less
+      content: |
+        Dans `linux-fund-1`, tu as vu `cat`, `head` et `tail`.
+
+        Ces commandes sont utiles, mais `cat` peut devenir désagréable avec un long
+        fichier : tout le contenu défile dans le terminal.
+
+        La commande `less` permet d’ouvrir un fichier en mode lecture et de naviguer
+        dedans sans le modifier.
+
+        ```bash
+        less fichier.txt
+        ```
+    - type: code_block
+      label: Touches utiles dans less
+      content: |
+        Espace      descendre d’une page
+        b           remonter d’une page
+        /mot        chercher un mot
+        n           aller au résultat suivant
+        q           quitter
+    - type: terminal_exercise
+      title: Créer un fichier long de démonstration
+      instructions: |
+        Utilise la commande suivante pour créer un fichier de démonstration, puis
+        ouvre-le avec less.
+      commands:
+      - cd ~/nexus-fund2
+      - seq 1 80 > rapports/journal-demo.txt
+      - less rapports/journal-demo.txt
+      expectedObservation: Le fichier contient 80 lignes numérotées. Quitte less avec q.
+      teacherNote: La redirection > n’est pas enseignée ici. Présenter cette commande comme une commande préparatoire fournie par NEXUS ou le professeur. La redirection sera expliquée dans linux-fund-3.
+    - type: validation
+      title: Validation
+      question: Dans less, quelle touche permet de quitter l’affichage du fichier ?
+      answerType: short_answer
+      acceptedAnswers:
+      - q
+      - Q
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - C’est une seule lettre.
+      - Elle vient du mot quit.
+  - id: linux-fund-2-fr-t8
+    type: task
+    title: Identifier un fichier avec file
+    order: 8
+    xpReward: 10
+    objectives:
+    - Comprendre que l’extension ne garantit pas le vrai type d’un fichier.
+    - Utiliser file pour identifier un contenu.
+    - Développer un réflexe utile en soutien informatique.
+    sections:
+    - type: theory
+      title: file — demander à Linux ce qu’est un fichier
+      content: |
+        Sous Windows, on se fie souvent à l’extension : `.txt`, `.jpg`, `.docx`, etc.
+        Sous Linux, l’extension est utile pour l’humain, mais elle ne garantit pas
+        toujours le vrai type du fichier.
+
+        La commande `file` analyse un fichier et tente d’indiquer son type réel.
+
+        Exemple :
+
+        ```bash
+        file rapport.txt
+        ```
+    - type: code_block
+      label: Exemples possibles
+      content: |
+        file notes.txt
+        file image.jpg
+        file script.sh
+        file fichier-inconnu
+    - type: terminal_exercise
+      title: Identifier tes fichiers
+      instructions: |
+        Utilise file sur les fichiers créés dans ton dossier de module.
+      commands:
+      - cd ~/nexus-fund2
+      - file notes/intervention.txt
+      - file rapports/rapport-final.txt
+      - file rapports/journal-demo.txt
+      expectedObservation: Les fichiers texte devraient être reconnus comme du texte ou comme ASCII text / Unicode text selon leur contenu.
+    - type: questions
+      items:
+      - id: t7-q1
+        type: qcm
+        question: Pourquoi la commande file est-elle utile ?
+        answers:
+        - text: Elle renomme automatiquement les fichiers incorrects.
+          correct: false
+        - text: Elle supprime les fichiers dangereux.
+          correct: false
+        - text: Elle aide à identifier le type réel d’un fichier.
+          correct: true
+        - text: Elle installe les applications manquantes.
+          correct: false
+      - id: t7-q2
+        type: short_answer
+        question: Quelle commande permet d’identifier le type réel du fichier mystere.bin ?
+        acceptedAnswers:
+        - file mystere.bin
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - La commande commence par file.
+        - Le nom du fichier vient après la commande.
+  - id: linux-fund-2-fr-t9
+    type: task
+    title: Copier avec cp
+    order: 9
+    xpReward: 15
+    objectives:
+    - Copier un fichier.
+    - Copier un fichier vers un dossier.
+    - Copier un dossier avec cp -r.
+    sections:
+    - type: theory
+      title: cp — copy
+      content: |
+        La commande `cp` sert à copier un fichier ou un dossier.
+
+        Copier un fichier sous un nouveau nom :
+
+        ```bash
+        cp notes.txt notes-copie.txt
+        ```
+
+        Copier un fichier dans un dossier :
+
+        ```bash
+        cp rapport.txt sauvegardes/
+        ```
+
+        Copier un dossier complet demande l’option `-r`, pour récursif :
+
+        ```bash
+        cp -r projet projet-backup
+        ```
+    - type: warning
+      title: Attention à l’écrasement
+      content: |
+        Si tu copies un fichier vers un nom qui existe déjà, Linux peut remplacer
+        le fichier de destination.
+
+        Avant de copier, vérifie avec `ls -la`. Après la copie, valide encore avec
+        `ls -la`.
+    - type: terminal_exercise
+      title: Créer une sauvegarde simple
+      instructions: |
+        Copie ta note d’intervention dans le dossier de sauvegarde, puis copie tout
+        le dossier rapports.
+      commands:
+      - cd ~/nexus-fund2
+      - cp notes/intervention.txt sauvegardes/intervention-backup.txt
+      - cp -r rapports sauvegardes/rapports-backup
+      - ls -la sauvegardes
+      expectedObservation: Le fichier intervention-backup.txt et le dossier rapports-backup doivent apparaître.
+    - type: questions
+      items:
+      - id: t8-q1
+        type: short_answer
+        question: Quelle commande copie notes.txt vers notes-copie.txt ?
+        acceptedAnswers:
+        - cp notes.txt notes-copie.txt
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - La commande de copie est cp.
+        - 'Format : cp source destination.'
+      - id: t8-q2
+        type: qcm
+        question: Quelle option permet de copier un dossier complet avec cp ?
+        answers:
+        - text: -a
+          correct: false
+        - text: -r
+          correct: true
+        - text: -d
+          correct: false
+        - text: -x
+          correct: false
+        feedback:
+          correct: Exact. -r signifie récursif dans ce contexte.
+          incorrect: Pour copier un dossier et son contenu, pense à récursif.
+  - id: linux-fund-2-fr-t10
+    type: task
+    title: Déplacer et renommer avec mv
+    order: 10
+    xpReward: 15
+    objectives:
+    - Déplacer un fichier vers un autre dossier.
+    - Renommer un fichier.
+    - Comprendre que mv peut faire les deux selon le contexte.
+    sections:
+    - type: theory
+      title: mv — move
+      content: |
+        La commande `mv` sert à déplacer un fichier ou un dossier.
+
+        Exemple :
+
+        ```bash
+        mv rapport.txt rapports/
+        ```
+
+        Mais `mv` sert aussi à renommer :
+
+        ```bash
+        mv brouillon.txt rapport-final.txt
+        ```
+
+        Dans les deux cas, la logique est la même : Linux prend un élément source
+        et lui donne une nouvelle destination.
+    - type: code_block
+      label: Format général
+      content: |
+        mv source destination
+    - type: warning
+      title: Déplacer peut aussi écraser
+      content: |
+        Comme avec `cp`, une commande `mv` peut remplacer un fichier de destination
+        s’il existe déjà. Vérifie toujours avec `ls -la` avant une opération importante.
+    - type: terminal_exercise
+      title: Renommer puis déplacer
+      instructions: |
+        Renomme un fichier de rapport, puis déplace-le au bon endroit.
+      commands:
+      - cd ~/nexus-fund2
+      - touch notes/brouillon-client.txt
+      - mv notes/brouillon-client.txt notes/rapport-client.txt
+      - mv notes/rapport-client.txt rapports/
+      - ls -la rapports
+      expectedObservation: Le fichier rapport-client.txt doit maintenant se trouver dans le dossier rapports.
+    - type: validation
+      title: Validation
+      question: Quelle commande permet de renommer ancien.txt en nouveau.txt ?
+      answerType: short_answer
+      acceptedAnswers:
+      - mv ancien.txt nouveau.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - La même commande sert à déplacer et à renommer.
+      - 'Format : mv source destination.'
+  - id: linux-fund-2-fr-t11
+    type: task
+    title: Supprimer prudemment avec rm et rmdir
+    order: 11
+    xpReward: 20
+    objectives:
+    - Supprimer un fichier avec rm.
+    - Utiliser rm -i pour demander confirmation.
+    - Supprimer un dossier vide avec rmdir.
+    - Comprendre le danger de rm -r.
+    sections:
+    - type: warning
+      title: rm ne passe pas par la corbeille
+      content: |
+        La commande `rm` supprime des fichiers. Dans le terminal, cette suppression
+        ne passe généralement pas par une corbeille graphique.
+
+        Il faut donc être très prudent.
+
+        Méthode recommandée :
+
+        ```bash
+        pwd
+        ls -la
+        rm -i nom-du-fichier
+        ls -la
+        ```
+    - type: theory
+      title: Supprimer un fichier
+      content: |
+        Pour supprimer un fichier :
+
+        ```bash
+        rm fichier.txt
+        ```
+
+        Pour demander une confirmation avant suppression :
+
+        ```bash
+        rm -i fichier.txt
+        ```
+
+        L’option `-i` signifie interactif. Linux demande alors confirmation avant
+        d’effacer le fichier.
+    - type: theory
+      title: Supprimer des dossiers
+      content: |
+        Pour supprimer un dossier vide :
+
+        ```bash
+        rmdir dossier-vide
+        ```
+
+        Pour supprimer un dossier avec son contenu :
+
+        ```bash
+        rm -r ancien-dossier
+        ```
+
+        `rm -r` signifie récursif. La commande descend dans le dossier et supprime
+        son contenu. C’est utile, mais dangereux si on se trompe de cible.
+    - type: warning
+      title: 'À ne pas pratiquer ici : rm -rf'
+      content: |
+        Tu verras parfois `rm -rf` sur Internet.
+
+        Dans ce module, tu ne dois pas l’utiliser. Cette combinaison force la
+        suppression récursive sans confirmation. C’est une commande à comprendre
+        avant de l’utiliser, pas à copier-coller.
+    - type: terminal_exercise
+      title: Suppression contrôlée
+      instructions: |
+        Crée des fichiers temporaires, puis supprime-les prudemment.
+      commands:
+      - cd ~/nexus-fund2
+      - touch notes/temp-a-supprimer.txt
+      - ls -la notes
+      - rm -i notes/temp-a-supprimer.txt
+      - mkdir dossier-vide
+      - rmdir dossier-vide
+      - ls -la
+      expectedObservation: Le fichier temporaire et le dossier vide doivent avoir disparu.
+    - type: questions
+      items:
+      - id: t10-q1
+        type: qcm
+        question: Pourquoi rm est-elle une commande à utiliser avec prudence ?
+        answers:
+        - text: Parce qu’elle installe automatiquement des logiciels.
+          correct: false
+        - text: Parce qu’elle peut supprimer des fichiers sans passer par une corbeille.
+          correct: true
+        - text: Parce qu’elle redémarre Linux.
+          correct: false
+        - text: Parce qu’elle modifie toujours les permissions.
+          correct: false
+      - id: t10-q2
+        type: short_answer
+        question: Quelle option de rm demande une confirmation avant la suppression ?
+        acceptedAnswers:
+        - -i
+        - i
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - C’est l’option interactive.
+        - Elle commence par un tiret.
+      - id: t10-q3
+        type: qcm
+        question: Quelle commande est la plus appropriée pour supprimer un dossier vide ?
+        answers:
+        - text: cat
+          correct: false
+        - text: rmdir
+          correct: true
+        - text: touch
+          correct: false
+        - text: file
+          correct: false
+  - id: linux-fund-2-fr-t12
+    type: task
+    title: Consulter l’aide avec man et --help
+    order: 12
+    xpReward: 15
+    objectives:
+    - Ouvrir une page de manuel.
+    - Quitter une page man.
+    - Utiliser --help pour une aide rapide.
+    - Développer l’autonomie technique.
+    sections:
+    - type: theory
+      title: Un technicien ne mémorise pas tout
+      content: |
+        Un bon technicien ne connaît pas toutes les options de toutes les commandes
+        par cœur. Il sait surtout **où trouver l’information**.
+
+        Deux réflexes importants :
+
+        ```bash
+        man commande
+        commande --help
+        ```
+
+        Exemple :
+
+        ```bash
+        man cp
+        cp --help
+        ```
+    - type: theory
+      title: Naviguer dans man
+      content: |
+        Les pages `man` utilisent un affichage semblable à `less`.
+
+        Touches utiles :
+
+        | Touche | Action |
+        |--------|--------|
+        | `Espace` | Descendre d’une page |
+        | `b` | Remonter d’une page |
+        | `/mot` | Chercher un mot |
+        | `n` | Résultat suivant |
+        | `q` | Quitter |
+    - type: terminal_exercise
+      title: Chercher une option
+      instructions: |
+        Ouvre l’aide de cp et observe rapidement les options disponibles.
+      commands:
+      - man cp
+      - cp --help
+      expectedObservation: Tu dois voir de nombreuses options. Il n’est pas nécessaire de toutes les mémoriser.
+    - type: questions
+      items:
+      - id: t11-q1
+        type: short_answer
+        question: Quelle commande ouvre le manuel de cp ?
+        acceptedAnswers:
+        - man cp
+        trimWhitespace: true
+        caseSensitive: false
+      - id: t11-q2
+        type: short_answer
+        question: Dans une page man, quelle touche permet de quitter ?
+        acceptedAnswers:
+        - q
+        - Q
+        trimWhitespace: true
+        caseSensitive: false
+      - id: t11-q3
+        type: qcm
+        question: Pourquoi --help est-il utile ?
+        answers:
+        - text: Il supprime les erreurs automatiquement.
+          correct: false
+        - text: Il affiche souvent une aide rapide directement dans le terminal.
+          correct: true
+        - text: Il donne toujours un cours complet en français.
+          correct: false
+        - text: Il remplace la documentation officielle.
+          correct: false
+  - id: linux-fund-2-fr-t13
+    type: task
+    title: Mini-lab — Organiser un dossier client
+    order: 13
+    xpReward: 15
+    objectives:
+    - Combiner plusieurs commandes du module.
+    - Créer une structure de dossier propre.
+    - Valider les manipulations avec les commandes de lecture et de liste.
+    sections:
+    - type: mission
+      title: Mise en situation
+      content: |
+        Un client fictif nommé **Demo NEXUS** t’envoie des notes, captures et
+        rapports dans un dossier non structuré. Avant de pouvoir faire un vrai
+        diagnostic, tu dois créer une structure propre.
+
+        Ton travail consiste à préparer l’espace de classement.
+    - type: terminal_exercise
+      title: Créer la structure client
+      instructions: |
+        Réalise les étapes suivantes dans ta VM.
+      commands:
+      - cd ~
+      - mkdir -p client-demo/notes
+      - mkdir -p client-demo/captures
+      - mkdir -p client-demo/rapports
+      - mkdir -p client-demo/sauvegardes
+      - touch client-demo/notes/intervention.txt
+      - nano client-demo/notes/intervention.txt
+      - cp client-demo/notes/intervention.txt client-demo/sauvegardes/intervention-backup.txt
+      - mv client-demo/notes/intervention.txt client-demo/rapports/rapport-final.txt
+      - file client-demo/rapports/rapport-final.txt
+      - wc -l client-demo/rapports/rapport-final.txt
+      requiredContentSuggestion: |
+        Dans nano, écris au moins trois lignes :
+        - Nom du client
+        - Problème observé
+        - Action réalisée
+      expectedObservation: Le rapport final doit se trouver dans client-demo/rapports et une sauvegarde doit exister dans client-demo/sauvegardes.
+    - type: validation
+      title: Validation du mini-lab
+      question: Quelle commande permet de compter le nombre de lignes du rapport final ?
+      answerType: short_answer
+      acceptedAnswers:
+      - wc -l client-demo/rapports/rapport-final.txt
+      - wc -l ~/client-demo/rapports/rapport-final.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - La commande de comptage de lignes a été vue dans linux-fund-1.
+      - L’option est -l.
+    - type: teacher_note
+      title: Variante DLC
+      content: |
+        Pour les élèves rapides, demander de recréer la même structure avec une
+        seule commande utilisant les accolades :
+
+        mkdir -p client-dlc/{notes,captures,rapports,sauvegardes}
+
+        Présenter cette syntaxe comme un bonus Bash, pas comme un objectif obligatoire.
+  - id: linux-fund-2-fr-t14
+    type: challenge
+    title: Défi — Dossier client mal organisé
+    order: 14
+    xpReward: 30
+    penaltyEnabled: true
+    objectives:
+    - Réorganiser un dossier client dans une VM réelle.
+    - Utiliser mkdir, touch, nano, cp, mv, rm -i, rmdir, file et wc -l.
+    - Répondre aux validations dans NEXUS.
+    sections:
+    - type: mission
+      title: Briefing de défi
+      content: |
+        Agent, un dossier client a été laissé dans un état chaotique.
+
+        Ta mission : remettre de l’ordre sans supprimer les fichiers importants.
+        Tu dois créer la bonne structure, déplacer les fichiers au bon endroit,
+        faire une sauvegarde, retirer les éléments temporaires inutiles et valider
+        ton travail.
+
+        Contrairement aux questions de section, ce défi peut appliquer des pénalités
+        selon les règles de NEXUS. Prends ton temps.
+    - type: warning
+      title: Avant de supprimer
+      content: |
+        Pour ce défi, utilise `rm -i` lorsque tu dois supprimer un fichier.
+        N’utilise pas `rm -rf`.
+    - type: theory
+      title: Préparation suggérée de la VM
+      content: |
+        La VM du défi pourra contenir un dossier `/home/student/mission-client`
+        avec une structure volontairement désorganisée.
+
+        Exemple de contenu initial :
+
+        ```text
+        /home/student/mission-client/
+        ├── a-classer/
+        │   ├── brouillon.txt
+        │   ├── evidence.jpg
+        │   ├── notes-client.txt
+        │   └── temporaire.tmp
+        ├── vieux-dossier-vide/
+        └── instruction.txt
+        ```
+
+        Le fichier `instruction.txt` peut expliquer les objectifs du défi.
+    - type: terminal_exercise
+      title: Objectifs techniques du défi
+      instructions: |
+        Dans la VM de défi, réalise les actions suivantes :
+
+        1. Va dans `/home/student/mission-client`.
+        2. Crée les dossiers `notes`, `preuves`, `rapports` et `sauvegardes`.
+        3. Déplace `notes-client.txt` dans `notes`.
+        4. Renomme `brouillon.txt` en `rapport-final.txt`.
+        5. Déplace `rapport-final.txt` dans `rapports`.
+        6. Copie `rapport-final.txt` dans `sauvegardes` sous le nom `rapport-final-backup.txt`.
+        7. Déplace `evidence.jpg` dans `preuves`.
+        8. Identifie le type réel de `evidence.jpg` avec `file`.
+        9. Supprime `temporaire.tmp` avec `rm -i`.
+        10. Supprime le dossier vide `vieux-dossier-vide` avec `rmdir`.
+        11. Compte les lignes de `rapports/rapport-final.txt` avec `wc -l`.
+      expectedCommandsPossible:
+      - cd /home/student/mission-client
+      - mkdir notes preuves rapports sauvegardes
+      - mv a-classer/notes-client.txt notes/
+      - mv a-classer/brouillon.txt rapports/rapport-final.txt
+      - cp rapports/rapport-final.txt sauvegardes/rapport-final-backup.txt
+      - mv a-classer/evidence.jpg preuves/
+      - file preuves/evidence.jpg
+      - rm -i a-classer/temporaire.tmp
+      - rmdir vieux-dossier-vide
+      - wc -l rapports/rapport-final.txt
+    - type: validation
+      title: Question 1 — Chemin du rapport
+      question: Quel est le chemin absolu du rapport final après réorganisation ?
+      answerType: short_answer
+      acceptedAnswers:
+      - /home/student/mission-client/rapports/rapport-final.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - Un chemin absolu commence par /.
+      - Le dossier de départ est /home/student/mission-client.
+      - Le rapport final doit être dans le dossier rapports.
+    - type: validation
+      title: Question 2 — Commande de sauvegarde
+      question: Quelle commande permet de copier le rapport final vers sauvegardes/rapport-final-backup.txt depuis le dossier mission-client ?
+      answerType: short_answer
+      acceptedAnswers:
+      - cp rapports/rapport-final.txt sauvegardes/rapport-final-backup.txt
+      - cp /home/student/mission-client/rapports/rapport-final.txt /home/student/mission-client/sauvegardes/rapport-final-backup.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - La commande de copie est cp.
+      - 'Format : cp source destination.'
+    - type: validation
+      title: Question 3 — Type du fichier evidence.jpg
+      question: Selon la commande file, quel type général de fichier est evidence.jpg ?
+      answerType: short_answer
+      acceptedAnswers:
+      - image
+      - jpeg
+      - jpg
+      - JPEG image data
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - Utilise file preuves/evidence.jpg après l’avoir déplacé.
+      - On cherche le type général, pas nécessairement toute la ligne exacte.
+    - type: validation
+      title: Question 4 — Suppression prudente
+      question: Quelle commande devait être utilisée pour supprimer temporaire.tmp avec confirmation ?
+      answerType: short_answer
+      acceptedAnswers:
+      - rm -i a-classer/temporaire.tmp
+      - rm -i /home/student/mission-client/a-classer/temporaire.tmp
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - L’option interactive demande confirmation.
+      - La commande commence par rm -i.
+    - type: validation
+      title: Question 5 — Nombre de lignes
+      question: Quelle commande permet de compter les lignes du rapport final depuis le dossier mission-client ?
+      answerType: short_answer
+      acceptedAnswers:
+      - wc -l rapports/rapport-final.txt
+      - wc -l /home/student/mission-client/rapports/rapport-final.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - La commande wc a été vue dans linux-fund-1.
+      - L’option pour compter les lignes est -l.
+    - type: teacher_note
+      title: Préparation de la VM de défi
+      content: |
+        Créer le dossier /home/student/mission-client avec les éléments suivants :
+
+        - a-classer/brouillon.txt : rapport de 4 à 8 lignes;
+        - a-classer/evidence.jpg : vraie image JPEG ou fichier factice selon le niveau souhaité;
+        - a-classer/notes-client.txt : quelques notes courtes;
+        - a-classer/temporaire.tmp : fichier temporaire inutile;
+        - vieux-dossier-vide/ : dossier vide;
+        - instruction.txt : consignes narratives.
+
+        Éviter les permissions complexes dans ce défi. Les permissions seront traitées
+        dans linux-fund-4 et linux-fund-5.

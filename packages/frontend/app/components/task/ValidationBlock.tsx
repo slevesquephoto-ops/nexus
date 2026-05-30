@@ -7,7 +7,7 @@ interface Props {
   title: string
   question: string
   acceptedAnswers: string[]
-  onComplete?: (id: string, answer: string) => void
+  onComplete?: (id: string, answer: string, question: string) => void
 }
 
 export default function ValidationBlock({ id, title, question, acceptedAnswers, onComplete }: Props) {
@@ -25,7 +25,7 @@ export default function ValidationBlock({ id, title, question, acceptedAnswers, 
       a => a.trim().toLowerCase() === value.trim().toLowerCase()
     )
     setResult(correct ? 'correct' : 'wrong')
-    if (correct) onComplete?.(id, isAcknowledgment ? '✓' : value.trim())
+    if (correct) onComplete?.(id, isAcknowledgment ? '✓' : value.trim(), question)
   }
 
   return (
