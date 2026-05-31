@@ -1,0 +1,534 @@
+module:
+  id: cyber-security-101-2-fr
+  trackId: cyber-security-101-fr
+  title: "Actifs, risques et bases de la pensée sécurité"
+  description: "Identifier ce qu'on protège, comprendre les risques et proposer des protections de base"
+  order: 2
+  mascot: "tux-shield"
+  xpReward: 90
+  language: fr
+
+  # ── Métadonnées pédagogiques (pour référence enseignant — non chargées en DB) ──
+
+  estimatedDuration: "1h30 à 2h"
+  level: beginner
+
+  summary: |
+    Ce module amène l'élève à comprendre ce qu'une organisation cherche réellement
+    à protéger en cybersécurité. L'élève apprend à identifier des actifs numériques,
+    à distinguer les notions de menace, vulnérabilité, risque et incident, puis à
+    proposer des protections simples et réalistes.
+
+    Le module sert de pont entre la définition générale de la cybersécurité et les
+    futurs scénarios offensifs ou défensifs. Avant de chercher des failles, l'élève
+    doit comprendre ce qui a de la valeur, ce qui peut mal tourner et comment réduire
+    les risques dans un contexte de soutien informatique.
+
+  pedagogicalIntent: |
+    L'objectif est d'amener l'élève à penser comme un technicien responsable :
+    observer une situation, identifier les actifs importants, reconnaître les risques
+    et proposer des mesures de protection adaptées.
+
+    Ce module prépare directement la suite du parcours. Les élèves auront besoin de
+    ces concepts pour comprendre la surface d'attaque, les règles éthiques, la portée
+    d'un mandat et les recommandations défensives dans les rapports de mission.
+
+  learningOutcomes:
+    - "Identifier différents types d'actifs numériques dans une organisation."
+    - "Distinguer menace, vulnérabilité, risque et incident."
+    - "Relier un risque à un impact possible sur la confidentialité, l'intégrité ou la disponibilité."
+    - "Proposer des protections de base adaptées à des situations réalistes."
+    - "Comprendre la différence entre prévention, détection et réponse."
+    - "Produire un court portrait de risques en français."
+
+  prerequisites:
+    - "Avoir complété le module 1 du parcours Cyber Security 101."
+    - "Comprendre la triade CIA : confidentialité, intégrité et disponibilité."
+    - "Savoir donner un exemple simple lié au soutien informatique."
+
+    - type: teacher_note
+      title: "Intention pédagogique"
+      content: |
+        Ce module doit rester très concret. Les élèves n'ont pas besoin de maîtriser
+        des modèles formels de gestion du risque. Le but est de développer un réflexe :
+        avant de corriger ou de tester quelque chose, il faut comprendre ce qui est
+        protégé et ce qui pourrait arriver.
+
+        Questions de discussion suggérées :
+        - Qu'est-ce qui a le plus de valeur dans une petite entreprise : les ordinateurs ou les données?
+        - Est-ce qu'un compte utilisateur peut être considéré comme un actif?
+        - Pourquoi une sauvegarde peut-elle être aussi importante qu'un serveur?
+        - Quelle est la différence entre un problème possible et un incident réel?
+
+  vocabulary:
+    - term: "Actif"
+      fr: "Actif"
+      definition: "Élément qui a de la valeur pour une personne ou une organisation."
+    - term: "Actif numérique"
+      fr: "Actif numérique"
+      definition: "Donnée, compte, service, système ou ressource technologique ayant de la valeur."
+    - term: "Menace"
+      fr: "Menace"
+      definition: "Élément ou événement qui pourrait causer un dommage."
+    - term: "Vulnérabilité"
+      fr: "Vulnérabilité"
+      definition: "Faiblesse qui pourrait être exploitée par une menace."
+    - term: "Risque"
+      fr: "Risque"
+      definition: "Possibilité qu'une menace exploite une vulnérabilité et cause un impact."
+    - term: "Incident"
+      fr: "Incident"
+      definition: "Événement réel qui affecte ou pourrait affecter la sécurité."
+    - term: "Impact"
+      fr: "Impact"
+      definition: "Conséquence possible ou réelle d'un problème de sécurité."
+    - term: "Protection"
+      fr: "Protection"
+      definition: "Mesure utilisée pour prévenir, détecter ou réduire un risque."
+
+  safetyReminder: |
+    Dans ce module, l'élève analyse des situations fictives. Aucun outil offensif
+    n'est utilisé. Les exemples servent à développer le jugement professionnel,
+    pas à encourager le test de systèmes réels.
+
+  # ── Tâches ────────────────────────────────────────────────────────────────────
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-2-fr-t1
+      type: task
+      title: "Qu’est-ce qu’un actif numérique?"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Reconnaître différents types d'actifs numériques."
+        - "Comprendre que les données, les comptes et les services sont aussi importants que les appareils."
+        - "Classer des actifs selon leur rôle dans une organisation."
+      sections:
+
+        - type: theory
+          title: "Ce qu’on protège en cybersécurité"
+          content: |
+            En cybersécurité, un actif est quelque chose qui a de la valeur pour une personne
+            ou une organisation. Un actif peut être physique, numérique ou logique.
+
+            Un ordinateur portable est un actif. Un serveur est un actif. Mais les fichiers,
+            les comptes utilisateurs, les boîtes courriel, les sauvegardes, les accès cloud,
+            les bases de données et les services en ligne sont aussi des actifs.
+
+            Dans plusieurs situations, les données ont plus de valeur que l'appareil lui-même.
+            Un ordinateur peut être remplacé, mais une base de données client perdue ou exposée
+            peut causer des dommages beaucoup plus importants.
+
+        - type: theory
+          title: "Exemples d’actifs numériques"
+          content: |
+            Voici des exemples d'actifs qu'un technicien peut rencontrer dans une petite organisation :
+
+            - postes de travail;
+            - ordinateurs portables;
+            - téléphones mobiles;
+            - comptes Microsoft 365 ou Google Workspace;
+            - boîtes courriel;
+            - fichiers partagés;
+            - sauvegardes;
+            - serveur de fichiers;
+            - routeur et réseau Wi-Fi;
+            - site web public;
+            - base de données client;
+            - imprimante réseau;
+            - logiciel de gestion interne.
+
+        - type: command_table
+          commands:
+            - cmd: "Appareils"
+              desc: "Postes, portables, téléphones, tablettes, imprimantes réseau"
+            - cmd: "Comptes"
+              desc: "Comptes utilisateurs, comptes administrateur, comptes cloud"
+            - cmd: "Données"
+              desc: "Documents, courriels, bases de données, sauvegardes"
+            - cmd: "Services"
+              desc: "Site web, serveur de fichiers, messagerie, applications internes"
+            - cmd: "Réseau"
+              desc: "Routeur, Wi-Fi, commutateurs, accès VPN"
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: "Lequel des éléments suivants est un actif numérique?"
+              answers:
+                - text: "Un compte courriel d’entreprise"
+                  correct: true
+                - text: "Une chaise de bureau"
+                  correct: false
+                - text: "Une tasse de café"
+                  correct: false
+                - text: "Un calendrier mural non connecté"
+                  correct: false
+
+            - id: t1-q2
+              type: qcm
+              question: "Pourquoi les données sont-elles souvent plus importantes que l’appareil qui les contient?"
+              answers:
+                - text: "Parce qu’un appareil ne peut jamais être remplacé"
+                  correct: false
+                - text: "Parce que les données peuvent être uniques, sensibles ou essentielles au travail"
+                  correct: true
+                - text: "Parce que les données ne peuvent jamais être copiées"
+                  correct: false
+                - text: "Parce que les données n’ont pas besoin de protection"
+                  correct: false
+
+            - id: t1-q3
+              type: short_answer
+              question: "Nomme un actif numérique que tu pourrais devoir protéger comme technicien en soutien informatique."
+              answer: "compte utilisateur"
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-2-fr-t2
+      type: task
+      title: "Menace, vulnérabilité, risque et incident"
+      order: 2
+      xpReward: 10
+      objectives:
+        - "Distinguer les concepts de menace, vulnérabilité, risque et incident."
+        - "Utiliser ces concepts dans des situations simples."
+        - "Comprendre qu'un risque devient plus sérieux lorsqu'il touche un actif important."
+      sections:
+
+        - type: theory
+          title: "Quatre mots importants"
+          content: |
+            En cybersécurité, plusieurs mots se ressemblent, mais ne veulent pas dire la même chose.
+            Pour bien analyser une situation, il faut distinguer menace, vulnérabilité, risque et incident.
+
+            Une menace est quelque chose qui pourrait causer un dommage.
+            Une vulnérabilité est une faiblesse qui pourrait être exploitée.
+            Un risque est la possibilité qu'une menace exploite une vulnérabilité et cause un impact.
+            Un incident est un événement réel qui affecte ou pourrait affecter la sécurité.
+
+        - type: theory
+          title: "Exemple simple"
+          content: |
+            Imaginons un compte utilisateur protégé par un mot de passe très faible.
+
+            La menace pourrait être une personne malveillante qui tente de deviner le mot de passe.
+            La vulnérabilité est le mot de passe faible.
+            Le risque est que le compte soit compromis.
+            L'incident se produit si quelqu'un réussit réellement à se connecter sans autorisation.
+
+            Cette distinction aide le technicien à comprendre la situation et à choisir une bonne action.
+
+        - type: command_table
+          commands:
+            - cmd: "Menace"
+              desc: "Ce qui pourrait causer un dommage"
+            - cmd: "Vulnérabilité"
+              desc: "Faiblesse qui pourrait être exploitée"
+            - cmd: "Risque"
+              desc: "Possibilité qu'une menace exploite une vulnérabilité"
+            - cmd: "Incident"
+              desc: "Événement réel qui affecte ou pourrait affecter la sécurité"
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Un mot de passe faible est surtout un exemple de quoi?"
+              answers:
+                - text: "Une vulnérabilité"
+                  correct: true
+                - text: "Une sauvegarde"
+                  correct: false
+                - text: "Une politique"
+                  correct: false
+                - text: "Une disponibilité"
+                  correct: false
+
+            - id: t2-q2
+              type: qcm
+              question: "Une personne malveillante qui tente de voler un mot de passe représente surtout quoi?"
+              answers:
+                - text: "Une menace"
+                  correct: true
+                - text: "Une imprimante"
+                  correct: false
+                - text: "Une sauvegarde"
+                  correct: false
+                - text: "Une mise à jour"
+                  correct: false
+
+            - id: t2-q3
+              type: qcm
+              question: "Un utilisateur non autorisé réussit à se connecter à un compte. De quoi s’agit-il?"
+              answers:
+                - text: "Un incident"
+                  correct: true
+                - text: "Une simple hypothèse"
+                  correct: false
+                - text: "Une catégorie d’actif"
+                  correct: false
+                - text: "Une mesure de prévention"
+                  correct: false
+
+            - id: t2-q4
+              type: short_answer
+              question: "Dans tes mots, quelle est la différence entre un risque et un incident?"
+              answer: "un risque est possible, un incident est arrivé"
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-2-fr-t3
+      type: task
+      title: "Prévention, détection et réponse"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Associer des protections de base à des risques fréquents."
+        - "Distinguer prévention, détection et réponse."
+        - "Proposer des mesures réalistes dans un contexte de soutien informatique."
+      sections:
+
+        - type: theory
+          title: "Trois types de protections"
+          content: |
+            Une protection de sécurité peut servir à prévenir un problème, à détecter un problème
+            ou à répondre à un problème après sa découverte.
+
+            La prévention cherche à réduire les chances qu'un problème arrive.
+            La détection cherche à remarquer rapidement qu'un problème existe.
+            La réponse cherche à limiter les dommages et à rétablir une situation normale.
+
+            Un bon technicien ne pense pas seulement à corriger après coup. Il cherche aussi à réduire
+            les risques avant qu'ils deviennent des incidents.
+
+        - type: theory
+          title: "Exemples de mesures de protection"
+          content: |
+            Exemples de prévention :
+            - utiliser l'authentification multifacteur;
+            - installer les mises à jour;
+            - appliquer le principe du moindre privilège;
+            - former les utilisateurs;
+            - faire des sauvegardes régulières.
+
+            Exemples de détection :
+            - consulter les journaux de connexion;
+            - surveiller les alertes antivirus;
+            - remarquer des comportements inhabituels;
+            - vérifier les rapports d'échec de sauvegarde.
+
+            Exemples de réponse :
+            - isoler un poste suspect;
+            - changer un mot de passe compromis;
+            - restaurer une sauvegarde;
+            - documenter l'incident;
+            - aviser la personne responsable.
+
+        - type: command_table
+          commands:
+            - cmd: "Prévention"
+              desc: "Réduire les chances qu'un problème arrive"
+            - cmd: "Détection"
+              desc: "Repérer rapidement un problème"
+            - cmd: "Réponse"
+              desc: "Limiter les dommages et rétablir la situation"
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "Installer les mises à jour régulièrement est surtout une mesure de quoi?"
+              answers:
+                - text: "Prévention"
+                  correct: true
+                - text: "Décoration"
+                  correct: false
+                - text: "Suppression"
+                  correct: false
+                - text: "Improvisation"
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "Consulter des journaux de connexion pour repérer une activité suspecte est surtout une mesure de quoi?"
+              answers:
+                - text: "Détection"
+                  correct: true
+                - text: "Disponibilité seulement"
+                  correct: false
+                - text: "Installation matérielle"
+                  correct: false
+                - text: "Aucune mesure de sécurité"
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Isoler un ordinateur possiblement infecté est surtout une mesure de quoi?"
+              answers:
+                - text: "Réponse"
+                  correct: true
+                - text: "Création de compte"
+                  correct: false
+                - text: "Augmentation du risque"
+                  correct: false
+                - text: "Achat de matériel"
+                  correct: false
+
+            - id: t3-q4
+              type: short_answer
+              question: "Donne un exemple de protection qu’un technicien peut appliquer pour réduire un risque."
+              answer: "mettre à jour"
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
+    - id: cyber-security-101-2-fr-c1
+      type: challenge
+      title: "Portrait de risques — Maple Tech Solutions"
+      order: 4
+      xpReward: 60
+      objectives:
+        - "Analyser une petite organisation fictive."
+        - "Identifier des actifs, des risques et des protections."
+        - "Relier les risques à la confidentialité, l'intégrité ou la disponibilité."
+      sections:
+        - type: mission
+          title: "Contexte — Maple Tech Solutions"
+          content: |
+            Tu travailles comme technicien en soutien informatique pour **Maple Tech Solutions**,
+            une petite entreprise de 15 employés.
+
+            L'entreprise utilise :
+            - des ordinateurs portables
+            - des comptes courriel
+            - un dossier partagé
+            - un réseau Wi-Fi
+            - un site web public
+            - des sauvegardes
+            - une base de données client
+
+        - type: theory
+          title: "Ton portrait de risques doit inclure"
+          content: |
+            Prépare un tableau avec les colonnes suivantes :
+
+            **Actif | Risque possible | Impact CIA | Protection proposée**
+
+            Ton travail doit contenir :
+            - **5 actifs numériques** réalistes pour cette entreprise
+            - **5 risques possibles** (un par actif)
+            - L'**impact principal sur la triade CIA** pour chaque risque (confidentialité, intégrité ou disponibilité)
+            - Une **protection de base** pour chaque risque
+            - Une **courte conclusion** de 3 à 5 phrases sur l'importance de gérer les risques
+
+        - type: hint
+          hints:
+            - "Actifs possibles : ordinateurs portables, comptes courriel, dossier partagé, Wi-Fi, base de données client..."
+            - "Risques possibles : vol de données, hameçonnage, accès non autorisé, panne, logiciel malveillant..."
+            - "Pour la conclusion : explique pourquoi identifier les risques est important pour un technicien."
+
+        - type: teacher_note
+          content: |
+            **Grille de correction (60 XP)**
+            - Identification des actifs (5 actifs réalistes) : 10 pts
+            - Identification des risques (liés aux actifs) : 15 pts
+            - Lien avec la triade CIA (correct pour chaque risque) : 15 pts
+            - Protections proposées (réalistes pour un technicien) : 15 pts
+            - Conclusion (résume l'importance de réduire les risques) : 5 pts
+
+      instructions: |
+        Tu travailles comme technicien en soutien informatique pour Maple Tech Solutions,
+        une petite entreprise de 15 employés.
+
+        L'entreprise utilise :
+        - des ordinateurs portables;
+        - des comptes courriel;
+        - un dossier partagé;
+        - un réseau Wi-Fi;
+        - un site web public;
+        - des sauvegardes;
+        - une base de données client.
+
+        Prépare un court portrait de risques en français.
+
+        Ton travail doit inclure :
+        - 5 actifs numériques;
+        - 5 risques possibles;
+        - l'impact principal sur la triade CIA pour chaque risque;
+        - une protection de base pour chaque risque;
+        - une courte conclusion de 3 à 5 phrases.
+      expectedDeliverables:
+        - "Un tableau avec 5 actifs numériques."
+        - "Un risque possible pour chaque actif."
+        - "Une colonne indiquant confidentialité, intégrité ou disponibilité."
+        - "Une protection de base pour chaque risque."
+        - "Une courte conclusion en français."
+      successCriteria:
+        - "Les actifs choisis sont réalistes pour une petite entreprise."
+        - "Les risques sont liés aux actifs choisis."
+        - "La triade CIA est utilisée correctement."
+        - "Les protections proposées sont simples et applicables."
+        - "La conclusion démontre une compréhension générale du risque."
+      suggestedTableColumns:
+        - "Actif"
+        - "Risque possible"
+        - "Impact CIA"
+        - "Protection proposée"
+      gradingRubric:
+        - criterion: "Identification des actifs"
+          points: 10
+          description: "L'élève identifie 5 actifs numériques réalistes."
+        - criterion: "Identification des risques"
+          points: 15
+          description: "Chaque risque est clair et lié à l'actif choisi."
+        - criterion: "Lien avec la triade CIA"
+          points: 15
+          description: "L'élève associe correctement chaque risque à la confidentialité, l'intégrité ou la disponibilité."
+        - criterion: "Protections proposées"
+          points: 15
+          description: "Les protections sont réalistes pour un technicien en soutien informatique."
+        - criterion: "Conclusion"
+          points: 5
+          description: "La conclusion résume l'importance de réduire les risques."
+
+  # ── Métadonnées de complétion (référence — non chargées en DB) ──────────────
+
+  moduleCompletion:
+    requiredItems:
+      - cyber-security-101-2-fr-t1
+      - cyber-security-101-2-fr-t2
+      - cyber-security-101-2-fr-t3
+      - cyber-security-101-2-fr-c1
+    completionCriteria:
+      - "L'élève peut identifier des actifs numériques."
+      - "L'élève peut distinguer menace, vulnérabilité, risque et incident."
+      - "L'élève peut proposer des protections de base."
+      - "L'élève a remis le portrait de risques."
+    unlocks:
+      - cyber-security-101-3-fr
+
+  teacherCorrectionGuide:
+    commonMisconceptions:
+      - misconception: "Un actif est seulement un objet physique."
+        correction: "Un actif peut aussi être un compte, une donnée, un service, une sauvegarde ou un accès."
+      - misconception: "Une menace et une vulnérabilité sont la même chose."
+        correction: "La menace peut causer un dommage; la vulnérabilité est la faiblesse qui peut être exploitée."
+      - misconception: "Un risque est déjà un incident."
+        correction: "Un risque est une possibilité; un incident est un événement réel ou observé."
+      - misconception: "Les sauvegardes servent seulement après une panne."
+        correction: "Les sauvegardes font partie de la disponibilité et de la réponse, mais elles doivent être planifiées et vérifiées avant l'incident."
+    suggestedFeedbackForChallenge:
+      excellent: |
+        Très bon portrait de risques. Les actifs sont réalistes, les risques sont bien reliés
+        à la triade CIA et les protections proposées sont applicables dans un contexte de soutien informatique.
+      satisfactory: |
+        Bonne base. Le portrait de risques est compréhensible, mais certains liens entre actifs,
+        risques et protections pourraient être précisés davantage.
+      needsImprovement: |
+        Le portrait est trop général. Revois la différence entre actif, risque et protection,
+        puis ajoute des exemples plus concrets liés à Maple Tech Solutions.
+
+  metadata:
+    version: "1.0"
+    author: "Steeve Levesque / NEXUS"
+    createdFor: "Parcours Cyber Security 101"

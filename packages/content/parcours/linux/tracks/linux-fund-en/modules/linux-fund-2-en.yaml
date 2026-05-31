@@ -1,313 +1,592 @@
 module:
   id: linux-fund-2-en
   trackId: linux-en
-  title: Linux Fundamentals 2 — Manipulating Files and Directories
-  description: Create, edit, copy, move and delete carefully, respect Linux file names, and use command help.
+  title: Linux Fundamentals 2 — Managing Files and Directories
+  description: Create, modify, copy, move, and delete files carefully, respect Linux file naming conventions, and consult command help.
   order: 2
   mascot: tux-filesystem
   xpReward: 140
-  estimatedDuration: 75 to 105 minutes with classroom demonstration
+  estimatedDuration: 75 to 105 minutes with in-class demonstration
   language: en
   targetEnvironment:
     distribution: Ubuntu 24.04 LTS
     user: student
-    notes: 'This module assumes linux-fund-1 is complete: the student can orient themselves, list, navigate and read simple files.'
+    notes: 'This module assumes linux-fund-1 is completed: the student knows how to navigate, list, move around, and read basic files.'
   prerequisites:
-  - Understand the role of the terminal and shell.
-  - Use whoami, pwd, ls, ls -l, ls -a, cd, cat, head, tail and wc -l.
-  - Understand absolute paths, relative paths, /, ~, . and ...
+  - Understand the role of the terminal and the shell.
+  - Use whoami, pwd, ls, ls -l, ls -a, cd, cat, head, tail, and wc -l.
+  - Understand absolute paths, relative paths, /, ~, ., and ...
   pedagogicalIntent:
-  - Move from observation to controlled manipulation.
-  - 'Build technician reflexes: verify location before acting.'
-  - Explain case sensitivity and spaces in Linux names.
-  - Create and organize a simple client folder structure.
+  - Move students from observation to controlled file manipulation.
+  - 'Build technician habits: verify location before acting.'
+  - Help students understand that Linux is case-sensitive and that spaces in names require quoting or escaping.
+  - Create and organize a simple directory tree related to a client folder.
   - Introduce safe deletion without trivializing destructive commands.
-  - Build autonomy with man and --help.
+  - Foster autonomy with man and --help.
   gradingPolicy:
-    sectionQuestions: No penalty; students may try again.
-    challengeQuestions: Penalty applied according to NEXUS rules.
-    xp: For gamification only; it does not directly represent an official grade.
+    sectionQuestions: No penalty; students may retry.
+    challengeQuestions: Penalty applies according to NEXUS rules.
+    xp: Gamification only; does not directly correspond to an official grade weight.
   tasks:
   - id: linux-fund-2-en-t1
     type: task
-    title: NEXUS Briefing — Manipulate without breaking
+    title: NEXUS Briefing — Handle With Care
     order: 1
     xpReward: 10
     objectives:
-    - Move from observation to controlled file manipulation.
-    - Understand why careful verification matters.
+    - Understand the purpose of this module.
+    - Adopt a careful approach before modifying files.
+    - Identify the main commands that will be covered.
     sections:
     - type: mission
       title: Mission Briefing
-      content: Agent, you can now navigate and read information. Your next step is to create, edit, copy, move and delete files carefully.
+      content: |
+        Agent, you now know how to find your way around a Linux machine.
+
+        In this module, you move on to the next step: **managing files
+        and directories**. You will create a directory tree, produce files,
+        copy, move, rename, and delete carefully.
+
+        Your objective is not to go fast. Your objective is to work like
+        a reliable technician: verify where you are, observe the contents, choose the
+        right command, then validate the result.
     - type: theory
-      title: Module goal
-      content: You will work inside a controlled directory and learn basic file operations used constantly in technical support.
+      title: What You Will Learn
+      content: |
+        In this module, you will learn to:
+
+        - create directories with `mkdir`;
+        - create nested directories with `mkdir -p`;
+        - create empty files with `touch`;
+        - write to a file with `nano`;
+        - read a long file with `less`;
+        - identify the actual type of a file with `file`;
+        - copy files and directories with `cp`;
+        - move or rename with `mv`;
+        - delete carefully with `rm`, `rm -i`, `rmdir`, and `rm -r`;
+        - consult help with `man` and `--help`.
     - type: warning
-      title: Technician reflex
-      content: 'Before changing anything: use `pwd`, use `ls -la`, read the command again, then execute.'
+      title: New Responsibilities
+      content: |
+        Unlike the first module, some commands in this module can
+        modify or delete data.
+
+        Before any command that changes something, apply this habit:
+
+        1. `pwd` — verify where you are;
+        2. `ls -la` — observe what is in the directory;
+        3. type the command;
+        4. run `ls -la` again to confirm the result.
     - type: teacher_note
-      title: Teacher note
-      content: Insist that terminal deletion is not the same as dragging a file to a recycle bin.
+      title: Pedagogical Intent
+      content: |
+        This module serves as a bridge between navigation and Linux administration.
+        Do not introduce sudo, chmod, chown, grep, or find here, unless a student
+        requests a quick demonstration. These topics are planned for later modules.
     - type: questions
       items:
       - id: t1-q1
         type: qcm
-        question: What is the safest reflex before modifying or deleting files?
+        question: Before deleting or moving a file, what is the most professional habit?
         answers:
-        - text: Run the command quickly.
+        - text: Type the command quickly to save time.
           correct: false
-        - text: Verify the location and list the content.
+        - text: Use sudo to avoid errors.
+          correct: false
+        - text: Check your location with pwd and observe with ls -la.
           correct: true
-        - text: Use chmod 777.
-          correct: false
-        - text: Close the terminal.
+        - text: Restart the VM before every command.
           correct: false
         feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
+          correct: Correct. We verify before acting.
+          incorrect: A reliable technician always validates the context before a command that modifies the system.
   - id: linux-fund-2-en-t2
     type: task
-    title: Review — Where am I before acting?
+    title: Review — Where Am I Before Acting?
     order: 2
     xpReward: 10
     objectives:
-    - Reactivate linux-fund-1 commands.
-    - Verify the current directory before acting.
+    - Reactivate the orientation commands seen in linux-fund-1.
+    - Prepare the student to manipulate files in a controlled directory.
     sections:
     - type: theory
-      title: Before acting
-      content: File manipulation commands depend on your current location. A correct command in the wrong directory can create a mess.
+      title: Always Verify Context First
+      content: |
+        File manipulation commands often depend on where you currently are.
+
+        For example, these two commands can have different consequences
+        depending on your current directory:
+
+        ```bash
+        rm notes.txt
+        mv rapport.txt archives/
+        ```
+
+        Before manipulating files, start with:
+
+        ```bash
+        pwd
+        ls -la
+        ```
+
+        `pwd` tells you where you are. `ls -la` shows the detailed contents,
+        including hidden files.
     - type: terminal_exercise
-      title: Review commands
-      instructions: 'Run these commands:'
+      title: Prepare Your Workspace
+      instructions: |
+        In your VM, return to your home directory, verify your location,
+        then observe the contents.
       commands:
-      - pwd
-      - ls -la
       - cd ~
       - pwd
-      expectedObservation: You should know exactly where you are before continuing.
+      - ls -la
+      expectedObservation: The path should be /home/student or an equivalent path depending on the account in use.
     - type: validation
       title: Validation
-      question: Which command displays your current directory?
+      question: Which command displays your current location in the terminal?
       answerType: short_answer
       acceptedAnswers:
       - pwd
-      trimWhitespace: true
-      caseSensitive: false
-      hints:
-      - It prints the working directory.
-  - id: linux-fund-2-en-t3
-    type: task
-    title: File names — case, spaces and precision
-    order: 3
-    xpReward: 15
-    objectives:
-    - Understand case sensitivity.
-    - Use quotes or escaping for spaces.
-    - Prefer clean file names in labs.
-    sections:
-    - type: theory
-      title: Case matters
-      content: Linux is generally case-sensitive. `report.txt`, `Report.txt` and `REPORT.txt` can be three different files.
-    - type: warning
-      title: Spaces split arguments
-      content: '`mkdir My Directory` creates two directories: `My` and `Directory`. To create one directory with a space, use `mkdir "My Directory"` or `mkdir My\ Directory`.'
-    - type: theory
-      title: Recommended naming style
-      content: For labs, prefer names such as `final-report.txt`, `client-notes.txt`, `mission-client` or `backup_01`. They are easier to type and less error-prone.
-    - type: terminal_exercise
-      title: Test names
-      instructions: 'Run:'
-      commands:
-      - cd ~
-      - mkdir -p nexus-fund2
-      - cd nexus-fund2
-      - mkdir report Report
-      - mkdir My Directory
-      - mkdir "Client Folder"
-      - ls -la
-      expectedObservation: You should see how case and spaces affect the result.
-    - type: validation
-      title: Validation — case
-      question: Are `report.txt` and `Report.txt` always the same file in Linux?
-      answerType: short_answer
-      acceptedAnswers:
-      - 'no'
-      - 'No'
-      - non
-      trimWhitespace: true
-      caseSensitive: false
-      hints:
-      - Linux is generally case-sensitive.
-    - type: validation
-      title: Validation — space
-      question: Which command creates one directory named Client Folder?
-      answerType: short_answer
-      acceptedAnswers:
-      - mkdir "Client Folder"
-      - mkdir Client\ Folder
       trimWhitespace: true
       caseSensitive: true
       hints:
-      - Use quotes or escape the space.
+      - This command was covered in linux-fund-1.
+      - It displays the path of the current directory.
+      feedback:
+        correct: Correct. pwd stands for print working directory.
+        incorrect: The expected command displays the current directory.
+  - id: linux-fund-2-en-t3
+    type: task
+    title: File Names — Case, Spaces, and Precision
+    order: 3
+    xpReward: 10
+    objectives:
+    - Understand that Linux distinguishes between uppercase and lowercase letters.
+    - Understand why spaces in names change how a command is interpreted.
+    - Adopt safe naming conventions for exercises.
+    sections:
+    - type: theory
+      title: Linux Is Case-Sensitive
+      content: |-
+        On Linux, the names of commands, files, and directories are generally **case-sensitive**.
+
+        This means uppercase and lowercase letters matter.
+
+        These three names can represent three completely different items:
+
+        ```text
+        rapport.txt
+        Rapport.txt
+        RAPPORT.txt
+        ```
+
+        The same applies to directories:
+
+        ```text
+        client
+        Client
+        CLIENT
+        ```
+
+        For a technician, this is a significant difference from certain Windows habits. On Linux, a capitalization mistake can make a file appear to be missing, when it simply has a different spelling.
+    - type: warning
+      title: Exact Spelling Required
+      content: |-
+        When using `mkdir`, `cp`, `mv`, `rm`, `cat`, `less`, or `file`, the name must match exactly.
+
+        Example:
+
+        ```bash
+        cat Rapport.txt
+        ```
+
+        is not equivalent to:
+
+        ```bash
+        cat rapport.txt
+        ```
+
+        If the file is named `rapport.txt`, the first command may produce a `No such file or directory` error.
+    - type: theory
+      title: Spaces in Names
+      content: |-
+        The shell separates arguments with spaces.
+
+        So this command:
+
+        ```bash
+        mkdir Mon Repertoire
+        ```
+
+        does not create a single directory named `Mon Repertoire`.
+
+        It creates two directories instead:
+
+        ```text
+        Mon
+        Repertoire
+        ```
+
+        To create a single directory with a space in its name, you must protect the name with quotes:
+
+        ```bash
+        mkdir "Mon Repertoire"
+        ```
+
+        You can also use a backslash to escape the space:
+
+        ```bash
+        mkdir Mon\ Repertoire
+        ```
+
+        In exercises, we will mostly use simple names without spaces, for example:
+
+        ```text
+        mon-repertoire
+        mon_repertoire
+        rapport-client.txt
+        ```
+
+        These are easier to automate, review, and troubleshoot.
+    - type: terminal_exercise
+      title: Observe the Difference
+      instructions: In your home directory, create a test directory and observe how Linux reacts to uppercase letters and spaces.
+      commands:
+      - cd ~
+      - mkdir test-noms-linux
+      - cd test-noms-linux
+      - mkdir rapport Rapport
+      - ls
+      - mkdir Mon Repertoire
+      - ls
+      - mkdir "Dossier Client"
+      - ls
+      expectedObservation: You should see that rapport and Rapport are two separate directories. You should also see that Mon Repertoire created two directories, while "Dossier Client" created only one.
+    - type: warning
+      title: Best Practice for This Course
+      content: |-
+        For NEXUS modules, use names that are:
+
+        - lowercase;
+        - without accented characters;
+        - without spaces;
+        - with hyphens `-` or underscores `_` as needed.
+
+        Recommended examples:
+
+        ```text
+        notes-client.txt
+        rapport-final.txt
+        sauvegarde_01
+        mission-client
+        ```
+
+        This is not because Linux cannot handle spaces or accented characters. It is because in IT support, simple names reduce errors and make scripts easier to write.
+    - type: validation
+      title: Validation — Case
+      question: On Linux, do rapport.txt and Rapport.txt always refer to the same file?
+      answerType: short_answer
+      acceptedAnswers:
+      - no
+      - No
+      - NO
+      trimWhitespace: true
+      caseSensitive: false
+      hints:
+      - Notice the capital letter at the start of the second name.
+      - Linux generally distinguishes between uppercase and lowercase letters.
+    - type: validation
+      title: Validation — Spaces
+      question: Which command creates a single directory named Mon Repertoire?
+      answerType: short_answer
+      acceptedAnswers:
+      - mkdir "Mon Repertoire"
+      - mkdir 'Mon Repertoire'
+      - mkdir Mon\ Repertoire
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - The shell separates arguments with spaces.
+      - Protect the full name with quotes, or escape the space.
     - type: teacher_note
-      title: Teacher note
-      content: This section is important for students used to Windows GUI behavior. Reinforce exact spelling and copy/paste discipline.
+      title: Recommended Demonstration
+      content: |-
+        Demonstrate in class with `mkdir Mon Repertoire`, then `ls`, so students immediately see the result. Then redo it with `mkdir "Mon Repertoire"`.
+
+        Emphasize that scripts, paths, and automated corrections are far more reliable with simple names: lowercase, no spaces, no accented characters.
   - id: linux-fund-2-en-t4
     type: task
-    title: Create directories with mkdir
+    title: Creating Directories with mkdir
     order: 4
     xpReward: 10
     objectives:
-    - Create directories.
-    - Create nested directories with -p.
+    - Create a simple directory.
+    - Create a nested directory tree with mkdir -p.
+    - Understand the error produced when a parent directory does not exist.
     sections:
     - type: theory
-      title: mkdir
-      content: '`mkdir` creates directories. With `-p`, it can create a complete nested path even if parent directories do not already exist.'
+      title: mkdir — make directory
+      content: |
+        The `mkdir` command is used to create a new directory.
+
+        Example:
+
+        ```bash
+        mkdir dossier-test
+        ```
+
+        After the command, you can confirm with:
+
+        ```bash
+        ls
+        ```
     - type: code_block
-      title: Examples
-      language: bash
-      code: 'mkdir documents
+      label: Creating Multiple Levels with -p
+      content: |
+        mkdir -p support-client/rapports/2026
+    - type: theory
+      title: Why Use -p?
+      content: |
+        Without the `-p` option, Linux may refuse to create a directory if the parent
+        directory does not yet exist.
 
-        mkdir projects
+        With `mkdir -p`, Linux automatically creates any necessary parent directories.
 
-        mkdir -p client1/reports/2026'
+        Example:
+
+        ```bash
+        mkdir -p support-client/rapports/2026
+        ```
+
+        This command creates `support-client`, then `rapports`, then `2026` if those
+        directories do not already exist.
     - type: terminal_exercise
-      title: Practice mkdir
-      instructions: 'Create a small work tree:'
+      title: Create a Working Directory Tree
+      instructions: |
+        Create a working directory for this module and three subdirectories.
       commands:
-      - cd ~/nexus-fund2
-      - mkdir documents
-      - mkdir projects
-      - mkdir -p client1/reports/2026
-      - ls -la
-      - find client1 -type d
-      expectedObservation: The nested structure should exist.
+      - cd ~
+      - mkdir -p nexus-fund2/notes
+      - mkdir -p nexus-fund2/rapports
+      - mkdir -p nexus-fund2/sauvegardes
+      - ls -la nexus-fund2
+      expectedObservation: The notes, rapports, and sauvegardes directories should appear.
     - type: questions
       items:
-      - id: t4-q1
+      - id: t3-q1
         type: qcm
-        question: What does `mkdir -p` help with?
+        question: What does the mkdir command do?
         answers:
-        - text: It deletes folders.
+        - text: Reads a text file.
           correct: false
-        - text: It creates parent directories when needed.
+        - text: Creates a directory.
           correct: true
-        - text: It changes permissions.
+        - text: Deletes a directory.
           correct: false
-        - text: It counts lines.
+        - text: Moves a file.
           correct: false
         feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
+          correct: Correct. mkdir stands for make directory.
+          incorrect: Think of the expression "make directory."
+      - id: t3-q2
+        type: short_answer
+        question: Which mkdir option automatically creates any necessary parent directories?
+        acceptedAnswers:
+        - -p
+        - p
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - It is a short option made of a dash and a single letter.
+        - 'Example: mkdir -p directory/subdirectory.'
   - id: linux-fund-2-en-t5
     type: task
-    title: Create files with touch
+    title: Creating Files with touch
     order: 5
     xpReward: 10
     objectives:
-    - Create empty files.
-    - Understand file vs directory.
+    - Create an empty file.
+    - Distinguish an empty file from a directory.
+    - Understand that touch can also update a file's timestamp.
     sections:
     - type: theory
-      title: touch
-      content: '`touch` can create an empty file. If the file already exists, it updates its modification time.'
+      title: touch — Quickly Create an Empty File
+      content: |
+        The `touch` command creates an empty file quickly.
+
+        Example:
+
+        ```bash
+        touch notes.txt
+        ```
+
+        If the file does not exist, it is created. If it already exists, `touch` updates
+        its modification timestamp without changing its content.
     - type: code_block
-      title: Examples
-      language: bash
-      code: 'touch notes.txt
+      label: Visible Difference with ls -l
+      content: |
+        utilisateur@linux:~$ touch notes.txt
+        utilisateur@linux:~$ ls -l notes.txt
+        -rw-r--r-- 1 utilisateur utilisateur 0 mai 29 10:00 notes.txt
+    - type: theory
+      title: An Empty File Is Not a Directory
+      content: |
+        An empty file can have a size of 0 bytes. It is still a file.
 
-        touch report.txt
+        In `ls -l`, the first character helps identify the type:
 
-        touch client1/reports/2026/journal.txt'
+        - `-` generally indicates a regular file;
+        - `d` indicates a directory.
+
+        Permissions will be studied later, but you can already observe this
+        difference.
     - type: terminal_exercise
-      title: Practice touch
-      instructions: 'Create test files:'
+      title: Create Working Files
+      instructions: |
+        Create three files in your module directory tree.
       commands:
       - cd ~/nexus-fund2
-      - touch notes.txt
-      - touch report.txt
-      - touch client1/reports/2026/journal.txt
-      - ls -la
-      - ls -la client1/reports/2026
-      expectedObservation: You should see empty files listed.
+      - touch notes/intervention.txt
+      - touch rapports/rapport-final.txt
+      - touch sauvegardes/README.txt
+      - ls -l notes rapports sauvegardes
+      expectedObservation: All three files should exist, most likely with a size of 0 bytes.
     - type: validation
       title: Validation
-      question: Which command creates an empty file named notes.txt?
+      question: Which command quickly creates an empty file named test.txt?
       answerType: short_answer
       acceptedAnswers:
-      - touch notes.txt
+      - touch test.txt
       trimWhitespace: true
       caseSensitive: true
       hints:
-      - Use `touch`.
+      - The command starts with touch.
+      - The file name comes after the command.
   - id: linux-fund-2-en-t6
     type: task
-    title: Write and edit with nano
+    title: Writing and Editing with nano
     order: 6
     xpReward: 15
     objectives:
-    - Open a text file in nano.
-    - Save and quit.
-    - Verify content with cat.
+    - Open a text file with nano.
+    - Save and exit correctly.
+    - Confirm the content with cat.
     sections:
     - type: theory
-      title: nano editor
-      content: '`nano` is a simple terminal text editor. Use Ctrl+O to save, Enter to confirm, and Ctrl+X to quit.'
+      title: nano — A Simple Text Editor in the Terminal
+      content: |
+        `nano` is a text editor that can be used directly in the terminal.
+        It is generally simpler to start with than editors like `vim`.
+
+        To open or create a file:
+
+        ```bash
+        nano notes.txt
+        ```
+
+        Key shortcuts in nano:
+
+        | Shortcut | Action |
+        |----------|--------|
+        | `Ctrl + O` | Save the file |
+        | `Enter` | Confirm the file name when saving |
+        | `Ctrl + X` | Exit nano |
+        | `Ctrl + K` | Cut a line |
+        | `Ctrl + U` | Paste a cut line |
     - type: warning
-      title: Keyboard shortcuts
-      content: In nano, `^O` means Ctrl+O and `^X` means Ctrl+X.
+      title: Ctrl Does Not Mean Type ^
+      content: |
+        When nano displays `^O`, it means `Ctrl + O`.
+        You should not type the `^` symbol.
     - type: terminal_exercise
-      title: Edit a file
-      instructions: 'Open and edit a file:'
+      title: Write an Intervention Note
+      instructions: |
+        Open the intervention file, write a few lines, save, exit,
+        then confirm the result with cat.
       commands:
       - cd ~/nexus-fund2
-      - nano notes.txt
-      - cat notes.txt
-      expectedObservation: Add a few lines, save and verify with cat.
+      - nano notes/intervention.txt
+      - cat notes/intervention.txt
+      expectedContent:
+      - 'Client name: Demo NEXUS'
+      - 'Issue: disorganized folder'
+      - 'Action: created a filing structure'
+      notes: Accented characters are accepted, but a version without accents can also be used if the VM keyboard is not properly configured.
     - type: questions
       items:
-      - id: t6-q1
+      - id: t5-q1
         type: qcm
-        question: How do you save in nano?
+        question: In nano, which shortcut saves the file?
         answers:
-        - text: Ctrl+O
+        - text: Ctrl + X
+          correct: false
+        - text: Ctrl + O
           correct: true
-        - text: Ctrl+X
+        - text: Ctrl + S
           correct: false
-        - text: rm -i
-          correct: false
-        - text: ls -la
+        - text: Alt + F4
           correct: false
         feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
+          correct: Correct. In nano, Ctrl + O writes the file to disk.
+          incorrect: In nano, the save shortcut shown at the bottom is ^O, which means Ctrl + O.
+      - id: t5-q2
+        type: qcm
+        question: In nano, which shortcut exits the editor?
+        answers:
+        - text: Ctrl + Q
+          correct: false
+        - text: Ctrl + X
+          correct: true
+        - text: Ctrl + O
+          correct: false
+        - text: Escape twice
+          correct: false
   - id: linux-fund-2-en-t7
     type: task
-    title: Read a long file with less
+    title: Reading a Long File with less
     order: 7
     xpReward: 10
     objectives:
-    - Open long files safely.
-    - Quit less.
-    - Search inside less.
+    - Understand why cat is not always the right tool.
+    - Navigate a long file with less.
+    - Exit less correctly.
     sections:
     - type: theory
-      title: less
-      content: '`less` lets you read long files page by page without editing them. Press `q` to quit, Space to move down, `b` to move back, and `/word` to search.'
+      title: cat, head, tail... and less
+      content: |
+        In `linux-fund-1`, you used `cat`, `head`, and `tail`.
+
+        These commands are useful, but `cat` can become impractical with a long
+        file: the entire content scrolls through the terminal at once.
+
+        The `less` command opens a file in read mode and lets you navigate
+        through it without modifying it.
+
+        ```bash
+        less fichier.txt
+        ```
+    - type: code_block
+      label: Useful Keys in less
+      content: |
+        Space       scroll down one page
+        b           scroll up one page
+        /word       search for a word
+        n           go to the next match
+        q           quit
     - type: terminal_exercise
-      title: Practice less
-      instructions: 'Prepare and read a demo file:'
+      title: Create a Demo Long File
+      instructions: |
+        Use the following command to create a demo file, then
+        open it with less.
       commands:
       - cd ~/nexus-fund2
-      - seq 1 80 > long-demo.txt
-      - less long-demo.txt
-      expectedObservation: Use Space, b, /50 and q.
+      - seq 1 80 > rapports/journal-demo.txt
+      - less rapports/journal-demo.txt
+      expectedObservation: The file contains 80 numbered lines. Exit less with q.
+      teacherNote: The redirection > is not taught here. Present this command as a setup command provided by NEXUS or the teacher. Redirection will be explained in linux-fund-3.
     - type: validation
       title: Validation
-      question: Which key quits less?
+      question: In less, which key exits the file view?
       answerType: short_answer
       acceptedAnswers:
       - q
@@ -315,351 +594,620 @@ module:
       trimWhitespace: true
       caseSensitive: false
       hints:
-      - The quit key is a single letter.
+      - It is a single letter.
+      - It comes from the word "quit."
   - id: linux-fund-2-en-t8
     type: task
-    title: Identify a file with file
+    title: Identifying a File with file
     order: 8
     xpReward: 10
     objectives:
-    - Use file to identify real file type.
-    - Understand that extensions do not always tell the truth.
+    - Understand that a file extension does not guarantee the actual file type.
+    - Use file to identify content.
+    - Build a useful habit for IT support work.
     sections:
     - type: theory
-      title: file
-      content: The `file` command tries to identify the real type of a file. Linux does not rely only on extensions.
+      title: file — Ask Linux What a File Actually Is
+      content: |
+        On Windows, we often rely on the extension: `.txt`, `.jpg`, `.docx`, etc.
+        On Linux, the extension is helpful for humans, but it does not always
+        guarantee the actual file type.
+
+        The `file` command analyzes a file and attempts to report its real type.
+
+        Example:
+
+        ```bash
+        file rapport.txt
+        ```
     - type: code_block
-      title: Examples
-      language: bash
-      code: 'file notes.txt
-
+      label: Possible Output Examples
+      content: |
+        file notes.txt
         file image.jpg
-
-        file unknown_file'
+        file script.sh
+        file fichier-inconnu
     - type: terminal_exercise
-      title: Practice file
-      instructions: 'Create and identify files:'
+      title: Identify Your Files
+      instructions: |
+        Use file on the files created in your module directory.
       commands:
       - cd ~/nexus-fund2
-      - echo "hello" > no-extension
-      - file notes.txt
-      - file no-extension
-      expectedObservation: The no-extension file should still be identified as text.
+      - file notes/intervention.txt
+      - file rapports/rapport-final.txt
+      - file rapports/journal-demo.txt
+      expectedObservation: Text files should be recognized as text, or as ASCII text / Unicode text depending on their content.
     - type: questions
       items:
-      - id: t8-q1
+      - id: t7-q1
         type: qcm
-        question: Why is `file` useful?
+        question: Why is the file command useful?
         answers:
-        - text: It deletes files.
+        - text: It automatically renames incorrectly named files.
           correct: false
-        - text: It identifies the real type of a file.
+        - text: It deletes dangerous files.
+          correct: false
+        - text: It helps identify the actual type of a file.
           correct: true
-        - text: It changes the file owner.
+        - text: It installs missing applications.
           correct: false
-        - text: It opens a web page.
-          correct: false
-        feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
+      - id: t7-q2
+        type: short_answer
+        question: Which command identifies the actual type of the file mystere.bin?
+        acceptedAnswers:
+        - file mystere.bin
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - The command starts with file.
+        - The file name comes after the command.
   - id: linux-fund-2-en-t9
     type: task
-    title: Copy with cp
+    title: Copying with cp
     order: 9
     xpReward: 15
     objectives:
-    - Copy files.
-    - Copy into directories.
-    - Copy directories recursively.
+    - Copy a file.
+    - Copy a file into a directory.
+    - Copy a directory with cp -r.
     sections:
     - type: theory
-      title: cp
-      content: '`cp` copies files. To copy a directory and its content, use `cp -r`.'
+      title: cp — copy
+      content: |
+        The `cp` command copies a file or directory.
+
+        Copy a file under a new name:
+
+        ```bash
+        cp notes.txt notes-copie.txt
+        ```
+
+        Copy a file into a directory:
+
+        ```bash
+        cp rapport.txt sauvegardes/
+        ```
+
+        Copying a full directory requires the `-r` option, for recursive:
+
+        ```bash
+        cp -r projet projet-backup
+        ```
     - type: warning
-      title: Overwriting
-      content: If the destination file already exists, `cp` may overwrite it. Verify with `ls` before copying.
+      title: Watch Out for Overwriting
+      content: |
+        If you copy a file to a name that already exists, Linux may replace
+        the destination file.
+
+        Before copying, verify with `ls -la`. After copying, verify again with
+        `ls -la`.
     - type: terminal_exercise
-      title: Practice cp
-      instructions: 'Run:'
+      title: Create a Simple Backup
+      instructions: |
+        Copy your intervention note to the backup directory, then copy the
+        entire rapports directory.
       commands:
       - cd ~/nexus-fund2
-      - mkdir -p backups
-      - cp notes.txt backups/
-      - cp notes.txt notes-copy.txt
-      - cp -r client1 client1-backup
-      - ls -la
-      - ls -la backups
-      expectedObservation: You should see copied files and a copied directory.
+      - cp notes/intervention.txt sauvegardes/intervention-backup.txt
+      - cp -r rapports sauvegardes/rapports-backup
+      - ls -la sauvegardes
+      expectedObservation: The file intervention-backup.txt and the directory rapports-backup should appear.
     - type: questions
       items:
-      - id: t9-q1
+      - id: t8-q1
+        type: short_answer
+        question: Which command copies notes.txt to notes-copie.txt?
+        acceptedAnswers:
+        - cp notes.txt notes-copie.txt
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - The copy command is cp.
+        - 'Format: cp source destination.'
+      - id: t8-q2
         type: qcm
-        question: Which option copies a directory recursively?
+        question: Which option allows cp to copy a full directory?
         answers:
+        - text: -a
+          correct: false
         - text: -r
           correct: true
-        - text: -l
+        - text: -d
           correct: false
-        - text: -a only for hidden files
-          correct: false
-        - text: -delete
+        - text: -x
           correct: false
         feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
+          correct: Correct. -r stands for recursive in this context.
+          incorrect: To copy a directory and its contents, think "recursive."
   - id: linux-fund-2-en-t10
     type: task
-    title: Move and rename with mv
+    title: Moving and Renaming with mv
     order: 10
     xpReward: 15
     objectives:
-    - Rename files.
-    - Move files to another directory.
-    - Understand that mv has two common uses.
+    - Move a file to another directory.
+    - Rename a file.
+    - Understand that mv can do both depending on context.
     sections:
     - type: theory
-      title: mv
-      content: '`mv` moves files or directories. It is also used to rename them.'
-    - type: code_block
-      title: Examples
-      language: bash
-      code: 'mv draft.txt report.txt
+      title: mv — move
+      content: |
+        The `mv` command moves a file or directory.
 
-        mv report.txt documents/'
+        Example:
+
+        ```bash
+        mv rapport.txt rapports/
+        ```
+
+        But `mv` is also used to rename:
+
+        ```bash
+        mv brouillon.txt rapport-final.txt
+        ```
+
+        In both cases, the logic is the same: Linux takes a source element
+        and gives it a new destination.
+    - type: code_block
+      label: General Format
+      content: |
+        mv source destination
     - type: warning
-      title: Same command, different context
-      content: If the destination is a directory, the item is moved into it. If the destination is a new name, the item is renamed.
+      title: Moving Can Also Overwrite
+      content: |
+        Like `cp`, an `mv` command can replace a destination file
+        if it already exists. Always verify with `ls -la` before an important operation.
     - type: terminal_exercise
-      title: Practice mv
-      instructions: 'Run:'
+      title: Rename Then Move
+      instructions: |
+        Rename a report file, then move it to the right location.
       commands:
       - cd ~/nexus-fund2
-      - touch draft.txt
-      - mv draft.txt final-report.txt
-      - mv final-report.txt documents/
-      - ls -la documents
-      expectedObservation: The file should now be inside documents.
+      - touch notes/brouillon-client.txt
+      - mv notes/brouillon-client.txt notes/rapport-client.txt
+      - mv notes/rapport-client.txt rapports/
+      - ls -la rapports
+      expectedObservation: The file rapport-client.txt should now be in the rapports directory.
     - type: validation
       title: Validation
-      question: Which command renames draft.txt to final-report.txt?
+      question: Which command renames ancien.txt to nouveau.txt?
       answerType: short_answer
       acceptedAnswers:
-      - mv draft.txt final-report.txt
+      - mv ancien.txt nouveau.txt
       trimWhitespace: true
       caseSensitive: true
       hints:
-      - Use mv source destination.
+      - The same command is used for both moving and renaming.
+      - 'Format: mv source destination.'
   - id: linux-fund-2-en-t11
     type: task
-    title: Delete carefully with rm and rmdir
+    title: Deleting Carefully with rm and rmdir
     order: 11
-    xpReward: 15
+    xpReward: 20
     objectives:
-    - Delete files carefully.
-    - Use rm -i.
-    - Remove empty directories with rmdir.
-    - Understand rm -r.
+    - Delete a file with rm.
+    - Use rm -i to prompt for confirmation.
+    - Delete an empty directory with rmdir.
+    - Understand the danger of rm -r.
     sections:
     - type: warning
-      title: Terminal deletion can be permanent
-      content: '`rm` does not send files to a graphical recycle bin. Use it carefully.'
+      title: rm Does Not Use the Trash
+      content: |
+        The `rm` command deletes files. In the terminal, this deletion
+        generally does not go through a graphical trash bin.
+
+        You must therefore be very careful.
+
+        Recommended method:
+
+        ```bash
+        pwd
+        ls -la
+        rm -i filename
+        ls -la
+        ```
     - type: theory
-      title: Safe method
-      content: 'Before deleting: `pwd`, `ls -la`, read the command, use `rm -i` when appropriate, and verify afterward.'
+      title: Deleting a File
+      content: |
+        To delete a file:
+
+        ```bash
+        rm fichier.txt
+        ```
+
+        To prompt for confirmation before deleting:
+
+        ```bash
+        rm -i fichier.txt
+        ```
+
+        The `-i` option stands for interactive. Linux will then ask for
+        confirmation before erasing the file.
     - type: theory
-      title: Commands
-      content: '`rm file.txt` deletes a file. `rm -i file.txt` asks for confirmation. `rmdir emptydir` removes an empty directory. `rm -r directory` removes a directory and its content.'
+      title: Deleting Directories
+      content: |
+        To delete an empty directory:
+
+        ```bash
+        rmdir dossier-vide
+        ```
+
+        To delete a directory along with its contents:
+
+        ```bash
+        rm -r ancien-dossier
+        ```
+
+        `rm -r` stands for recursive. The command descends into the directory and
+        deletes its contents. This is useful but dangerous if you target the wrong item.
     - type: warning
-      title: Avoid rm -rf in beginner labs
-      content: Do not practice `rm -rf` as a shortcut. Understand exactly what you are deleting.
+      title: 'Do Not Use This Here: rm -rf'
+      content: |
+        You may sometimes see `rm -rf` online.
+
+        In this module, you must not use it. This combination forces
+        recursive deletion without any confirmation prompt. It is a command to understand
+        before using, not to copy and paste.
     - type: terminal_exercise
-      title: Practice safe deletion
-      instructions: 'Run:'
+      title: Controlled Deletion
+      instructions: |
+        Create temporary files, then delete them carefully.
       commands:
       - cd ~/nexus-fund2
-      - touch delete-me.txt
-      - mkdir empty-folder
+      - touch notes/temp-a-supprimer.txt
+      - ls -la notes
+      - rm -i notes/temp-a-supprimer.txt
+      - mkdir dossier-vide
+      - rmdir dossier-vide
       - ls -la
-      - rm -i delete-me.txt
-      - rmdir empty-folder
-      - ls -la
-      expectedObservation: The file and empty folder should be gone after confirmation.
+      expectedObservation: The temporary file and the empty directory should have disappeared.
     - type: questions
       items:
-      - id: t11-q1
+      - id: t10-q1
         type: qcm
-        question: Which rm option asks for confirmation?
+        question: Why must the rm command be used with care?
         answers:
-        - text: -i
+        - text: Because it automatically installs software.
+          correct: false
+        - text: Because it can delete files without going through a trash bin.
           correct: true
-        - text: -r
+        - text: Because it restarts Linux.
           correct: false
-        - text: -f
+        - text: Because it always changes file permissions.
           correct: false
-        - text: -a
+      - id: t10-q2
+        type: short_answer
+        question: Which rm option prompts for confirmation before deleting?
+        acceptedAnswers:
+        - -i
+        - i
+        trimWhitespace: true
+        caseSensitive: false
+        hints:
+        - It is the interactive option.
+        - It starts with a dash.
+      - id: t10-q3
+        type: qcm
+        question: Which command is most appropriate for deleting an empty directory?
+        answers:
+        - text: cat
           correct: false
-        feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
+        - text: rmdir
+          correct: true
+        - text: touch
+          correct: false
+        - text: file
+          correct: false
   - id: linux-fund-2-en-t12
     type: task
-    title: Get help with man and --help
+    title: Getting Help with man and --help
     order: 12
-    xpReward: 10
+    xpReward: 15
     objectives:
-    - Use man pages.
-    - Use --help for quick help.
-    - Quit man pages.
+    - Open a manual page.
+    - Exit a man page.
+    - Use --help for quick reference.
+    - Develop technical self-sufficiency.
     sections:
     - type: theory
-      title: Learning from the system
-      content: A technician must know how to find help. `man command` opens the manual page. `command --help` often gives a shorter help text.
+      title: A Technician Does Not Memorize Everything
+      content: |
+        A good technician does not know every option for every command
+        by heart. What matters most is knowing **where to find the information**.
+
+        Two important habits:
+
+        ```bash
+        man command
+        command --help
+        ```
+
+        Example:
+
+        ```bash
+        man cp
+        cp --help
+        ```
     - type: theory
-      title: Useful keys
-      content: In `man`, press `q` to quit and `/word` to search.
+      title: Navigating man Pages
+      content: |
+        `man` pages use a display similar to `less`.
+
+        Useful keys:
+
+        | Key | Action |
+        |-----|--------|
+        | `Space` | Scroll down one page |
+        | `b` | Scroll up one page |
+        | `/word` | Search for a word |
+        | `n` | Next result |
+        | `q` | Quit |
     - type: terminal_exercise
-      title: Practice help
-      instructions: 'Run:'
+      title: Look Up an Option
+      instructions: |
+        Open the cp help and briefly browse the available options.
       commands:
       - man cp
       - cp --help
-      - man rm
-      - rm --help
-      expectedObservation: Practice quitting with q.
+      expectedObservation: You should see many options. There is no need to memorize all of them.
     - type: questions
       items:
-      - id: t12-q1
+      - id: t11-q1
+        type: short_answer
+        question: Which command opens the manual page for cp?
+        acceptedAnswers:
+        - man cp
+        trimWhitespace: true
+        caseSensitive: false
+      - id: t11-q2
+        type: short_answer
+        question: In a man page, which key exits?
+        acceptedAnswers:
+        - q
+        - Q
+        trimWhitespace: true
+        caseSensitive: false
+      - id: t11-q3
         type: qcm
-        question: Which key quits a man page?
+        question: Why is --help useful?
         answers:
-        - text: q
+        - text: It automatically fixes errors.
+          correct: false
+        - text: It often displays quick help directly in the terminal.
           correct: true
-        - text: x
+        - text: It always provides a full course in French.
           correct: false
-        - text: Ctrl+O
+        - text: It replaces the official documentation.
           correct: false
-        - text: Enter only
-          correct: false
-        feedback:
-          correct: Correct.
-          incorrect: Review the concept and try again.
   - id: linux-fund-2-en-t13
     type: task
-    title: Mini-lab — Organize a client folder
+    title: Mini-Lab — Organizing a Client Folder
     order: 13
-    xpReward: 20
+    xpReward: 15
     objectives:
-    - Create a client folder structure.
-    - Create, edit, copy and move files.
-    - Verify the result.
+    - Combine multiple commands from this module.
+    - Create a clean directory structure.
+    - Validate the work using read and list commands.
     sections:
     - type: mission
       title: Scenario
-      content: A client folder must be organized for a support intervention.
+      content: |
+        A fictional client named **Demo NEXUS** has sent you notes, screenshots, and
+        reports in an unstructured folder. Before you can run a proper
+        diagnostic, you need to create a clean structure.
+
+        Your job is to set up the filing system.
     - type: terminal_exercise
-      title: Build the folder
-      instructions: 'Run the required operations:'
+      title: Create the Client Structure
+      instructions: |
+        Complete the following steps in your VM.
       commands:
-      - cd ~/nexus-fund2
-      - mkdir -p support-client/notes support-client/screenshots support-client/reports support-client/backups
-      - touch support-client/notes/intervention.txt
-      - nano support-client/notes/intervention.txt
-      - cp support-client/notes/intervention.txt support-client/backups/
-      - mv support-client/notes/intervention.txt support-client/reports/final-report.txt
-      - file support-client/reports/final-report.txt
-      - less support-client/reports/final-report.txt
-      expectedObservation: The final report should be in the reports directory and a copy should be in backups.
+      - cd ~
+      - mkdir -p client-demo/notes
+      - mkdir -p client-demo/captures
+      - mkdir -p client-demo/rapports
+      - mkdir -p client-demo/sauvegardes
+      - touch client-demo/notes/intervention.txt
+      - nano client-demo/notes/intervention.txt
+      - cp client-demo/notes/intervention.txt client-demo/sauvegardes/intervention-backup.txt
+      - mv client-demo/notes/intervention.txt client-demo/rapports/rapport-final.txt
+      - file client-demo/rapports/rapport-final.txt
+      - wc -l client-demo/rapports/rapport-final.txt
+      requiredContentSuggestion: |
+        In nano, write at least three lines:
+        - Client name
+        - Observed issue
+        - Action taken
+      expectedObservation: The final report should be in client-demo/rapports and a backup should exist in client-demo/sauvegardes.
     - type: validation
-      title: Validation
-      question: What is the final path of the report?
+      title: Mini-Lab Validation
+      question: Which command counts the number of lines in the final report?
       answerType: short_answer
       acceptedAnswers:
-      - support-client/reports/final-report.txt
-      - ~/nexus-fund2/support-client/reports/final-report.txt
+      - wc -l client-demo/rapports/rapport-final.txt
+      - wc -l ~/client-demo/rapports/rapport-final.txt
       trimWhitespace: true
       caseSensitive: true
       hints:
-      - Look inside support-client/reports.
+      - The line-counting command was covered in linux-fund-1.
+      - The option is -l.
     - type: teacher_note
-      title: Teacher note
-      content: This mini-lab can be done with commands typed manually; brace expansion is intentionally avoided for beginners.
+      title: DLC Variant
+      content: |
+        For advanced students, ask them to recreate the same structure with
+        a single command using brace expansion:
+
+        mkdir -p client-dlc/{notes,captures,rapports,sauvegardes}
+
+        Present this syntax as a Bash bonus, not a required objective.
   - id: linux-fund-2-en-t14
     type: challenge
-    title: Challenge — Disorganized client folder
+    title: Challenge — Disorganized Client Folder
     order: 14
-    xpReward: 35
-    challenge: true
+    xpReward: 30
+    penaltyEnabled: true
     objectives:
-    - Apply file manipulation commands in a scenario.
-    - Avoid unsafe deletion.
-    - Answer NEXUS validation questions.
+    - Reorganize a client folder on a real VM.
+    - Use mkdir, touch, nano, cp, mv, rm -i, rmdir, file, and wc -l.
+    - Submit validation answers in NEXUS.
     sections:
     - type: mission
       title: Challenge Briefing
-      content: Agent, a previous technician left a client folder in poor condition. Put it back in order without deleting important evidence.
+      content: |
+        Agent, a client folder has been left in a chaotic state.
+
+        Your mission: restore order without deleting important files.
+        You must create the correct structure, move files to the right locations,
+        create a backup, remove unnecessary temporary items, and validate
+        your work.
+
+        Unlike section questions, this challenge may apply penalties
+        according to NEXUS rules. Take your time.
     - type: warning
-      title: Work carefully
-      content: Use `pwd`, `ls -la`, quotes for names with spaces, and `rm -i` when deleting.
+      title: Before Deleting
+      content: |
+        For this challenge, use `rm -i` whenever you need to delete a file.
+        Do not use `rm -rf`.
     - type: theory
-      title: Expected skills
-      content: Use `mkdir`, `touch`, `nano`, `cp`, `mv`, `file`, `less`, `rm -i` and safe verification.
+      title: Suggested VM Setup
+      content: |
+        The challenge VM will contain a `/home/student/mission-client` directory
+        with an intentionally disorganized structure.
+
+        Example of initial contents:
+
+        ```text
+        /home/student/mission-client/
+        ├── a-classer/
+        │   ├── brouillon.txt
+        │   ├── evidence.jpg
+        │   ├── notes-client.txt
+        │   └── temporaire.tmp
+        ├── vieux-dossier-vide/
+        └── instruction.txt
+        ```
+
+        The `instruction.txt` file may describe the challenge objectives.
     - type: terminal_exercise
-      title: Optional local setup
-      instructions: If no special VM is provided, your teacher may use a prepared folder. Work only inside the challenge folder.
-      commands:
-      - pwd
-      - ls -la
-      expectedObservation: Start by observing.
+      title: Challenge Technical Objectives
+      instructions: |
+        In the challenge VM, complete the following steps:
+
+        1. Go to `/home/student/mission-client`.
+        2. Create the directories `notes`, `preuves`, `rapports`, and `sauvegardes`.
+        3. Move `notes-client.txt` into `notes`.
+        4. Rename `brouillon.txt` to `rapport-final.txt`.
+        5. Move `rapport-final.txt` into `rapports`.
+        6. Copy `rapport-final.txt` into `sauvegardes` as `rapport-final-backup.txt`.
+        7. Move `evidence.jpg` into `preuves`.
+        8. Identify the actual type of `evidence.jpg` using `file`.
+        9. Delete `temporaire.tmp` using `rm -i`.
+        10. Delete the empty directory `vieux-dossier-vide` using `rmdir`.
+        11. Count the lines in `rapports/rapport-final.txt` using `wc -l`.
+      expectedCommandsPossible:
+      - cd /home/student/mission-client
+      - mkdir notes preuves rapports sauvegardes
+      - mv a-classer/notes-client.txt notes/
+      - mv a-classer/brouillon.txt rapports/rapport-final.txt
+      - cp rapports/rapport-final.txt sauvegardes/rapport-final-backup.txt
+      - mv a-classer/evidence.jpg preuves/
+      - file preuves/evidence.jpg
+      - rm -i a-classer/temporaire.tmp
+      - rmdir vieux-dossier-vide
+      - wc -l rapports/rapport-final.txt
     - type: validation
-      title: Question 1
-      question: Which command lists details including hidden files?
+      title: Question 1 — Report Path
+      question: What is the absolute path of the final report after reorganization?
       answerType: short_answer
       acceptedAnswers:
-      - ls -la
+      - /home/student/mission-client/rapports/rapport-final.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - An absolute path starts with /.
+      - The starting directory is /home/student/mission-client.
+      - The final report must be in the rapports directory.
+    - type: validation
+      title: Question 2 — Backup Command
+      question: Which command copies the final report to sauvegardes/rapport-final-backup.txt from within the mission-client directory?
+      answerType: short_answer
+      acceptedAnswers:
+      - cp rapports/rapport-final.txt sauvegardes/rapport-final-backup.txt
+      - cp /home/student/mission-client/rapports/rapport-final.txt /home/student/mission-client/sauvegardes/rapport-final-backup.txt
+      trimWhitespace: true
+      caseSensitive: true
+      hints:
+      - The copy command is cp.
+      - 'Format: cp source destination.'
+    - type: validation
+      title: Question 3 — Type of evidence.jpg
+      question: According to the file command, what is the general type of evidence.jpg?
+      answerType: short_answer
+      acceptedAnswers:
+      - image
+      - jpeg
+      - jpg
+      - JPEG image data
       trimWhitespace: true
       caseSensitive: false
       hints:
-      - Use the long listing and all files options.
+      - Use file preuves/evidence.jpg after moving it.
+      - We are looking for the general type, not necessarily the exact full output line.
     - type: validation
-      title: Question 2
-      question: Which command safely asks before deleting a file?
+      title: Question 4 — Safe Deletion
+      question: Which command should have been used to delete temporaire.tmp with a confirmation prompt?
       answerType: short_answer
       acceptedAnswers:
-      - rm -i
+      - rm -i a-classer/temporaire.tmp
+      - rm -i /home/student/mission-client/a-classer/temporaire.tmp
       trimWhitespace: true
-      caseSensitive: false
+      caseSensitive: true
       hints:
-      - Interactive removal.
+      - The interactive option asks for confirmation.
+      - The command starts with rm -i.
     - type: validation
-      title: Question 3
-      question: Which command identifies a file’s real type?
+      title: Question 5 — Line Count
+      question: Which command counts the lines in the final report from within the mission-client directory?
       answerType: short_answer
       acceptedAnswers:
-      - file
+      - wc -l rapports/rapport-final.txt
+      - wc -l /home/student/mission-client/rapports/rapport-final.txt
       trimWhitespace: true
-      caseSensitive: false
+      caseSensitive: true
       hints:
-      - The command name is exactly what it does.
-    - type: validation
-      title: Question 4
-      question: Which command can rename a file?
-      answerType: short_answer
-      acceptedAnswers:
-      - mv
-      trimWhitespace: true
-      caseSensitive: false
-      hints:
-      - Move and rename use the same command.
-    - type: validation
-      title: Question 5
-      question: Which command copies a directory recursively?
-      answerType: short_answer
-      acceptedAnswers:
-      - cp -r
-      trimWhitespace: true
-      caseSensitive: false
-      hints:
-      - Recursive copy.
+      - The wc command was covered in linux-fund-1.
+      - The option for counting lines is -l.
     - type: teacher_note
-      title: Suggested VM
-      content: Prepare a folder with misplaced reports, a file with spaces, a no-extension file, and one unnecessary temporary file.
+      title: Challenge VM Setup
+      content: |
+        Create the /home/student/mission-client directory with the following contents:
+
+        - a-classer/brouillon.txt: a report with 4 to 8 lines;
+        - a-classer/evidence.jpg: a real JPEG image or a dummy file depending on the desired difficulty level;
+        - a-classer/notes-client.txt: a few short notes;
+        - a-classer/temporaire.tmp: an unnecessary temporary file;
+        - vieux-dossier-vide/: an empty directory;
+        - instruction.txt: narrative instructions.
+
+        Avoid complex permissions in this challenge. Permissions will be covered
+        in linux-fund-4 and linux-fund-5.

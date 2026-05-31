@@ -93,7 +93,7 @@ export default function IslandMap({ modules, trackTitle, onSelectModule }: Islan
   return (
     <div className="min-h-full pb-10">
       {/* Track header */}
-      <div className="sticky top-0 z-10 bg-nx-surface border-b border-nx-border px-6 py-3">
+      <div className="sticky top-0 z-20 bg-nx-surface border-b border-nx-border px-6 py-3">
         <div className="flex items-center gap-3 flex-wrap mb-2">
           <h2 className="text-nx-yellow font-bold tracking-widest uppercase text-lg">{trackTitle}</h2>
           <span className="text-nx-border">·</span>

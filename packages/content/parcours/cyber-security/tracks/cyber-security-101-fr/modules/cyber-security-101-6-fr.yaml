@@ -1,0 +1,743 @@
+module:
+  id: cyber-security-101-6-fr
+  trackId: cyber-security-101-fr
+  title: 'Première mission offensive : reconnaissance web avec dirb'
+  description: Utiliser dirb contre une cible locale autorisée, découvrir le portail client oublié de Maple Tech Solutions
+    et produire un rapport de reconnaissance
+  order: 6
+  mascot: tux-detective
+  xpReward: 115
+  language: fr
+  estimatedDuration: 2h30 à 3h
+  level: beginner
+  summary: |-
+    Ce module est la première mission offensive contrôlée du parcours Cyber Security 101.
+    L'élève vérifie que la cible locale Maple Tech Solutions est en ligne, exécute une reconnaissance de répertoires avec dirb, identifie un portail client oublié, utilise une référence client exposée publiquement et récupère un code de validation.
+
+    La mission se déroule uniquement contre une cible locale autorisée : http://localhost.
+    L'objectif n'est pas de pirater un système réel, mais de comprendre comment une mauvaise configuration, une information publique sensible et une page cachée non protégée peuvent se combiner pour créer un risque de sécurité.
+  pedagogicalIntent: |-
+    Ce module transforme les notions précédentes en pratique contrôlée. L'élève applique les concepts d'autorisation, de portée, de cible locale, de preuve, de surface d'attaque et de recommandation défensive.
+
+    L'outil dirb sert ici à découvrir des chemins web qui ne sont pas directement visibles depuis le menu du site. Le scénario montre que la reconnaissance devient réellement utile lorsqu'elle est combinée avec l'observation humaine : une référence client visible sur la page d'accueil permet d'accéder à un portail client oublié.
+
+    Il est recommandé de rappeler avant la mission que la cible est volontairement vulnérable et fictive. Les élèves doivent rester dans le cadre autorisé et ne jamais tester de site externe.
+  learningOutcomes:
+  - Définir la reconnaissance web dans un contexte autorisé.
+  - Distinguer reconnaissance passive et reconnaissance active.
+  - Comprendre le rôle d'une wordlist dans la découverte de répertoires web.
+  - Interpréter les codes HTTP de base observés pendant une reconnaissance.
+  - Vérifier qu'une cible web locale fournie par l'enseignant est disponible.
+  - Exécuter dirb contre http://localhost dans le respect de la portée.
+  - Identifier des répertoires web sensibles ou mal protégés.
+  - Relier une information visible publiquement à une page cachée découverte par reconnaissance.
+  - Récupérer un code de validation dans un scénario de laboratoire contrôlé.
+  - Produire un rapport de mission avec preuves, risques et recommandations.
+  prerequisites:
+  - Avoir complété le module 1 du parcours Cyber Security 101.
+  - Avoir complété le module 2 du parcours Cyber Security 101.
+  - Avoir complété le module 3 du parcours Cyber Security 101.
+  - Avoir complété le module 4 du parcours Cyber Security 101.
+  - Avoir complété le module 5 du parcours Cyber Security 101.
+  - Comprendre la notion de cible autorisée et de portée.
+  - Savoir ouvrir un terminal Linux et exécuter des commandes simples.
+  - Comprendre que localhost représente la machine locale.
+  - type: teacher_note
+    title: Intention pédagogique
+    content: |
+      Ce module doit être présenté comme une mission professionnelle encadrée.
+      L'élève n'est pas simplement invité à trouver des dossiers cachés : il doit comprendre ce que ses résultats
+      signifient et comment un technicien ou un analyste débutant pourrait les documenter.
+
+      Questions de discussion suggérées :
+      - Pourquoi un répertoire /backup accessible sur un site web est-il préoccupant?
+      - Est-ce qu'un code HTTP 403 signifie toujours que la ressource n'existe pas?
+      - Pourquoi faut-il écrire la cible et la portée dans un rapport de mission?
+      - Quelle est la différence entre découvrir un problème et l'exploiter?
+  vocabulary:
+  - term: Reconnaissance web
+    fr: Web reconnaissance
+    definition: Recherche d'information sur une cible web autorisée afin de comprendre ce qui est exposé.
+  - term: Reconnaissance passive
+    fr: Passive reconnaissance
+    definition: Collecte d'information sans interagir directement avec la cible.
+  - term: Reconnaissance active
+    fr: Active reconnaissance
+    definition: Collecte d'information en envoyant des requêtes à la cible autorisée.
+  - term: dirb
+    fr: dirb
+    definition: Outil qui tente de découvrir des répertoires ou fichiers web à partir d'une wordlist.
+  - term: Wordlist
+    fr: Liste de mots
+    definition: Fichier contenant des mots que l'outil essaie comme noms de répertoires ou de fichiers.
+  - term: Code HTTP
+    fr: HTTP status code
+    definition: Code retourné par un serveur web pour indiquer le résultat d'une requête.
+  - term: Répertoire exposé
+    fr: Exposed directory
+    definition: Dossier web accessible ou détectable qui pourrait révéler de l'information sensible.
+  - term: Rapport de mission
+    fr: Mission report
+    definition: Document qui présente la cible, la portée, les actions, les résultats, les preuves, les risques et les recommandations.
+  - term: Code de validation
+    fr: Validation code
+    definition: Code affiché par la cible de laboratoire pour confirmer que l'élève a complété une étape du scénario.
+  safetyReminder: |-
+    Cette mission est autorisée uniquement contre la cible locale fournie dans le laboratoire : http://localhost.
+    Les élèves ne doivent pas utiliser dirb contre un site public, une adresse IP inconnue, un système de l'école, l'appareil d'un collègue ou toute autre cible non explicitement autorisée.
+
+    La cible Maple Tech Solutions est fictive et préparée par l'enseignant. Les élèves doivent vérifier que les services sont en ligne, observer les pages, exécuter la reconnaissance demandée et documenter leurs résultats.
+
+    Découvrir un répertoire ne signifie pas qu'on a le droit de fouiller, copier, modifier ou supprimer son contenu. Dans un contexte professionnel, on documente la découverte et on respecte la portée du mandat.
+  tasks:
+  - id: cyber-security-101-6-fr-t1
+    type: task
+    title: Comprendre la reconnaissance web
+    order: 1
+    xpReward: 10
+    objectives:
+    - Définir la reconnaissance web.
+    - Distinguer reconnaissance passive et reconnaissance active.
+    - Comprendre pourquoi la reconnaissance doit être autorisée.
+    sections:
+    - type: theory
+      title: Qu'est-ce que la reconnaissance web?
+      content: |
+        La reconnaissance web consiste à recueillir de l'information sur une cible web afin de comprendre
+        ce qui est visible, accessible ou exposé. Dans un contexte professionnel, cette activité peut aider
+        une organisation à découvrir des problèmes avant qu'un vrai attaquant les exploite.
+
+        La reconnaissance n'est pas automatiquement malveillante. Elle devient légitime lorsqu'elle est faite
+        dans un cadre autorisé, avec une cible précise, une portée claire et des limites respectées.
+
+        Dans ce module, la cible autorisée est un site web fictif hébergé localement sur ta machine.
+    - type: theory
+      title: Reconnaissance passive et active
+      content: |
+        La reconnaissance passive consiste à recueillir de l'information sans envoyer de requêtes directes
+        à la cible. Par exemple, lire une documentation fournie par l'enseignant ou observer une page déjà ouverte.
+
+        La reconnaissance active implique une interaction avec la cible. Par exemple, utiliser un outil qui envoie
+        des requêtes pour vérifier si certains répertoires existent.
+
+        dirb effectue de la reconnaissance active. Il envoie plusieurs requêtes à la cible autorisée pour tester
+        des noms de répertoires et de fichiers.
+    - type: theory
+      title: Pourquoi l'autorisation est essentielle
+      content: |
+        Une reconnaissance active peut générer beaucoup de requêtes. Sur un système réel, cela peut produire
+        des alertes, consommer des ressources ou être interprété comme un comportement hostile.
+
+        C'est pour cette raison qu'un professionnel doit toujours vérifier trois éléments avant d'agir :
+        la cible, l'autorisation et la portée.
+
+        Dans cette mission :
+        - la cible est http://localhost;
+        - l'autorisation vient du laboratoire NEXUS;
+        - la portée est limitée à la reconnaissance de répertoires avec dirb.
+    - type: command_table
+      commands:
+      - cmd: Reconnaissance passive
+        desc: Collecte d'information sans interaction directe avec la cible
+      - cmd: Reconnaissance active
+        desc: Collecte d'information en envoyant des requêtes à une cible autorisée
+      - cmd: Cible
+        desc: Système ou service observé pendant la mission
+      - cmd: Autorisation
+        desc: Permission explicite d'effectuer une action technique
+      - cmd: Portée
+        desc: Limites précises de ce qui est permis
+    - type: questions
+      items:
+      - id: t1-q1
+        type: qcm
+        question: Dans cette mission, quelle est la cible autorisée?
+        answers:
+        - text: http://localhost
+          correct: true
+        - text: Un site web public choisi par l'élève
+          correct: false
+        - text: Le poste d'un autre élève
+          correct: false
+        - text: Une adresse IP trouvée au hasard
+          correct: false
+      - id: t1-q2
+        type: qcm
+        question: Pourquoi dirb est-il considéré comme un outil de reconnaissance active?
+        answers:
+        - text: Parce qu'il envoie des requêtes à la cible pour tester des chemins web
+          correct: true
+        - text: Parce qu'il lit seulement des documents déjà fournis
+          correct: false
+        - text: Parce qu'il fonctionne sans interaction avec la cible
+          correct: false
+        - text: Parce qu'il corrige automatiquement les vulnérabilités
+          correct: false
+      - id: t1-q3
+        type: short_answer
+        question: Quels sont les trois éléments à vérifier avant une action de reconnaissance active?
+        answer: la cible, l'autorisation et la portée
+  - id: cyber-security-101-6-fr-t2
+    type: task
+    title: Comprendre les codes HTTP utiles
+    order: 2
+    xpReward: 10
+    objectives:
+    - Comprendre les codes HTTP les plus utiles pendant une reconnaissance web.
+    - Interpréter un résultat trouvé, refusé, absent ou redirigé.
+    - Éviter les conclusions trop rapides à partir d'un seul code HTTP.
+    sections:
+    - type: theory
+      title: Le serveur répond avec un code
+      content: |
+        Lorsqu'un navigateur ou un outil demande une page, un fichier ou un répertoire à un serveur web,
+        le serveur répond avec un code HTTP. Ce code donne une indication sur le résultat de la requête.
+
+        Pendant une reconnaissance avec dirb, ces codes aident à comprendre si un chemin semble exister,
+        s'il est accessible, s'il est interdit, s'il redirige ailleurs ou s'il n'existe pas.
+    - type: command_table
+      commands:
+      - cmd: 200 OK
+        desc: La ressource existe et elle est accessible
+      - cmd: 301 / 302 Redirection
+        desc: La ressource redirige vers une autre adresse ou un autre chemin
+      - cmd: 403 Forbidden
+        desc: La ressource existe peut-être, mais l'accès est refusé
+      - cmd: 404 Not Found
+        desc: La ressource n'a pas été trouvée
+      - cmd: 500 Server Error
+        desc: Le serveur a rencontré une erreur
+    - type: theory
+      title: Attention aux conclusions trop rapides
+      content: |
+        Un code HTTP donne un indice, mais il ne raconte pas toujours toute l'histoire.
+
+        Par exemple, un code 403 ne veut pas dire que le répertoire n'existe pas. Il peut signifier que
+        le serveur refuse simplement l'accès. À l'inverse, un code 200 indique qu'une ressource est accessible,
+        mais il faut encore déterminer si cette ressource est normale, sensible ou mal protégée.
+
+        Dans un rapport professionnel, il faut décrire ce qui a été observé, pas inventer ce qu'on ne sait pas.
+    - type: questions
+      items:
+      - id: t2-q1
+        type: qcm
+        question: Que signifie généralement un code HTTP 200 pendant une reconnaissance web?
+        answers:
+        - text: La ressource existe et elle est accessible
+          correct: true
+        - text: La ressource n'existe jamais
+          correct: false
+        - text: Le serveur est toujours compromis
+          correct: false
+        - text: L'élève a dépassé la portée du mandat
+          correct: false
+      - id: t2-q2
+        type: qcm
+        question: Quel code peut indiquer qu'une ressource existe peut-être, mais que l'accès est refusé?
+        answers:
+        - text: 403 Forbidden
+          correct: true
+        - text: 404 Not Found
+          correct: false
+        - text: 200 OK
+          correct: false
+        - text: 500 Server Error
+          correct: false
+      - id: t2-q3
+        type: qcm
+        question: Quelle est la meilleure attitude professionnelle devant un résultat ambigu?
+        answers:
+        - text: Documenter ce qui est observé sans inventer de conclusion
+          correct: true
+        - text: Présumer automatiquement qu'il s'agit d'une intrusion réussie
+          correct: false
+        - text: Ignorer le résultat parce qu'il n'est pas parfaitement clair
+          correct: false
+        - text: Tester d'autres systèmes pour comparer
+          correct: false
+  - id: cyber-security-101-6-fr-t3
+    type: task
+    title: Comprendre dirb et les wordlists
+    order: 3
+    xpReward: 10
+    objectives:
+    - Comprendre le fonctionnement général de dirb.
+    - Expliquer le rôle d'une wordlist.
+    - Reconnaître les limites d'un outil automatisé.
+    sections:
+    - type: theory
+      title: Que fait dirb?
+      content: |
+        dirb est un outil de découverte de contenu web. Il tente de trouver des répertoires ou des fichiers
+        en essayant plusieurs noms possibles sur une cible autorisée.
+
+        Par exemple, si la cible est http://localhost et que la wordlist contient le mot admin,
+        dirb peut tester http://localhost/admin. Si le serveur répond avec un code intéressant,
+        dirb affiche le résultat.
+
+        dirb ne comprend pas le contexte comme un humain. Il teste des chemins et affiche des réponses.
+        C'est à l'élève d'interpréter les résultats correctement.
+    - type: theory
+      title: Le rôle d'une wordlist
+      content: |
+        Une wordlist est une liste de mots. Dans ce contexte, elle contient des noms possibles de répertoires
+        ou de fichiers web. Plus la wordlist contient de mots, plus l'outil peut faire de tests.
+
+        Une wordlist n'est pas magique. Si un chemin n'est pas dans la liste, l'outil peut ne pas le trouver.
+        Si un résultat apparaît, il faut encore vérifier ce qu'il signifie et s'il est pertinent.
+    - type: command_table
+      commands:
+      - cmd: dirb http://localhost /usr/share/dirb/wordlists/common.txt
+        desc: Lance dirb contre la cible locale avec la wordlist commune
+      - cmd: http://localhost
+        desc: Cible locale autorisée dans cette mission
+      - cmd: /usr/share/dirb/wordlists/common.txt
+        desc: Wordlist commune fournie avec dirb
+      - cmd: CTRL + C
+        desc: Interrompt une commande en cours si nécessaire
+    - type: theory
+      title: Limites de l'outil
+      content: |
+        Un outil automatisé peut aider, mais il ne remplace pas le jugement professionnel.
+
+        dirb peut trouver des chemins intéressants, mais il ne décide pas automatiquement si un résultat
+        est critique. Il ne sait pas non plus si l'élève a l'autorisation d'aller plus loin.
+
+        Dans cette mission, l'élève doit seulement découvrir, observer et documenter. Il ne doit pas modifier,
+        supprimer, copier inutilement ou dépasser la cible autorisée.
+    - type: questions
+      items:
+      - id: t3-q1
+        type: qcm
+        question: Quel est le rôle principal d'une wordlist avec dirb?
+        answers:
+        - text: Fournir des noms possibles de répertoires ou de fichiers à tester
+          correct: true
+        - text: Corriger automatiquement les permissions du serveur
+          correct: false
+        - text: Créer un site web complet
+          correct: false
+        - text: Remplacer l'autorisation du propriétaire de la cible
+          correct: false
+      - id: t3-q2
+        type: qcm
+        question: Quelle affirmation décrit correctement dirb?
+        answers:
+        - text: Il teste des chemins web et affiche les réponses observées
+          correct: true
+        - text: Il garantit que tous les problèmes de sécurité seront trouvés
+          correct: false
+        - text: Il donne automatiquement le droit d'accéder aux données trouvées
+          correct: false
+        - text: Il doit être utilisé sur n'importe quel site pour apprendre plus vite
+          correct: false
+      - id: t3-q3
+        type: short_answer
+        question: Quelle commande sera utilisée dans cette mission pour lancer dirb contre la cible locale?
+        answer: dirb http://localhost /usr/share/dirb/wordlists/common.txt
+  - id: cyber-security-101-6-fr-t4
+    type: task
+    title: Vérifier la cible locale Maple Tech Solutions
+    order: 4
+    xpReward: 15
+    objectives:
+    - Vérifier que la VM fournie par l'enseignant est fonctionnelle.
+    - Vérifier qu'Apache2 est en ligne.
+    - Confirmer que le site Maple Tech Solutions répond sur http://localhost.
+    - Repérer une information publique qui pourrait devenir importante dans la mission.
+    sections:
+    - type: theory
+      title: Contexte de la cible
+      content: |-
+        Maple Tech Solutions est une entreprise fictive utilisée dans ce laboratoire.
+        Le site web est déjà préparé par l'enseignant et hébergé localement dans ta VM avec Apache2.
+
+        Certaines pages sont volontairement accessibles ou découvrables pour l'exercice. Dans un vrai contexte professionnel, une page oubliée, une référence client exposée ou une sauvegarde accessible pourraient représenter des risques si elles donnaient accès à de l'information sensible.
+    - type: theory
+      title: Cible et portée
+      content: |-
+        Pour cette tâche, la cible autorisée est :
+
+        http://localhost
+
+        Tu dois seulement vérifier que la cible locale répond et observer les informations visibles sur le site.
+        Tu ne dois pas tester de site externe, d'adresse IP inconnue ou d'appareil appartenant à une autre personne.
+    - type: command_table
+      commands:
+      - cmd: systemctl status apache2 --no-pager
+        desc: Vérifie si le service Apache2 est en ligne
+      - cmd: curl http://localhost
+        desc: Vérifie que le site local répond
+      - cmd: curl -I http://localhost
+        desc: Affiche les en-têtes HTTP de la page d'accueil
+      - cmd: dirb
+        desc: Vérifie que l'outil dirb est disponible
+      - cmd: ip addr
+        desc: Affiche les interfaces réseau de la VM si une vérification réseau est nécessaire
+    - type: theory
+      title: Ce que tu dois confirmer avant la mission
+      content: |-
+        Avant de commencer la reconnaissance avec dirb, confirme que :
+
+        - la VM est démarrée;
+        - Apache2 est en ligne;
+        - http://localhost affiche la page d'accueil de Maple Tech Solutions;
+        - dirb est disponible;
+        - tu comprends que la cible autorisée est uniquement http://localhost.
+
+        Sur la page d'accueil, observe aussi les informations visibles publiquement. Une référence client affichée sur une page publique peut sembler banale, mais elle pourrait devenir importante si une autre page du site l'utilise comme preuve d'accès.
+    - type: questions
+      items:
+      - id: t4-q1
+        type: qcm
+        question: Dans ce module, qui prépare la cible Maple Tech Solutions?
+        answers:
+        - text: L'enseignant prépare la VM et le site avant la mission
+          correct: true
+        - text: Les élèves doivent créer tout le site à partir de zéro
+          correct: false
+        - text: Un site public externe fournit la cible
+          correct: false
+        - text: Un autre élève héberge obligatoirement la cible
+          correct: false
+      - id: t4-q2
+        type: qcm
+        question: Quelle commande permet de vérifier rapidement que le site local répond?
+        answers:
+        - text: curl http://localhost
+          correct: true
+        - text: rm -rf /var/www/html
+          correct: false
+        - text: dirb http://example.com
+          correct: false
+        - text: sudo shutdown now
+          correct: false
+      - id: t4-q3
+        type: short_answer
+        question: Quelle est la seule cible autorisée dans cette mission?
+        answer: http://localhost
+  - id: cyber-security-101-6-fr-t5
+    type: task
+    title: Découvrir le portail client oublié
+    order: 5
+    xpReward: 15
+    objectives:
+    - Lancer dirb contre la cible locale autorisée.
+    - Repérer les pages ou répertoires découverts.
+    - Identifier le portail client oublié.
+    - Relier une information publique de la page d'accueil au portail découvert.
+    - Préparer les preuves nécessaires pour le rapport final.
+    sections:
+    - type: theory
+      title: Mission guidée
+      content: |-
+        Tu vas maintenant exécuter dirb contre la cible locale autorisée. Cette étape est une reconnaissance active, mais elle reste dans le cadre du laboratoire puisque la cible est http://localhost.
+
+        Ton objectif n'est pas seulement de trouver des répertoires cachés. Tu dois aussi observer le site comme un technicien en sécurité : une information visible à un endroit peut devenir risquée si une page oubliée l'utilise comme preuve d'accès.
+    - type: command_table
+      commands:
+      - cmd: dirb http://localhost /usr/share/dirb/wordlists/common.txt
+        desc: Lance la reconnaissance de répertoires sur la cible locale
+      - cmd: curl -I http://localhost/client-portal/
+        desc: Affiche les en-têtes HTTP du portail client si découvert
+      - cmd: curl -I http://localhost/backup/
+        desc: Affiche les en-têtes HTTP du répertoire /backup si découvert
+      - cmd: curl -I http://localhost/dev-notes/
+        desc: Affiche les en-têtes HTTP du répertoire /dev-notes si découvert
+      - cmd: curl -I http://localhost/uploads/
+        desc: Affiche les en-têtes HTTP du répertoire /uploads si découvert
+    - type: theory
+      title: Ce que tu dois observer
+      content: |-
+        Pendant l'exécution de dirb, repère les éléments suivants :
+
+        - les répertoires ou pages trouvés;
+        - les codes HTTP affichés;
+        - les chemins qui semblent sensibles;
+        - le portail client oublié;
+        - la référence client visible sur la page d'accueil;
+        - les preuves que tu devras conserver.
+
+        Dans cette mission, la combinaison importante est la suivante : une référence client est visible publiquement, et une page cachée découverte avec dirb permet de l'utiliser pour obtenir un code de validation.
+    - type: theory
+      title: Pages normalement intéressantes
+      content: |-
+        Selon la version de la VM fournie, tu devrais normalement trouver plusieurs chemins intéressants, par exemple :
+
+        - /client-portal : portail client oublié;
+        - /backup : zone de sauvegarde fictive;
+        - /dev-notes : notes de développement fictives;
+        - /uploads : zone de téléversement fictive.
+
+        Le chemin le plus important pour le challenge est /client-portal.
+    - type: theory
+      title: Preuves à conserver
+      content: |-
+        Pour préparer le challenge final, conserve au minimum :
+
+        - une capture de la page d'accueil montrant la référence client;
+        - une capture de la commande dirb utilisée;
+        - une capture des résultats affichés;
+        - une capture du portail client découvert;
+        - une capture du code de validation obtenu;
+        - une courte note expliquant ce que tu as observé.
+
+        Les preuves doivent montrer clairement que tu as travaillé sur http://localhost.
+    - type: questions
+      items:
+      - id: t5-q1
+        type: qcm
+        question: Quelle information doit absolument apparaître dans tes preuves?
+        answers:
+        - text: La cible locale http://localhost
+          correct: true
+        - text: Une adresse IP externe choisie au hasard
+          correct: false
+        - text: Le mot de passe d'un utilisateur réel
+          correct: false
+        - text: Le contenu privé d'une personne réelle
+          correct: false
+      - id: t5-q2
+        type: qcm
+        question: Que démontre le scénario du portail client oublié?
+        answers:
+        - text: Une information publique peut devenir risquée si elle donne accès à une page mal protégée
+          correct: true
+        - text: dirb corrige automatiquement les failles trouvées
+          correct: false
+        - text: Un portail caché est toujours sécuritaire
+          correct: false
+        - text: Une référence client publique remplace une vraie authentification
+          correct: false
+      - id: t5-q3
+        type: short_answer
+        question: Quel chemin représente le portail client oublié dans cette mission?
+        answer: /client-portal
+  - id: cyber-security-101-6-fr-c1
+    type: challenge
+    title: 'Challenge : le portail client oublié'
+    order: 6
+    xpReward: 55
+    objectives:
+    - Documenter une reconnaissance web autorisée.
+    - Trouver un portail client oublié avec dirb.
+    - Utiliser une référence client visible publiquement pour obtenir un code de validation.
+    - Expliquer pourquoi cette combinaison représente un risque.
+    - Formuler des recommandations défensives réalistes.
+    sections:
+    - type: theory
+      title: Mission
+      content: |-
+        Maple Tech Solutions est une entreprise fictive de soutien informatique. Son site web local contient une page d'accueil publique, mais certaines pages ne sont pas visibles dans le menu.
+
+        Ton mandat est de faire une reconnaissance web autorisée sur la cible locale, de découvrir le portail client oublié, d'utiliser l'information publique pertinente pour obtenir le code de validation, puis de produire un court rapport de mission.
+
+        Cette mission simule une situation réaliste : une information visible publiquement peut sembler peu importante, mais devenir dangereuse lorsqu'elle est combinée avec une page cachée mal protégée.
+    - type: theory
+      title: Portée obligatoire
+      content: |-
+        La portée du défi est strictement limitée à ceci :
+
+        - cible : http://localhost;
+        - outil principal : dirb;
+        - activité autorisée : découverte de répertoires web;
+        - cible fictive : Maple Tech Solutions;
+        - environnement : ta VM de laboratoire fournie par l'enseignant.
+
+        Tu ne dois pas tester de site web externe, d'adresse IP inconnue, de serveur de l'école, d'appareil personnel ou d'appareil appartenant à un autre élève.
+    - type: theory
+      title: Étapes obligatoires
+      content: |-
+        Tu dois compléter les étapes suivantes :
+
+        1. Vérifier que la VM est démarrée.
+        2. Vérifier qu'Apache2 est en ligne.
+        3. Ouvrir http://localhost dans le navigateur.
+        4. Observer la page d'accueil de Maple Tech Solutions.
+        5. Trouver la référence client visible publiquement sur la page d'accueil.
+        6. Lancer dirb contre http://localhost.
+        7. Identifier les chemins découverts, dont le portail client oublié.
+        8. Accéder au portail client découvert.
+        9. Entrer la référence client trouvée sur la page d'accueil.
+        10. Récupérer le code de validation affiché par le site.
+        11. Produire un rapport de mission avec preuves, risque et recommandations.
+    - type: theory
+      title: Indice pédagogique
+      content: |-
+        Dans cette mission, le but n'est pas de deviner un mot de passe. Le but est de comprendre la chaîne de risque :
+
+        - une information est visible publiquement;
+        - une page oubliée est découvrable avec dirb;
+        - la page oubliée utilise cette information comme preuve d'accès;
+        - un utilisateur non autorisé pourrait donc accéder à une fonction qui devrait être protégée.
+
+        Dans une vraie organisation, ce type de problème devrait être corrigé par une vraie authentification, une meilleure gestion des pages exposées et une révision des informations publiées.
+    - type: command_table
+      commands:
+      - cmd: systemctl status apache2 --no-pager
+        desc: Vérifie que le service web est en ligne
+      - cmd: curl http://localhost
+        desc: Vérifie que la page d'accueil répond
+      - cmd: dirb http://localhost /usr/share/dirb/wordlists/common.txt
+        desc: Commande principale à documenter dans le rapport
+      - cmd: curl -I http://localhost/client-portal/
+        desc: Commande possible pour confirmer le code HTTP du portail client
+      - cmd: http://localhost/client-portal
+        desc: Page à ouvrir dans le navigateur si elle est découverte
+    - type: theory
+      title: Structure obligatoire du rapport
+      content: |-
+        Ton rapport doit contenir les sections suivantes :
+
+        1. Cible et portée
+        2. Vérification des services
+        3. Information publique observée
+        4. Commande dirb exécutée
+        5. Chemins découverts
+        6. Utilisation du portail client oublié
+        7. Code de validation obtenu
+        8. Explication du risque
+        9. Recommandations défensives
+        10. Conclusion
+
+        Chaque section peut être courte, mais elle doit être claire. Un bon rapport n'est pas nécessairement long. Il doit surtout être précis, honnête et utile.
+    - type: theory
+      title: Résultats attendus
+      content: |-
+        Tu devrais normalement trouver plusieurs chemins intéressants, par exemple :
+
+        - /client-portal;
+        - /backup;
+        - /dev-notes;
+        - /uploads.
+
+        Le résultat principal attendu est la découverte de /client-portal, puis l'obtention du code de validation après avoir utilisé la référence client visible sur la page d'accueil.
+    - type: theory
+      title: Recommandations possibles
+      content: |-
+        Tes recommandations doivent être défensives et réalistes. Par exemple :
+
+        - protéger le portail client avec une vraie authentification;
+        - ne pas utiliser une simple référence publique comme mécanisme d'accès;
+        - retirer ou limiter les informations sensibles visibles sur les pages publiques;
+        - retirer les pages oubliées du site public;
+        - empêcher l'indexation ou l'accès aux zones internes;
+        - vérifier les sauvegardes, notes de développement et dossiers d'upload exposés;
+        - surveiller les journaux d'accès web;
+        - documenter et corriger les chemins exposés.
+
+        Tu ne dois pas recommander d'attaquer davantage la cible. Le but est d'améliorer la sécurité.
+    - type: theory
+      title: Conseils pour réussir
+      content: |-
+        Ton rapport doit montrer que tu comprends le scénario, pas seulement que tu as exécuté une commande.
+
+        Avant de remettre ton travail, vérifie que :
+
+        - la cible http://localhost est clairement mentionnée;
+        - la commande dirb est visible ou écrite correctement;
+        - la référence client publique est identifiée;
+        - le portail client oublié est identifié;
+        - le code de validation est fourni;
+        - les captures d'écran sont lisibles;
+        - le risque est expliqué simplement;
+        - les recommandations sont réalistes;
+        - tu n'as pas dépassé la portée du laboratoire.
+    expectedDeliverables:
+    - Un rapport de mission en français.
+    - Une capture d'écran montrant que http://localhost affiche Maple Tech Solutions.
+    - Une capture d'écran montrant la référence client visible sur la page d'accueil.
+    - Une capture d'écran montrant la commande dirb utilisée.
+    - Une capture d'écran montrant les résultats de dirb.
+    - Une capture d'écran montrant le portail client découvert.
+    - Le code de validation obtenu dans le portail client.
+    - Une explication courte du risque principal.
+    - Au moins trois recommandations défensives.
+    successCriteria:
+    - La cible est clairement identifiée comme http://localhost.
+    - La portée est respectée.
+    - Les services nécessaires sont vérifiés.
+    - La référence client publique est correctement identifiée.
+    - Le portail client oublié est trouvé avec dirb.
+    - Le code de validation est fourni.
+    - Les preuves sont lisibles et pertinentes.
+    - Le risque est expliqué en termes simples.
+    - Les recommandations sont défensives, réalistes et professionnelles.
+    suggestedTableColumns:
+    - Élément observé
+    - Preuve
+    - Pourquoi c'est intéressant
+    - Risque possible
+    - Recommandation
+    gradingRubric:
+    - criterion: Respect de la cible et de la portée
+      points: 10
+      description: L'élève travaille uniquement sur http://localhost et mentionne clairement la portée.
+    - criterion: Vérification de l'environnement
+      points: 10
+      description: L'élève vérifie que la VM, Apache2 et la cible locale sont fonctionnels.
+    - criterion: Exécution et preuves
+      points: 15
+      description: L'élève fournit des preuves lisibles de la page d'accueil, de la commande dirb, des résultats et du portail
+        client.
+    - criterion: Code de validation
+      points: 10
+      description: L'élève récupère et remet le bon code de validation obtenu dans le portail client.
+    - criterion: Analyse du risque
+      points: 10
+      description: L'élève explique pourquoi une référence publique combinée à un portail oublié représente un risque.
+    - criterion: Recommandations défensives
+      points: 10
+      description: L'élève propose des recommandations réalistes pour réduire les risques.
+    - criterion: Clarté du rapport
+      points: 5
+      description: Le rapport est organisé, clair et professionnel.
+  moduleCompletion:
+    requiredItems:
+    - cyber-security-101-6-fr-t1
+    - cyber-security-101-6-fr-t2
+    - cyber-security-101-6-fr-t3
+    - cyber-security-101-6-fr-t4
+    - cyber-security-101-6-fr-t5
+    - cyber-security-101-6-fr-c1
+    completionCriteria:
+    - L'élève comprend la reconnaissance web active dans un cadre autorisé.
+    - L'élève peut interpréter les codes HTTP de base.
+    - L'élève peut expliquer le rôle de dirb et d'une wordlist.
+    - L'élève a vérifié que la cible Maple Tech Solutions est en ligne.
+    - L'élève a exécuté dirb contre http://localhost.
+    - L'élève a découvert le portail client oublié.
+    - L'élève a récupéré le code de validation.
+    - L'élève a remis un rapport de mission avec preuves, risque et recommandations.
+    unlocks:
+    - offensive-security-fr
+    - defensive-security-fr
+  teacherCorrectionGuide:
+    commonMisconceptions:
+    - misconception: Trouver un répertoire signifie qu'on a le droit d'explorer tout son contenu.
+      correction: La découverte doit rester dans la portée. On documente ce qui est observé sans dépasser l'autorisation.
+    - misconception: Un code 403 signifie que la ressource n'existe pas.
+      correction: Un code 403 indique plutôt que l'accès est refusé. La ressource peut exister.
+    - misconception: dirb trouve toutes les vulnérabilités d'un site web.
+      correction: dirb découvre des chemins web à partir d'une wordlist. Il ne remplace pas une analyse complète.
+    - misconception: Si une référence client est visible publiquement, elle peut être utilisée comme mécanisme d'accès.
+      correction: Une information publique ne devrait jamais remplacer une vraie authentification.
+    - misconception: Un portail caché est sécuritaire parce qu'il n'apparaît pas dans le menu.
+      correction: Une page cachée mais accessible peut être découverte par reconnaissance ou par erreur de configuration.
+    - misconception: Un rapport doit seulement contenir des captures d'écran.
+      correction: Les captures doivent être accompagnées de contexte, d'analyse et de recommandations.
+    suggestedFeedbackForChallenge:
+      excellent: Très bon rapport de mission. La cible et la portée sont claires, les services ont été vérifiés, le portail
+        client a été trouvé, le code de validation est fourni et le risque est bien expliqué avec des recommandations réalistes.
+      satisfactory: Bon travail. La mission est complétée et les principaux résultats sont présents. Pour améliorer le rapport,
+        ajoute davantage de contexte aux preuves ou explique plus clairement le lien entre la référence publique, le portail
+        oublié et le risque de sécurité.
+      needsImprovement: Le rapport est incomplet ou manque de précision. Reprends la structure demandée, vérifie que la cible
+        est bien http://localhost, ajoute des preuves lisibles, fournis le code de validation et explique le risque principal
+        du scénario.
+  metadata:
+    version: '1.1'
+    author: Steeve Levesque / NEXUS
+    createdFor: Parcours Cyber Security 101
+    notes: 'Version révisée : la VM et la cible sont préparées par l’enseignant; le challenge porte sur le portail client
+      oublié de Maple Tech Solutions.'

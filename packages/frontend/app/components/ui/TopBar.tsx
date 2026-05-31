@@ -22,7 +22,7 @@ export default function TopBar({ user }: TopBarProps) {
 
   return (
     <>
-      <header className="h-[80px] bg-nx-surface border-b border-nx-border flex items-center px-6 gap-6 shrink-0 z-10 sticky top-0">
+      <header className="h-[80px] bg-nx-surface border-b border-nx-border flex items-center px-6 gap-6 shrink-0 z-20 sticky top-0">
         <div className="text-4xl font-extrabold tracking-[0.18em] select-none uppercase">
           <span className="text-nx-yellow drop-shadow-[0_0_8px_rgba(245,192,48,0.5)]">N</span>
           <span className="text-nx-yellow drop-shadow-[0_0_8px_rgba(245,192,48,0.5)]">E</span>

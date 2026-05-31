@@ -1,0 +1,516 @@
+module:
+  id: cyber-security-101-1-fr
+  trackId: cyber-security-101-fr
+  title: "Bienvenue en cybersécurité"
+  description: "Comprendre ce qu'est la cybersécurité et pourquoi elle concerne le soutien informatique"
+  order: 1
+  mascot: "tux-terminal"
+  xpReward: 70
+  language: fr
+
+  # ── Métadonnées pédagogiques (pour référence enseignant — non chargées en DB) ──
+
+  estimatedDuration: "1h30"
+  level: beginner
+
+  summary: |
+    Ce premier module introduit la cybersécurité dans un langage simple et professionnel.
+    L'élève découvre ce que signifie protéger des systèmes, des comptes, des appareils,
+    des réseaux et des données. Il apprend aussi la triade CIA : confidentialité,
+    intégrité et disponibilité.
+
+    Le module établit un lien direct entre la cybersécurité et le travail quotidien
+    d'un technicien en soutien informatique : réinitialisation de mots de passe,
+    gestion des comptes, mises à jour, sauvegardes, permissions, courriels suspects,
+    appareils perdus et demandes d'accès.
+
+  pedagogicalIntent: |
+    L'objectif n'est pas encore de manipuler des outils offensifs. L'objectif est de
+    créer une base mentale claire : la cybersécurité n'est pas seulement le travail
+    des pirates, des pentesters ou des analystes SOC. Elle commence souvent avec
+    les décisions quotidiennes d'un technicien.
+
+  learningOutcomes:
+    - "Définir la cybersécurité dans ses propres mots."
+    - "Expliquer pourquoi la cybersécurité est importante dans un contexte de soutien informatique."
+    - "Décrire la triade CIA : confidentialité, intégrité, disponibilité."
+    - "Associer des exemples concrets à la confidentialité, l'intégrité et la disponibilité."
+    - "Reconnaître quelques rôles professionnels liés à la cybersécurité."
+    - "Rédiger une courte réflexion technique en français."
+
+  prerequisites:
+    - "Savoir utiliser un ordinateur de façon autonome."
+    - "Avoir une compréhension générale des comptes utilisateurs, des mots de passe et des fichiers."
+    - "Être capable de rédiger quelques phrases simples en français."
+
+    - type: teacher_note
+      title: "Intention pédagogique"
+      content: |
+        Ce module peut être utilisé comme porte d'entrée du parcours Cyber Security.
+        Il est volontairement conceptuel, mais les exemples doivent rester très proches
+        du métier de soutien informatique.
+
+        Questions de discussion suggérées :
+        - Avez-vous déjà reçu un courriel suspect?
+        - Que pourrait-il arriver si on réinitialise un mot de passe sans vérifier l'identité?
+        - Est-ce qu'une panne de serveur est aussi un problème de cybersécurité?
+
+  vocabulary:
+    - term: "Cybersécurité"
+      fr: "Cybersécurité"
+      definition: "Pratiques utilisées pour protéger les systèmes, les réseaux, les comptes, les appareils et les données."
+    - term: "Confidentialité"
+      fr: "Confidentialité"
+      definition: "Seules les personnes autorisées peuvent accéder à l’information."
+    - term: "Intégrité"
+      fr: "Intégrité"
+      definition: "L’information demeure exacte, complète et fiable."
+    - term: "Disponibilité"
+      fr: "Disponibilité"
+      definition: "Les systèmes et les données sont accessibles lorsque les utilisateurs autorisés en ont besoin."
+    - term: "Menace"
+      fr: "Menace"
+      definition: "Élément qui pourrait causer un dommage à un système, un compte, un appareil ou des données."
+    - term: "Données"
+      fr: "Données"
+      definition: "Information stockée, traitée ou transmise par un système."
+    - term: "Accès non autorisé"
+      fr: "Accès non autorisé"
+      definition: "Accès à un système ou à des données sans autorisation."
+    - term: "Technicien en soutien informatique"
+      fr: "Technicien en soutien informatique"
+      definition: "Personne qui aide les utilisateurs et assure le bon fonctionnement des appareils, logiciels, comptes et systèmes."
+
+  safetyReminder: |
+    Dans ce module, aucun outil offensif n'est utilisé. Cependant, une règle importante
+    est déjà introduite : avoir la capacité technique de faire une action ne signifie
+    pas automatiquement avoir l'autorisation de la faire.
+
+  # ── Tâches ────────────────────────────────────────────────────────────────────
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-1-fr-t1
+      type: task
+      title: "Qu’est-ce que la cybersécurité?"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Comprendre une définition simple et professionnelle de la cybersécurité."
+        - "Relier la cybersécurité aux tâches réelles d'un technicien en soutien informatique."
+        - "Identifier des exemples de décisions de soutien qui peuvent créer ou réduire un risque."
+      sections:
+
+        - type: theory
+          title: "La cybersécurité en mots simples"
+          content: |
+            La cybersécurité regroupe les pratiques, les outils, les règles et les comportements
+            qui servent à protéger les systèmes informatiques, les réseaux, les comptes, les appareils
+            et les données contre les accès non autorisés, les erreurs, les abus, les pertes et les attaques.
+
+            Dans le langage courant, on associe souvent la cybersécurité aux pirates informatiques,
+            aux virus ou aux attaques spectaculaires. En réalité, la cybersécurité est beaucoup plus large.
+            Elle concerne aussi les gestes simples et quotidiens qui empêchent les problèmes de se produire.
+
+            Pour un technicien en soutien informatique, la cybersécurité n'est pas un sujet séparé.
+            Elle est présente dans les mots de passe, les comptes utilisateurs, les mises à jour,
+            les sauvegardes, les permissions, les courriels suspects, les appareils perdus,
+            les logiciels installés et les demandes d'accès.
+
+        - type: theory
+          title: "Pourquoi le soutien informatique fait partie de la cybersécurité"
+          content: |
+            Un technicien en soutien informatique est souvent la première personne contactée lorsqu'un
+            utilisateur a un problème. Cela donne au technicien un rôle important dans la protection
+            de l'organisation.
+
+            Par exemple, si un utilisateur appelle pour faire réinitialiser son mot de passe, le technicien
+            doit vérifier son identité. Sinon, une personne malveillante pourrait obtenir l'accès au compte.
+
+            Si un employé reçoit un courriel suspect, le technicien peut aider à reconnaître une tentative
+            d'hameçonnage. Si un ordinateur semble infecté, le technicien peut aider à isoler le poste
+            pour limiter les dommages.
+
+        - type: theory
+          title: "Exemples en soutien informatique"
+          content: |
+            - Réinitialiser un mot de passe sans vérifier l'identité peut créer un risque de sécurité.
+            - Brancher une clé USB trouvée peut exposer un poste à un logiciel malveillant.
+            - Donner des droits administrateur trop larges peut augmenter l'impact d'une erreur ou d'une attaque.
+            - Oublier de vérifier les sauvegardes peut transformer un incident mineur en catastrophe.
+            - Ignorer un courriel suspect peut permettre à une tentative d'hameçonnage de réussir.
+            - Installer un logiciel non approuvé peut introduire une vulnérabilité.
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: short_answer
+              question: "Dans tes mots, qu’est-ce que la cybersécurité?"
+              answer: "protéger les systèmes"
+
+            - id: t1-q2
+              type: short_answer
+              question: "Donne un exemple de tâche de soutien qui peut créer un risque de sécurité."
+              answer: "réinitialisation de mot de passe"
+
+            - id: t1-q3
+              type: qcm
+              question: "Qui est souvent la première personne contactée lorsqu’un utilisateur vit un incident de sécurité?"
+              answers:
+                - text: "L’analyste SOC"
+                  correct: false
+                - text: "Le technicien en soutien informatique"
+                  correct: true
+                - text: "Le pentester"
+                  correct: false
+                - text: "Le responsable de la sécurité"
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-1-fr-t2
+      type: task
+      title: "La triade CIA"
+      order: 2
+      xpReward: 10
+      objectives:
+        - "Définir confidentialité, intégrité et disponibilité."
+        - "Associer chaque élément de la triade CIA à un exemple concret."
+        - "Comprendre qu'un incident peut toucher plus d'un élément à la fois."
+      sections:
+
+        - type: theory
+          title: "Confidentialité, intégrité, disponibilité"
+          content: |
+            La triade CIA est un modèle simple utilisé pour expliquer les trois grands objectifs
+            de la cybersécurité. CIA désigne les trois objectifs suivants : **confidentialité, intégrité et disponibilité**. L’acronyme vient de l’anglais **Confidentiality, Integrity and Availability**.
+
+            La **confidentialité** signifie que seules les personnes autorisées peuvent accéder à l'information.
+            En français, on parle de confidentialité.
+
+            L’**intégrité** signifie que l'information doit rester exacte, complète et non modifiée sans autorisation.
+            En français, on parle d'intégrité.
+
+            La **disponibilité** signifie que les systèmes et les données doivent être accessibles quand les utilisateurs
+            autorisés en ont besoin. En français, on parle de disponibilité.
+
+        - type: theory
+          title: "Confidentialité"
+          content: |
+            La confidentialité protège l'information contre les accès non autorisés.
+
+            Exemple : un dossier contenant des informations sur les employés ne devrait pas être accessible
+            à tous les utilisateurs de l'entreprise. Seules les personnes autorisées devraient pouvoir le consulter.
+
+            Dans le soutien informatique, la confidentialité est importante lorsqu'on gère les permissions,
+            les comptes, les mots de passe, les boîtes courriel, les fichiers partagés et les appareils perdus.
+
+        - type: theory
+          title: "Intégrité"
+          content: |
+            L'intégrité protège l'exactitude et la fiabilité de l'information.
+
+            Exemple : si une facture, une note d'élève ou un dossier client est modifié par erreur ou sans
+            autorisation, l'organisation ne peut plus faire confiance à cette information.
+
+            Dans le soutien informatique, l'intégrité est importante lorsqu'on restaure des fichiers,
+            configure des permissions d'écriture, gère des bases de données ou vérifie des sauvegardes.
+
+        - type: theory
+          title: "Disponibilité"
+          content: |
+            La disponibilité signifie que les systèmes et les données sont accessibles lorsque les utilisateurs
+            autorisés en ont besoin.
+
+            Exemple : si le serveur de fichiers est en panne pendant toute la journée, les employés ne peuvent
+            plus accéder à leurs documents de travail.
+
+            Dans le soutien informatique, la disponibilité est importante lorsqu'on dépanne les postes,
+            les serveurs, les réseaux, les imprimantes, les services cloud et les sauvegardes.
+
+        - type: command_table
+          commands:
+            - cmd: "Confidentialité"
+              desc: "Seules les personnes autorisées peuvent accéder à l'information"
+            - cmd: "Intégrité"
+              desc: "L'information reste exacte et non modifiée sans autorisation"
+            - cmd: "Disponibilité"
+              desc: "Les systèmes sont accessibles quand les utilisateurs autorisés en ont besoin"
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Que signifie CIA en cybersécurité?"
+              answers:
+                - text: "Ordinateur, Internet, Accès"
+                  correct: false
+                - text: "Confidentialité, intégrité, disponibilité"
+                  correct: true
+                - text: "Contrôle, Identité, Authentification"
+                  correct: false
+                - text: "Central Intelligence Agency"
+                  correct: false
+
+            - id: t2-q2
+              type: qcm
+              question: "Un dossier contenant des fichiers d’employés est visible par tous les utilisateurs. Quelle partie de la triade CIA est touchée?"
+              answers:
+                - text: "Intégrité"
+                  correct: false
+                - text: "Disponibilité"
+                  correct: false
+                - text: "Confidentialité"
+                  correct: true
+                - text: "Aucune de ces réponses"
+                  correct: false
+
+            - id: t2-q3
+              type: qcm
+              question: "Une attaque par rançongiciel chiffre tous les fichiers. Quelles parties de la triade CIA sont touchées?"
+              answers:
+                - text: "Confidentialité seulement"
+                  correct: false
+                - text: "Intégrité et disponibilité"
+                  correct: true
+                - text: "Disponibilité seulement"
+                  correct: false
+                - text: "Confidentialité et intégrité"
+                  correct: false
+
+            - id: t2-q4
+              type: qcm
+              question: "Un fichier de paie est modifié sans autorisation. Quelle partie de la triade CIA est touchée?"
+              answers:
+                - text: "Disponibilité"
+                  correct: false
+                - text: "Confidentialité"
+                  correct: false
+                - text: "Intégrité"
+                  correct: true
+                - text: "Aucune de ces réponses"
+                  correct: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-1-fr-t3
+      type: task
+      title: "Rôles en cybersécurité et posture professionnelle"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Découvrir quelques rôles professionnels liés à la cybersécurité."
+        - "Comprendre que la cybersécurité implique plusieurs types de responsabilités."
+        - "Relier le rôle du technicien en soutien informatique aux rôles plus spécialisés."
+      sections:
+
+        - type: theory
+          title: "La cybersécurité est un travail d’équipe"
+          content: |
+            La cybersécurité n'est pas le travail d'une seule personne. Dans une organisation,
+            plusieurs rôles peuvent contribuer à protéger les systèmes et les données.
+
+            Un **technicien en soutien informatique** aide les utilisateurs, configure les appareils,
+            applique des procédures, règle des problèmes et peut détecter les premiers signes d'un incident.
+
+            Un **administrateur système** configure et protège les serveurs, les comptes, les permissions,
+            les mises à jour, les sauvegardes et les services.
+
+            Un **analyste SOC** surveille les alertes, les journaux et les événements de sécurité.
+
+            Un **pentester** teste la sécurité de systèmes autorisés afin de trouver des vulnérabilités
+            avant les attaquants.
+
+            Un **responsable de la sécurité** aide à encadrer les politiques, les accès, les incidents
+            et les obligations de l'organisation.
+
+        - type: command_table
+          commands:
+            - cmd: "Technicien en soutien informatique"
+              desc: "Aide les utilisateurs, configure les appareils, réinitialise les mots de passe"
+            - cmd: "Administrateur système"
+              desc: "Configure les serveurs, les permissions et les sauvegardes"
+            - cmd: "Analyste SOC"
+              desc: "Surveille les alertes et les journaux de sécurité"
+            - cmd: "Pentester"
+              desc: "Teste la sécurité de systèmes avec autorisation"
+            - cmd: "Responsable de la sécurité"
+              desc: "Définit les politiques et gère les risques"
+
+        - type: theory
+          title: "Posture professionnelle"
+          content: |
+            Un bon réflexe professionnel consiste à se poser quelques questions avant d'agir :
+
+            - Est-ce que je suis **autorisé** à faire cette action?
+            - Est-ce que cette action peut **exposer des données**?
+            - Est-ce que cette action peut **modifier ou supprimer** de l'information?
+            - Est-ce que cette action peut rendre un service **indisponible**?
+            - Est-ce que je devrais **documenter** ce que je fais?
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "Un utilisateur ne peut pas se connecter à son compte. Qui serait probablement le premier contact?"
+              answers:
+                - text: "SOC analyst"
+                  correct: false
+                - text: "Technicien en soutien informatique"
+                  correct: true
+                - text: "Pentester"
+                  correct: false
+                - text: "Security manager"
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "Une entreprise veut tester la sécurité de son site web avant son lancement. Qui devrait être impliqué?"
+              answers:
+                - text: "Technicien en soutien informatique"
+                  correct: false
+                - text: "SOC analyst"
+                  correct: false
+                - text: "Pentester"
+                  correct: true
+                - text: "System administrator"
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Avant de réinitialiser le mot de passe d’un utilisateur, que doit faire le technicien en premier?"
+              answers:
+                - text: "Rien — il doit simplement le réinitialiser rapidement"
+                  correct: false
+                - text: "Vérifier l’identité de l’utilisateur"
+                  correct: true
+                - text: "Demander à l’analyste SOC"
+                  correct: false
+                - text: "Vérifier si le compte est administrateur"
+                  correct: false
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
+    - id: cyber-security-101-1-fr-c1
+      type: challenge
+      title: "Première réflexion — Définir la cybersécurité"
+      order: 4
+      xpReward: 40
+      objectives:
+        - "Formuler une définition personnelle de la cybersécurité."
+        - "Utiliser du vocabulaire technique simple en français."
+        - "Faire un lien clair entre la cybersécurité et le soutien informatique."
+      sections:
+        - type: mission
+          title: "Consigne du défi"
+          content: |
+            Rédige un court texte en français, d'environ 150 mots, répondant à la question suivante :
+
+            **Qu'est-ce que la cybersécurité, et pourquoi est-elle importante pour un technicien en soutien informatique?**
+
+        - type: theory
+          title: "Ton texte doit inclure"
+          content: |
+            - Une définition simple de la cybersécurité.
+            - Un exemple concret lié au soutien informatique.
+            - Une référence à la **confidentialité**, à l'**intégrité** ou à la **disponibilité**.
+            - Une phrase sur ta responsabilité professionnelle en tant que technicien.
+
+        - type: hint
+          hints:
+            - "La cybersécurité signifie protéger..."
+            - "Pour un technicien en soutien informatique, la cybersécurité est importante parce que..."
+            - "Un exemple simple est..."
+            - "Cela touche la confidentialité parce que..."
+            - "Un technicien doit agir de façon responsable parce que..."
+
+        - type: teacher_note
+          content: |
+            **Grille de correction (40 XP)**
+            - Définition de la cybersécurité : 10 pts
+            - Lien avec le soutien informatique : 10 pts
+            - Référence à la triade CIA : 10 pts
+            - Responsabilité professionnelle : 5 pts
+            - Clarté du français : 5 pts
+
+      instructions: |
+        Rédige un court texte en français, d’environ 150 mots, répondant à la question suivante :
+
+        **Qu’est-ce que la cybersécurité, et pourquoi est-elle importante pour un technicien en soutien informatique?**
+
+        Ton texte doit inclure :
+        - une définition simple de la cybersécurité;
+        - un exemple lié au soutien informatique;
+        - une référence à la confidentialité, à l’intégrité ou à la disponibilité;
+        - une phrase sur la responsabilité professionnelle.
+      expectedDeliverables:
+        - "Un texte d’environ 150 mots en français."
+        - "Au moins un exemple concret lié au soutien informatique."
+        - "Une référence à la confidentialité, à l’intégrité ou à la disponibilité."
+        - "Une phrase sur la responsabilité professionnelle du technicien."
+      successCriteria:
+        - "La définition est claire et compréhensible."
+        - "Le lien avec le soutien informatique est présent."
+        - "Le vocabulaire technique est simple mais approprié."
+        - "La réponse démontre que l'élève comprend qu'une action de soutien peut avoir un impact de sécurité."
+      suggestedSentenceStarters:
+        - "La cybersécurité signifie protéger..."
+        - "Pour un technicien en soutien informatique, la cybersécurité est importante parce que..."
+        - "Un exemple simple est..."
+        - "Cela touche la confidentialité parce que..."
+        - "Un technicien doit agir de façon responsable parce que..."
+      gradingRubric:
+        - criterion: "Définition de la cybersécurité"
+          points: 10
+          description: "L’élève donne une définition claire et simple."
+        - criterion: "Lien avec le soutien informatique"
+          points: 10
+          description: "L’élève explique pourquoi la cybersécurité est importante dans les tâches de soutien."
+        - criterion: "Utilisation du concept CIA"
+          points: 10
+          description: "L’élève fait correctement référence à la confidentialité, à l’intégrité ou à la disponibilité."
+        - criterion: "Responsabilité professionnelle"
+          points: 5
+          description: "L’élève mentionne l’autorisation, la prudence, la documentation ou un comportement responsable."
+        - criterion: "Clarté du français"
+          points: 5
+          description: "Le texte est compréhensible et utilise un vocabulaire technique de base approprié."
+
+  # ── Métadonnées de complétion (référence — non chargées en DB) ──────────────
+
+  moduleCompletion:
+    requiredItems:
+      - cyber-security-101-1-fr-t1
+      - cyber-security-101-1-fr-t2
+      - cyber-security-101-1-fr-t3
+      - cyber-security-101-1-fr-c1
+    completionCriteria:
+      - "L'élève a complété les activités de réflexion."
+      - "L'élève peut expliquer la triade CIA avec des exemples."
+      - "L’élève a remis le court texte en français."
+    unlocks:
+      - cyber-security-101-2-fr
+
+  teacherCorrectionGuide:
+    commonMisconceptions:
+      - misconception: "La cybersécurité, c'est seulement empêcher les pirates d'entrer."
+        correction: "La cybersécurité inclut aussi les erreurs, les accès, les sauvegardes, les politiques et la disponibilité."
+      - misconception: "Si je suis technicien, j'ai le droit d'accéder à tout."
+        correction: "Le rôle technique ne donne pas automatiquement l'autorisation d'accéder à toutes les données."
+      - misconception: "Une panne n'est pas un problème de cybersécurité."
+        correction: "La disponibilité fait partie de la cybersécurité. Une panne peut donc avoir un impact de sécurité."
+      - misconception: "La confidentialité est seulement importante pour les mots de passe."
+        correction: "Elle concerne aussi les courriels, dossiers clients, documents RH, fichiers partagés, appareils et sauvegardes."
+    suggestedFeedbackForChallenge:
+      excellent: |
+        Très bonne réflexion. La définition est claire, le lien avec le soutien informatique est concret,
+        et le vocabulaire de la triade CIA est utilisé correctement.
+      satisfactory: |
+        Bonne base. La réponse démontre une compréhension générale de la cybersécurité. Ajoute davantage
+        de détails ou un exemple plus concret pour renforcer ton explication.
+      needsImprovement: |
+        La réponse est trop générale. Revois la définition de la cybersécurité et ajoute un exemple précis
+        lié au travail d'un technicien en soutien informatique.
+
+  metadata:
+    version: "1.1"
+    author: "Steeve Levesque / NEXUS"
+    createdFor: "Parcours Cyber Security 101"
