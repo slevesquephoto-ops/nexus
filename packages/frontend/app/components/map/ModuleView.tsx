@@ -121,7 +121,7 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
   const [validationsDone, setValidationsDone]   = useState<Record<string, Record<string, { question: string; answer: string }>>>({})
   const [submitting, setSubmitting]             = useState<Record<string, boolean>>({})
   const [submitError, setSubmitError]           = useState<Record<string, string>>({})
-  const [newUnlockedAvatar, setNewUnlockedAvatar] = useState<{ avatarId: string; title: string; description: string; file: string } | null>(null)
+  const [avatarQueue, setAvatarQueue] = useState<{ avatarId: string; title: string; description: string; file: string }[]>([])
 
   const loadModule = useCallback(async () => {
     setLoading(true)
@@ -231,7 +231,7 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
 
       setCompletions(prev => ({ ...prev, [task.id]: true }))
       setBanners(prev => ({ ...prev, [task.id]: { xpGained: data.xpGained } }))
-      if (data.newAvatar) setNewUnlockedAvatar(data.newAvatar)
+      if (data.newAvatars?.length > 0) setAvatarQueue(q => [...q, ...data.newAvatars])
 
       if (data.nextTaskId) {
         setTimeout(() => {
@@ -500,10 +500,10 @@ export default function ModuleView({ moduleId, onBack, user, isStaff = false }: 
       </div>
     </div>
 
-    {newUnlockedAvatar && (
+    {avatarQueue.length > 0 && (
       <AvatarUnlockModal
-        avatar={newUnlockedAvatar}
-        onClose={() => setNewUnlockedAvatar(null)}
+        avatar={avatarQueue[0]}
+        onClose={() => setAvatarQueue(q => q.slice(1))}
       />
     )}
     </>

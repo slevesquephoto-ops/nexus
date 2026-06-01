@@ -4,7 +4,7 @@ module:
   title: "Bienvenue en cybersécurité"
   description: "Comprendre ce qu'est la cybersécurité et pourquoi elle concerne le soutien informatique"
   order: 1
-  mascot: "tux-terminal"
+  mascot: "slyx-welcome"
   xpReward: 70
   language: fr
 
@@ -145,14 +145,30 @@ module:
         - type: questions
           items:
             - id: t1-q1
-              type: short_answer
-              question: "Dans tes mots, qu’est-ce que la cybersécurité?"
-              answer: "protéger les systèmes"
+              type: qcm
+              question: "Laquelle de ces descriptions correspond le mieux à la cybersécurité?"
+              answers:
+                - text: "L’ensemble des pratiques qui protègent les systèmes, réseaux, comptes et données contre les accès non autorisés et les attaques."
+                  correct: true
+                - text: "Le travail exclusif des hackers et des pentesters pour chercher des failles dans les systèmes."
+                  correct: false
+                - text: "Un ensemble de règles qui s’applique uniquement aux grandes entreprises et aux gouvernements."
+                  correct: false
+                - text: "Le service responsable de réparer les ordinateurs en panne dans une organisation."
+                  correct: false
 
             - id: t1-q2
-              type: short_answer
-              question: "Donne un exemple de tâche de soutien qui peut créer un risque de sécurité."
-              answer: "réinitialisation de mot de passe"
+              type: qcm
+              question: "Laquelle de ces actions d’un technicien peut créer un risque de sécurité?"
+              answers:
+                - text: "Réinitialiser un mot de passe sans vérifier l’identité de l’utilisateur."
+                  correct: true
+                - text: "Installer les mises à jour sur tous les postes de travail dès leur sortie."
+                  correct: false
+                - text: "Demander à l’utilisateur de confirmer son identité avant d’effectuer toute modification."
+                  correct: false
+                - text: "Vérifier l’intégrité des sauvegardes après une restauration."
+                  correct: false
 
             - id: t1-q3
               type: qcm
@@ -186,13 +202,13 @@ module:
             de la cybersécurité. CIA désigne les trois objectifs suivants : **confidentialité, intégrité et disponibilité**. L’acronyme vient de l’anglais **Confidentiality, Integrity and Availability**.
 
             La **confidentialité** signifie que seules les personnes autorisées peuvent accéder à l'information.
-            En français, on parle de confidentialité.
+           
 
             L’**intégrité** signifie que l'information doit rester exacte, complète et non modifiée sans autorisation.
-            En français, on parle d'intégrité.
+            
 
             La **disponibilité** signifie que les systèmes et les données doivent être accessibles quand les utilisateurs
-            autorisés en ont besoin. En français, on parle de disponibilité.
+            autorisés en ont besoin. 
 
         - type: theory
           title: "Confidentialité"
@@ -267,15 +283,15 @@ module:
 
             - id: t2-q3
               type: qcm
-              question: "Une attaque par rançongiciel chiffre tous les fichiers. Quelles parties de la triade CIA sont touchées?"
+              question: "Un rançongiciel chiffre tous les fichiers d'une organisation et empêche les employés d'y accéder. Quels piliers de la triade CIA sont directement compromis par ce scénario?"
               answers:
-                - text: "Confidentialité seulement"
-                  correct: false
-                - text: "Intégrité et disponibilité"
+                - text: "Intégrité et disponibilité — les fichiers ont été modifiés sans autorisation et ne sont plus accessibles."
                   correct: true
-                - text: "Disponibilité seulement"
+                - text: "Disponibilité uniquement — seule l'accessibilité aux fichiers est affectée."
                   correct: false
-                - text: "Confidentialité et intégrité"
+                - text: "Confidentialité uniquement — les pirates ont seulement consulté les données sans les modifier."
+                  correct: false
+                - text: "Aucun pilier — un rançongiciel ne touche pas la triade CIA."
                   correct: false
 
             - id: t2-q4
@@ -353,13 +369,13 @@ module:
               type: qcm
               question: "Un utilisateur ne peut pas se connecter à son compte. Qui serait probablement le premier contact?"
               answers:
-                - text: "SOC analyst"
+                - text: "L'analyste SOC"
                   correct: false
                 - text: "Technicien en soutien informatique"
                   correct: true
                 - text: "Pentester"
                   correct: false
-                - text: "Security manager"
+                - text: "Le responsable de la sécurité"
                   correct: false
 
             - id: t3-q2
@@ -368,11 +384,11 @@ module:
               answers:
                 - text: "Technicien en soutien informatique"
                   correct: false
-                - text: "SOC analyst"
+                - text: "L'analyste SOC"
                   correct: false
                 - text: "Pentester"
                   correct: true
-                - text: "System administrator"
+                - text: "L'administrateur système"
                   correct: false
 
             - id: t3-q3

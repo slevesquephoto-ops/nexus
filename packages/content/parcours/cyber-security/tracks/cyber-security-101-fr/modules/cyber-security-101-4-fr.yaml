@@ -4,7 +4,7 @@ module:
   title: "Éthique, vie privée et limites légales"
   description: "Comprendre l’autorisation, la portée d’un mandat, la protection des renseignements personnels et les bons réflexes professionnels"
   order: 4
-  mascot: "tux-shield"
+  mascot: "slyx-balance"
   xpReward: 110
   language: fr
 
@@ -203,9 +203,17 @@ module:
                   correct: false
 
             - id: t1-q3
-              type: short_answer
-              question: "Quel mot résume la permission nécessaire avant d'accéder à un système ou à des données?"
-              answer: "autorisation"
+              type: qcm
+              question: "Qu’est-ce qui est indispensable avant d’accéder à un système ou à des données dans le cadre d’une intervention?"
+              answers:
+                - text: "Une autorisation — une permission claire et documentée de la personne responsable."
+                  correct: true
+                - text: "Une compétence technique suffisante pour effectuer l’action sans risque d’erreur."
+                  correct: false
+                - text: "Une urgence reconnue qui justifie l’accès immédiat sans délai."
+                  correct: false
+                - text: "Une habitude établie, car les actions répétées régulièrement n’ont pas besoin d’être réévaluées."
+                  correct: false
 
     # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-4-fr-t2
@@ -307,9 +315,17 @@ module:
                   correct: false
 
             - id: t2-q3
-              type: short_answer
-              question: "Quel mot désigne une situation où des renseignements personnels sont perdus, exposés ou consultés sans autorisation?"
-              answer: "incident de confidentialité"
+              type: qcm
+              question: "Quel terme désigne une situation où des renseignements personnels sont perdus, exposés ou consultés sans autorisation?"
+              answers:
+                - text: "Un incident de confidentialité — situation impliquant une atteinte aux renseignements personnels."
+                  correct: true
+                - text: "Une vulnérabilité de données — faiblesse connue d’un système de stockage d’informations."
+                  correct: false
+                - text: "Une brèche de service — interruption du fonctionnement normal d’un système."
+                  correct: false
+                - text: "Un risque résiduel — partie du risque qui subsiste après l’application des protections."
+                  correct: false
 
     # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-4-fr-t3
@@ -408,9 +424,17 @@ module:
                   correct: false
 
             - id: t3-q3
-              type: short_answer
-              question: "Quel document ou quelle trace permet de montrer ce qui a été demandé, fait et signalé?"
-              answer: "documentation"
+              type: qcm
+              question: "Quel élément permet de montrer ce qui a été demandé, fait et signalé lors d’une intervention sensible?"
+              answers:
+                - text: "La documentation — trace écrite des demandes, actions et découvertes lors d’une intervention."
+                  correct: true
+                - text: "Le NDA — entente qui protège la confidentialité des informations obtenues."
+                  correct: false
+                - text: "Le contrat de services — document qui décrit uniquement les livrables et les délais convenus."
+                  correct: false
+                - text: "Le rapport d’incident — document produit uniquement après une cyberattaque confirmée."
+                  correct: false
 
     # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-4-fr-t4
@@ -522,9 +546,17 @@ module:
                   correct: false
 
             - id: t4-q3
-              type: short_answer
-              question: "Quel verbe décrit l'action de transférer une situation sensible à une personne responsable?"
-              answer: "escalader"
+              type: qcm
+              question: "Quel terme désigne l’action de transférer une situation qui dépasse le rôle du technicien vers une personne responsable?"
+              answers:
+                - text: "Escalader — transférer une situation sensible à une personne ou équipe habilitée à décider."
+                  correct: true
+                - text: "Déléguer — confier une tâche habituelle à un collègue de même niveau."
+                  correct: false
+                - text: "Documenter — noter les informations liées à une action ou à un incident."
+                  correct: false
+                - text: "Archiver — conserver les informations dans un système de stockage à long terme."
+                  correct: false
 
     # ── CHALLENGE ─────────────────────────────────────────────────────────────
     - id: cyber-security-101-4-fr-c1
@@ -566,20 +598,25 @@ module:
             Tu peux répondre sous forme de texte structuré ou sous forme de tableau.
 
         - type: theory
-          title: "Scénarios suggérés"
+          title: "Scénarios du défi"
           content: |
-            Scénario A : Votre patron vous demande d'accéder à la boîte courriel d'un collègue absent
-            afin de retrouver un document urgent.
+            Deux scénarios sont obligatoires. Le troisième est ton choix parmi C, D ou G.
 
-            Scénario B : Vous êtes consultant et vous découvrez des renseignements personnels hors mandat
-            pendant une vérification autorisée sur un serveur précis.
+            **Scénario E — OBLIGATOIRE**
+            Un client te contacte et te demande de faire "une petite vérification rapide" sur le site web de son principal compétiteur. Il dit que "c'est pour voir comment ils sont organisés". Il n'a évidemment aucune autorisation du compétiteur.
 
-            Scénario C : Un gestionnaire vous remet le mot de passe d'un employé et vous demande de vous
-            connecter avec ce compte pour aller plus vite.
+            **Scénario F — OBLIGATOIRE**
+            Tu es en stage dans une entreprise. Un collègue stagiaire te demande de l'aider à accéder au VPN de son ami "pour tester une connexion". Il affirme que son ami est d'accord, mais il n'y a aucune preuve écrite, aucune autorisation et aucun mandat.
 
-            Scénario D : Un employé vous demande d'ouvrir une clé USB trouvée dans le stationnement.
+            **Scénario C — au choix**
+            Un gestionnaire te remet le mot de passe d'un employé et te demande de te connecter avec ce compte pour "aller plus vite".
 
-            Scénario E : Un client vous demande de faire "une petite vérification rapide" sur le site web
+            **Scénario D — au choix**
+            Un employé t'apporte une clé USB trouvée dans le stationnement de l'entreprise et te demande de l'ouvrir pour savoir à qui elle appartient.
+
+            **Scénario G — au choix**
+            Tu travailles chez un client et tu réalises que les sauvegardes nocturnes contiennent des dossiers de clients particuliers. Ton mandat portait uniquement sur la vérification du serveur de messagerie.
+
             d'un compétiteur.
 
         - type: theory

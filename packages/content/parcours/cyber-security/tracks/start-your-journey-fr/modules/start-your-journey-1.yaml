@@ -1,17 +1,17 @@
 module:
-  id: cyber-security-101-6-fr
-  trackId: cyber-security-101-fr
+  id: start-your-journey-1
+  trackId: start-your-journey-fr
   title: 'Première mission offensive : reconnaissance web avec dirb'
   description: Utiliser dirb contre une cible locale autorisée, découvrir le portail client oublié de Maple Tech Solutions
     et produire un rapport de reconnaissance
-  order: 6
-  mascot: tux-detective
+  order: 1
+  mascot: "red-team-white-cap"
   xpReward: 115
   language: fr
   estimatedDuration: 2h30 à 3h
   level: beginner
   summary: |-
-    Ce module est la première mission offensive contrôlée du parcours Cyber Security 101.
+    Ce module est la première mission offensive contrôlée de la track Start your journey.
     L'élève vérifie que la cible locale Maple Tech Solutions est en ligne, exécute une reconnaissance de répertoires avec dirb, identifie un portail client oublié, utilise une référence client exposée publiquement et récupère un code de validation.
 
     La mission se déroule uniquement contre une cible locale autorisée : http://localhost.
@@ -90,7 +90,7 @@ module:
 
     Découvrir un répertoire ne signifie pas qu'on a le droit de fouiller, copier, modifier ou supprimer son contenu. Dans un contexte professionnel, on documente la découverte et on respecte la portée du mandat.
   tasks:
-  - id: cyber-security-101-6-fr-t1
+  - id: start-your-journey-1-t1
     type: task
     title: Comprendre la reconnaissance web
     order: 1
@@ -174,10 +174,18 @@ module:
         - text: Parce qu'il corrige automatiquement les vulnérabilités
           correct: false
       - id: t1-q3
-        type: short_answer
-        question: Quels sont les trois éléments à vérifier avant une action de reconnaissance active?
-        answer: la cible, l'autorisation et la portée
-  - id: cyber-security-101-6-fr-t2
+        type: qcm
+        question: "Quels sont les trois éléments essentiels à vérifier avant d’effectuer une action de reconnaissance active?"
+        answers:
+        - text: "La cible, l’autorisation et la portée de la mission."
+          correct: true
+        - text: "La vitesse du réseau, la version de l’outil et le nombre de threads à utiliser."
+          correct: false
+        - text: "L’adresse IP de la cible, le nombre de ports ouverts et la liste des services actifs."
+          correct: false
+        - text: "La date, l’heure et la durée estimée de la reconnaissance."
+          correct: false
+  - id: start-your-journey-1-t2
     type: task
     title: Comprendre les codes HTTP utiles
     order: 2
@@ -255,7 +263,7 @@ module:
           correct: false
         - text: Tester d'autres systèmes pour comparer
           correct: false
-  - id: cyber-security-101-6-fr-t3
+  - id: start-your-journey-1-t3
     type: task
     title: Comprendre dirb et les wordlists
     order: 3
@@ -332,10 +340,18 @@ module:
         - text: Il doit être utilisé sur n'importe quel site pour apprendre plus vite
           correct: false
       - id: t3-q3
-        type: short_answer
-        question: Quelle commande sera utilisée dans cette mission pour lancer dirb contre la cible locale?
-        answer: dirb http://localhost /usr/share/dirb/wordlists/common.txt
-  - id: cyber-security-101-6-fr-t4
+        type: qcm
+        question: "Quelle commande sera utilisée dans cette mission pour lancer dirb contre la cible locale?"
+        answers:
+        - text: "dirb http://localhost /usr/share/dirb/wordlists/common.txt"
+          correct: true
+        - text: "nmap -sV http://localhost"
+          correct: false
+        - text: "gobuster dir -u http://localhost -w /usr/share/wordlists/common.txt"
+          correct: false
+        - text: "curl -X SCAN http://localhost/all"
+          correct: false
+  - id: start-your-journey-1-t4
     type: task
     title: Vérifier la cible locale Maple Tech Solutions
     order: 4
@@ -413,10 +429,18 @@ module:
         - text: sudo shutdown now
           correct: false
       - id: t4-q3
-        type: short_answer
-        question: Quelle est la seule cible autorisée dans cette mission?
-        answer: http://localhost
-  - id: cyber-security-101-6-fr-t5
+        type: qcm
+        question: "Pourquoi cette mission est-elle limitée à http://localhost comme seule cible autorisée?"
+        answers:
+        - text: "Parce que localhost représente ta propre VM, ce qui garantit que tu ne testes aucun système externe sans autorisation."
+          correct: true
+        - text: "Parce que les outils de reconnaissance ne fonctionnent que sur des adresses locales."
+          correct: false
+        - text: "Parce que l’enseignant surveille en temps réel toutes les connexions vers localhost."
+          correct: false
+        - text: "Parce que les adresses externes sont automatiquement bloquées par le réseau de la classe."
+          correct: false
+  - id: start-your-journey-1-t5
     type: task
     title: Découvrir le portail client oublié
     order: 5
@@ -460,17 +484,6 @@ module:
 
         Dans cette mission, la combinaison importante est la suivante : une référence client est visible publiquement, et une page cachée découverte avec dirb permet de l'utiliser pour obtenir un code de validation.
     - type: theory
-      title: Pages normalement intéressantes
-      content: |-
-        Selon la version de la VM fournie, tu devrais normalement trouver plusieurs chemins intéressants, par exemple :
-
-        - /client-portal : portail client oublié;
-        - /backup : zone de sauvegarde fictive;
-        - /dev-notes : notes de développement fictives;
-        - /uploads : zone de téléversement fictive.
-
-        Le chemin le plus important pour le challenge est /client-portal.
-    - type: theory
       title: Preuves à conserver
       content: |-
         Pour préparer le challenge final, conserve au minimum :
@@ -510,10 +523,18 @@ module:
         - text: Une référence client publique remplace une vraie authentification
           correct: false
       - id: t5-q3
-        type: short_answer
-        question: Quel chemin représente le portail client oublié dans cette mission?
-        answer: /client-portal
-  - id: cyber-security-101-6-fr-c1
+        type: qcm
+        question: "Que démontre le fait qu’on puisse accéder à un portail client uniquement en connaissant son chemin, sans lien depuis le menu?"
+        answers:
+        - text: "Qu’une page non répertoriée dans le menu peut quand même être découverte et accessible si elle n’est pas protégée."
+          correct: true
+        - text: "Que le portail est sécurisé par une authentification invisible pour les visiteurs."
+          correct: false
+        - text: "Que dirb ne peut pas trouver ce type de page sans une wordlist spécialisée."
+          correct: false
+        - text: "Que le serveur web bloque automatiquement les accès non référencés dans le menu."
+          correct: false
+  - id: start-your-journey-1-c1
     type: challenge
     title: 'Challenge : le portail client oublié'
     order: 6
@@ -643,8 +664,18 @@ module:
         - le risque est expliqué simplement;
         - les recommandations sont réalistes;
         - tu n'as pas dépassé la portée du laboratoire.
+    - type: theory
+      title: Question de réflexion finale
+      content: |-
+        Après avoir complété la mission, réponds à cette question dans ton rapport (section 10 — Conclusion) :
+
+        **Si le site de Maple Tech Solutions était un vrai site en production, quelle serait ta responsabilité légale et professionnelle avant d'effectuer ce test?**
+
+        Explique en 3 à 5 phrases en faisant référence aux notions vues dans la track Cyber Security 101 : autorisation, portée, documentation et éthique professionnelle.
+
     expectedDeliverables:
     - Un rapport de mission en français.
+    - Une réflexion de 3 à 5 phrases sur la responsabilité légale et professionnelle (section Conclusion).
     - Une capture d'écran montrant que http://localhost affiche Maple Tech Solutions.
     - Une capture d'écran montrant la référence client visible sur la page d'accueil.
     - Une capture d'écran montrant la commande dirb utilisée.
@@ -694,12 +725,12 @@ module:
       description: Le rapport est organisé, clair et professionnel.
   moduleCompletion:
     requiredItems:
-    - cyber-security-101-6-fr-t1
-    - cyber-security-101-6-fr-t2
-    - cyber-security-101-6-fr-t3
-    - cyber-security-101-6-fr-t4
-    - cyber-security-101-6-fr-t5
-    - cyber-security-101-6-fr-c1
+    - start-your-journey-1-t1
+    - start-your-journey-1-t2
+    - start-your-journey-1-t3
+    - start-your-journey-1-t4
+    - start-your-journey-1-t5
+    - start-your-journey-1-c1
     completionCriteria:
     - L'élève comprend la reconnaissance web active dans un cadre autorisé.
     - L'élève peut interpréter les codes HTTP de base.
@@ -710,16 +741,15 @@ module:
     - L'élève a récupéré le code de validation.
     - L'élève a remis un rapport de mission avec preuves, risque et recommandations.
     unlocks:
-    - offensive-security-fr
-    - defensive-security-fr
+    - start-your-journey-2
   teacherCorrectionGuide:
     commonMisconceptions:
     - misconception: Trouver un répertoire signifie qu'on a le droit d'explorer tout son contenu.
       correction: La découverte doit rester dans la portée. On documente ce qui est observé sans dépasser l'autorisation.
     - misconception: Un code 403 signifie que la ressource n'existe pas.
       correction: Un code 403 indique plutôt que l'accès est refusé. La ressource peut exister.
-    - misconception: dirb trouve toutes les vulnérabilités d'un site web.
-      correction: dirb découvre des chemins web à partir d'une wordlist. Il ne remplace pas une analyse complète.
+    - misconception: dirb trouve toutes les failles d'un site web.
+      correction: dirb découvre des chemins web à partir d'une wordlist. Il ne remplace pas une analyse complète de sécurité.
     - misconception: Si une référence client est visible publiquement, elle peut être utilisée comme mécanisme d'accès.
       correction: Une information publique ne devrait jamais remplacer une vraie authentification.
     - misconception: Un portail caché est sécuritaire parce qu'il n'apparaît pas dans le menu.
@@ -738,6 +768,6 @@ module:
   metadata:
     version: '1.1'
     author: Steeve Levesque / NEXUS
-    createdFor: Parcours Cyber Security 101
+    createdFor: Parcours Start your journey
     notes: 'Version révisée : la VM et la cible sont préparées par l’enseignant; le challenge porte sur le portail client
       oublié de Maple Tech Solutions.'

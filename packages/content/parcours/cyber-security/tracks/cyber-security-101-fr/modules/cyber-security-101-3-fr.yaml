@@ -4,7 +4,7 @@ module:
   title: "Penser comme un attaquant, défendre comme un technicien"
   description: "Comprendre la posture offensive, la surface d’attaque et transformer les observations en recommandations défensives"
   order: 3
-  mascot: "tux-detective"
+  mascot: "slyx-off-def"
   xpReward: 90
   language: fr
 
@@ -169,19 +169,27 @@ module:
               type: qcm
               question: "Quel est le rôle principal d'une équipe bleue?"
               answers:
-                - text: "Protéger, surveiller et répondre aux incidents"
+                - text: "Protéger, surveiller et répondre aux incidents."
                   correct: true
-                - text: "Attaquer des sites publics sans autorisation"
+                - text: "Simuler des attaques autorisées pour identifier les faiblesses."
                   correct: false
-                - text: "Supprimer les sauvegardes"
+                - text: "Exécuter des tests d’intrusion offensifs sur des serveurs ciblés."
                   correct: false
-                - text: "Partager les mots de passe entre employés"
+                - text: "Développer de nouvelles techniques d’exploitation pour la recherche en sécurité."
                   correct: false
 
             - id: t1-q3
-              type: short_answer
+              type: qcm
               question: "Pourquoi la sécurité offensive et la sécurité défensive doivent-elles collaborer?"
-              answer: "améliorer la sécurité"
+              answers:
+                - text: "Pour que les faiblesses découvertes offensivement servent à améliorer les défenses réelles."
+                  correct: true
+                - text: "Parce que la sécurité offensive peut remplacer entièrement la sécurité défensive."
+                  correct: false
+                - text: "Pour que l’équipe rouge puisse surveiller les alertes à la place de l’équipe bleue."
+                  correct: false
+                - text: "Parce que les deux équipes utilisent exactement les mêmes outils et les mêmes techniques."
+                  correct: false
 
     # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-3-fr-t2
@@ -271,9 +279,17 @@ module:
                   correct: false
 
             - id: t2-q3
-              type: short_answer
-              question: "Quel mot résume la condition la plus importante avant de tester un système?"
-              answer: "autorisation"
+              type: qcm
+              question: "Quel élément est la condition la plus importante avant de tester un système?"
+              answers:
+                - text: "L’autorisation — une permission claire et documentée de la personne responsable du système."
+                  correct: true
+                - text: "La compétence — le niveau technique du testeur est la condition principale."
+                  correct: false
+                - text: "L’urgence — la rapidité d’intervention justifie l’accès dans certains cas."
+                  correct: false
+                - text: "La curiosité — comprendre un système est légitime si l’objectif est l’apprentissage."
+                  correct: false
 
     # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-3-fr-t3
@@ -345,32 +361,40 @@ module:
               type: qcm
               question: "Qu'est-ce que la surface d'attaque?"
               answers:
-                - text: "L'ensemble des points qu'un attaquant pourrait tenter d'utiliser"
+                - text: "L’ensemble des points par lesquels un attaquant pourrait tenter d’obtenir un accès ou d’affecter un système."
                   correct: true
-                - text: "La taille physique d'un écran"
+                - text: "Les outils offensifs utilisés lors d’un test d’intrusion autorisé."
                   correct: false
-                - text: "Le nombre de bureaux dans une entreprise"
+                - text: "Le périmètre physique d’une salle serveur protégée."
                   correct: false
-                - text: "Un type de câble réseau"
+                - text: "La liste des failles connues dans une application web spécifique."
                   correct: false
 
             - id: t3-q2
               type: qcm
               question: "Quel élément peut faire partie de la surface d'attaque d'une organisation?"
               answers:
-                - text: "Un ancien compte employé encore actif"
+                - text: "Un ancien compte employé encore actif après son départ."
                   correct: true
-                - text: "Une chaise sans connexion réseau"
+                - text: "Une imprimante réseau complètement déconnectée depuis six mois."
                   correct: false
-                - text: "Un crayon sur un bureau"
+                - text: "Un ordinateur portable dont le disque dur est chiffré et qui est rangé hors ligne."
                   correct: false
-                - text: "Une affiche décorative"
+                - text: "Un port réseau interne non exposé à Internet et sans service actif."
                   correct: false
 
             - id: t3-q3
-              type: short_answer
-              question: "Donne un exemple d'action qui peut réduire la surface d'attaque."
-              answer: "désactiver un compte inutilisé"
+              type: qcm
+              question: "Laquelle de ces actions réduit la surface d’attaque d’une organisation?"
+              answers:
+                - text: "Désactiver les comptes des employés dès la fin de leur emploi."
+                  correct: true
+                - text: "Donner les droits administrateur à tous les techniciens pour simplifier les interventions."
+                  correct: false
+                - text: "Conserver un ancien serveur web en ligne au cas où il serait utile plus tard."
+                  correct: false
+                - text: "Installer tous les services disponibles sur un serveur pour plus de fonctionnalités."
+                  correct: false
 
     # ── CHALLENGE ─────────────────────────────────────────────────────────────
     - id: cyber-security-101-3-fr-c1

@@ -4,7 +4,7 @@ module:
   title: "Actifs, risques et bases de la pensée sécurité"
   description: "Identifier ce qu'on protège, comprendre les risques et proposer des protections de base"
   order: 2
-  mascot: "tux-shield"
+  mascot: "slyx-item"
   xpReward: 90
   language: fr
 
@@ -182,9 +182,17 @@ module:
                   correct: false
 
             - id: t1-q3
-              type: short_answer
-              question: "Nomme un actif numérique que tu pourrais devoir protéger comme technicien en soutien informatique."
-              answer: "compte utilisateur"
+              type: qcm
+              question: "Lequel de ces éléments représente un actif numérique qu’un technicien pourrait avoir à protéger?"
+              answers:
+                - text: "Un compte utilisateur Microsoft 365 avec accès aux fichiers de l’entreprise."
+                  correct: true
+                - text: "Le bureau physique sur lequel est posé l’ordinateur."
+                  correct: false
+                - text: "La liste de présence papier d’une réunion non numérisée."
+                  correct: false
+                - text: "La chaise ergonomique commandée pour l’employé."
+                  correct: false
 
     # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-2-fr-t2
@@ -274,9 +282,17 @@ module:
                   correct: false
 
             - id: t2-q4
-              type: short_answer
-              question: "Dans tes mots, quelle est la différence entre un risque et un incident?"
-              answer: "un risque est possible, un incident est arrivé"
+              type: qcm
+              question: "Quelle phrase décrit correctement la différence entre un risque et un incident?"
+              answers:
+                - text: "Un risque est une possibilité qui n’est pas encore arrivée; un incident est un événement qui s’est produit ou est en cours."
+                  correct: true
+                - text: "Un risque est toujours plus grave qu’un incident, car il touche davantage d’actifs."
+                  correct: false
+                - text: "Un incident est une hypothèse; un risque est une conséquence réelle déjà observée."
+                  correct: false
+                - text: "Un risque et un incident désignent la même chose en cybersécurité."
+                  correct: false
 
     # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
     - id: cyber-security-101-2-fr-t3
@@ -377,9 +393,17 @@ module:
                   correct: false
 
             - id: t3-q4
-              type: short_answer
-              question: "Donne un exemple de protection qu’un technicien peut appliquer pour réduire un risque."
-              answer: "mettre à jour"
+              type: qcm
+              question: "Laquelle de ces actions est une protection qu’un technicien peut appliquer pour réduire un risque de sécurité?"
+              answers:
+                - text: "Installer les mises à jour dès qu’elles sont disponibles."
+                  correct: true
+                - text: "Permettre à tous les employés d’installer des logiciels sans approbation."
+                  correct: false
+                - text: "Partager les mots de passe administrateur pour accélérer les interventions."
+                  correct: false
+                - text: "Désactiver les sauvegardes automatiques pour économiser de l’espace disque."
+                  correct: false
 
     # ── CHALLENGE ─────────────────────────────────────────────────────────────
     - id: cyber-security-101-2-fr-c1
