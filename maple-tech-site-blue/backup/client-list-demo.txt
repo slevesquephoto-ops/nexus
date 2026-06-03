@@ -1,0 +1,24 @@
+============================================================
+  Maple Tech Solutions — Client Export (DEMO)
+  Generated: 2023-11-04
+  WARNING: This file is a demo export. Do not distribute.
+============================================================
+
+CLIENT_ID   | NAME                          | TYPE        | CONTRACT
+------------|-------------------------------|-------------|----------
+MTS-CL-0041 | Boulangerie Lafleur           | Retail      | Standard
+MTS-CL-0087 | Cabinet Droit & Associés      | Legal       | Premium
+MTS-CL-0112 | Clinique vétérinaire Paws     | Healthcare  | Standard
+MTS-CL-0198 | Imprimerie Allard             | Manufacturing | Basic
+MTS-CL-0234 | Garderie Les Petits Soleils   | Education   | Basic
+MTS-CL-0301 | Agence Créatif Nord           | Agency      | Standard
+MTS-CL-2048 | North Shore Dental Clinic     | Healthcare  | Premium
+
+NOTE: This export was generated for internal demo purposes only.
+      Real client data is managed in the CRM system.
+      This file should not be accessible from the web server.
+      TODO: remove from /backup before next audit.
+
+============================================================
+  END OF FILE
+============================================================

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renseignement sur la menace | SOC Maple Tech</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/soc.css">
+</head>
+<body class="soc-page">
+
+  <header>
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <img src="../assets/images/logo.png" alt="Maple Tech Solutions" class="logo-img"
+             onerror="this.style.display='none'">
+        <div>
+          <div class="logo-text">🍁 Maple <span>Tech</span></div>
+          <div class="logo-tagline">Solutions informatiques</div>
+        </div>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="../index.html">← Site principal</a></li>
+          <li><a href="index.html">Tableau de bord</a></li>
+          <li><a href="logs.html">Journaux</a></li>
+          <li><a href="threat-intel.html" class="active">Menaces</a></li>
+          <li><a href="containment.html">Containment</a></li>
+        </ul>
+      </nav>
+      <div class="soc-badge-header">SOC FICTIF</div>
+    </div>
+  </header>
+
+  <div class="alert-banner">
+    <span class="alert-pulse"></span>
+    <strong>⚠ ALERTE CRITIQUE EN COURS</strong> — Activité suspecte détectée. Analyse en cours.
+  </div>
+
+  <main class="soc-main">
+
+    <div class="soc-section-header">
+      <h1 class="soc-title">Renseignement sur la menace</h1>
+      <p class="soc-subtitle">Plateforme de threat intelligence — Maple Tech SOC (simulée)</p>
+    </div>
+
+    <!-- Étape 1 : Recherche par IP -->
+    <div class="soc-card">
+      <div class="soc-card-header">
+        <span class="soc-card-icon">🔍</span>
+        <h2>Étape 1 — Recherche par adresse IP</h2>
+      </div>
+      <p class="ti-instruction">
+        Entre l'adresse IP suspecte identifiée dans les journaux pour consulter le profil de menace associé.
+      </p>
+      <div class="ti-search-area">
+        <div class="ti-search-input-wrap">
+          <input
+            type="text"
+            id="ti-ip-input"
+            placeholder="Ex. : 192.168.56.23"
+            autocomplete="off"
+            onkeydown="if(event.key==='Enter') submitIpSearch()"
+          >
+        </div>
+        <button class="soc-btn soc-btn-primary" onclick="submitIpSearch()">Rechercher</button>
+      </div>
+      <div id="ti-no-result" class="ti-no-result" style="display:none;">
+        Aucun profil associé à cette adresse IP. Vérifie l'adresse dans les journaux.
+      </div>
+    </div>
+
+    <!-- Profil NorthTrail (caché jusqu'à la recherche) -->
+    <div id="northtrail-profile" style="display:none;">
+
+      <div class="soc-card soc-card-threat">
+        <div class="soc-card-header">
+          <span class="soc-card-icon">🎭</span>
+          <h2>Profil — NorthTrail</h2>
+          <span class="status-badge status-warning">Acteur fictif</span>
+        </div>
+        <div class="threat-profile-grid">
+          <div class="threat-meta-item">
+            <span class="threat-label">Nom</span>
+            <span class="threat-value mono">NorthTrail</span>
+          </div>
+          <div class="threat-meta-item">
+            <span class="threat-label">IP associée</span>
+            <span class="threat-value mono">192.168.56.23</span>
+          </div>
+          <div class="threat-meta-item">
+            <span class="threat-label">Niveau de confiance</span>
+            <span class="threat-value"><span class="status-badge status-warning">Modéré</span></span>
+          </div>
+          <div class="threat-meta-item">
+            <span class="threat-label">Type</span>
+            <span class="threat-value">Acteur opportuniste — reconnaissance web</span>
+          </div>
+          <div class="threat-meta-item">
+            <span class="threat-label">Motivation probable</span>
+            <span class="threat-value">Accès non autorisé à des données clients</span>
+          </div>
+          <div class="threat-meta-item threat-meta-item-full">
+            <span class="threat-label">Note d'attribution</span>
+            <span class="threat-value ti-attribution-note">
+              Attribution prudente. Les comportements sont compatibles avec ce profil, mais n'identifient pas avec certitude une personne réelle.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comportements connus -->
+      <div class="soc-card">
+        <div class="soc-card-header">
+          <span class="soc-card-icon">🗂️</span>
+          <h2>Comportements connus de NorthTrail</h2>
+        </div>
+        <ul class="threat-behavior-list">
+          <li>
+            <span class="behavior-icon">🔎</span>
+            <div>
+              <strong>Découverte de répertoires web</strong>
+              <p>Utilise des outils automatisés pour tester des chemins non référencés sur des serveurs web.</p>
+            </div>
+          </li>
+          <li>
+            <span class="behavior-icon">💾</span>
+            <div>
+              <strong>Consultation de dossiers de sauvegarde exposés</strong>
+              <p>Recherche activement les répertoires <span class="mono">/backup/</span>, <span class="mono">/archives/</span> et similaires accessibles publiquement.</p>
+            </div>
+          </li>
+          <li>
+            <span class="behavior-icon">📝</span>
+            <div>
+              <strong>Recherche de notes de développement oubliées</strong>
+              <p>Tente d'accéder aux fichiers <span class="mono">/dev-notes/</span>, <span class="mono">/todo/</span> ou similaires pouvant contenir des informations sensibles.</p>
+            </div>
+          </li>
+          <li>
+            <span class="behavior-icon">🚪</span>
+            <div>
+              <strong>Tentatives sur des portails clients</strong>
+              <p>Cible les portails d'accès client après les avoir découverts par reconnaissance, avec plusieurs tentatives successives.</p>
+            </div>
+          </li>
+          <li>
+            <span class="behavior-icon">📌</span>
+            <div>
+              <strong>Abus de références client visibles publiquement</strong>
+              <p>Extrait les identifiants visibles sur les pages publiques (témoignages, profils clients) et les réutilise comme preuve d'accès.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Étape 2 : Formulaire de documentation -->
+      <div class="soc-card">
+        <div class="soc-card-header">
+          <span class="soc-card-icon">📝</span>
+          <h2>Étape 2 — Documenter l'incident</h2>
+        </div>
+        <p class="ti-instruction">
+          À partir des journaux et du profil ci-dessus, complète la fiche de documentation de l'incident.
+          Toutes les sections sont obligatoires pour continuer.
+        </p>
+
+        <!-- 2a. Type d'activité -->
+        <div class="doc-form-section">
+          <h3 class="doc-form-title">Type d'activité observée</h3>
+          <p class="doc-form-hint">Sélectionne uniquement les types qui correspondent aux événements dans les journaux.</p>
+          <div class="doc-checkboxes">
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="act-recon"> Reconnaissance web (scan de répertoires)
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="act-phishing"> Hameçonnage (phishing)
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="act-acces"> Accès non autorisé à une ressource protégée
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="act-ddos"> Déni de service (DDoS)
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="act-ransomware"> Ransomware / chiffrement malveillant
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="act-physique"> Intrusion physique
+            </label>
+          </div>
+        </div>
+
+        <!-- 2b. Référence client -->
+        <div class="doc-form-section">
+          <h3 class="doc-form-title">Référence client utilisée lors de l'intrusion</h3>
+          <p class="doc-form-hint">Quelle référence client a servi de preuve d'accès ? Consulte les journaux et le site public pour identifier où elle était exposée. Format : MTS-XX-XXXX</p>
+          <input type="text" id="doc-ref" class="doc-text-input" placeholder="Ex. : MTS-XX-XXXX" autocomplete="off">
+        </div>
+
+        <!-- 2c. Comportements confirmés -->
+        <div class="doc-form-section">
+          <h3 class="doc-form-title">Comportements NorthTrail confirmés dans les journaux</h3>
+          <p class="doc-form-hint">Coche uniquement les comportements que tu peux appuyer avec une entrée de journal spécifique.</p>
+          <div class="doc-checkboxes">
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="beh-scan"> Découverte de répertoires par scan automatisé
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="beh-backup"> Consultation de dossiers de sauvegarde exposés (<span class="mono">/backup/</span>)
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="beh-devnotes"> Accès à des notes de développement (<span class="mono">/dev-notes/</span>)
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="beh-portal"> Tentatives répétées sur le portail client
+            </label>
+            <label class="doc-checkbox-item">
+              <input type="checkbox" id="beh-ref"> Utilisation d'une référence client visible publiquement
+            </label>
+          </div>
+        </div>
+
+        <!-- Feedback et bouton valider -->
+        <div id="doc-feedback" class="doc-feedback" style="display:none;"></div>
+
+        <div class="doc-form-footer">
+          <button class="soc-btn soc-btn-primary soc-btn-large" onclick="validateDoc()">
+            Valider la documentation
+          </button>
+        </div>
+      </div>
+
+      <!-- Zone de succès (cachée jusqu'à la validation) -->
+      <div id="doc-success" style="display:none;" class="soc-card soc-card-success">
+        <div class="soc-card-header">
+          <span class="soc-card-icon">✅</span>
+          <h2>Documentation validée</h2>
+        </div>
+        <p class="validation-message">
+          Bonne analyse. Tu as correctement identifié les types d'activité, la référence client utilisée
+          et l'ensemble des comportements NorthTrail présents dans les journaux.
+          Tu peux maintenant passer au containment.
+        </p>
+        <div class="soc-nav-actions" style="margin-top:1.25rem;">
+          <a href="logs.html" class="soc-btn soc-btn-secondary">← Journaux</a>
+          <a href="containment.html" class="soc-btn soc-btn-primary">Console de containment →</a>
+        </div>
+      </div>
+
+    </div><!-- /northtrail-profile -->
+
+    <!-- Navigation (avant validation) -->
+    <div class="soc-nav-actions" id="nav-before-success">
+      <a href="logs.html" class="soc-btn soc-btn-secondary">← Journaux</a>
+      <a href="containment.html" class="soc-btn soc-btn-secondary">Console de containment →</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Maple Tech Solutions</h4>
+        <p style="font-size:0.82rem;line-height:1.6;">Système SOC interne — usage exclusif des équipes autorisées.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation SOC</h4>
+        <ul>
+          <li><a href="index.html">Tableau de bord</a></li>
+          <li><a href="logs.html">Journaux</a></li>
+          <li><a href="threat-intel.html">Menaces</a></li>
+          <li><a href="containment.html">Containment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Incident actif</h4>
+        <ul>
+          <li>Réf. : <span class="mono">INC-2024-0142</span></li>
+          <li>Sévérité : Critique</li>
+          <li>Statut : En cours d'analyse</li>
+        </ul>
+      </div>
+    </div>
+    <p>© 2024 Maple Tech Solutions inc. — Environnement SOC fictif à des fins pédagogiques.</p>
+  </footer>
+
+  <script>
+    function submitIpSearch() {
+      var val = document.getElementById('ti-ip-input').value.trim();
+      var profile = document.getElementById('northtrail-profile');
+      var noResult = document.getElementById('ti-no-result');
+      var navBefore = document.getElementById('nav-before-success');
+
+      if (val === '192.168.56.23') {
+        profile.style.display = 'block';
+        noResult.style.display = 'none';
+        navBefore.style.display = 'none';
+        profile.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        profile.style.display = 'none';
+        noResult.style.display = 'block';
+      }
+    }
+
+    function validateDoc() {
+      var errors = [];
+
+      var recon    = document.getElementById('act-recon').checked;
+      var acces    = document.getElementById('act-acces').checked;
+      var phishing = document.getElementById('act-phishing').checked;
+      var ddos     = document.getElementById('act-ddos').checked;
+      var ransom   = document.getElementById('act-ransomware').checked;
+      var physique = document.getElementById('act-physique').checked;
+
+      if (!recon || !acces) {
+        errors.push('⚠ <strong>Types d\'activité :</strong> Au moins deux types d\'activité observés ne sont pas cochés. Relis les journaux : quel type de requête a précédé l\'accès au portail ? Quel résultat a été obtenu ?');
+      }
+      if (phishing || ddos || ransom || physique) {
+        errors.push('⛔ <strong>Types d\'activité :</strong> Une ou plusieurs cases ne correspondent pas aux événements observés dans les journaux. Ne coche que ce que tu peux justifier.');
+      }
+
+      var ref = document.getElementById('doc-ref').value.trim().toUpperCase();
+      if (ref !== 'MTS-CL-2048') {
+        errors.push('⚠ <strong>Référence client :</strong> La référence entrée ne correspond pas. Consulte la page publique du site et les journaux pour trouver quelle référence a été utilisée pour accéder au portail.');
+      }
+
+      var bScan     = document.getElementById('beh-scan').checked;
+      var bBackup   = document.getElementById('beh-backup').checked;
+      var bDevnotes = document.getElementById('beh-devnotes').checked;
+      var bPortal   = document.getElementById('beh-portal').checked;
+      var bRef      = document.getElementById('beh-ref').checked;
+
+      if (!bScan || !bBackup || !bDevnotes || !bPortal || !bRef) {
+        errors.push('⚠ <strong>Comportements confirmés :</strong> Certains comportements présents dans les journaux ne sont pas cochés. Relis la séquence complète des requêtes de 192.168.56.23.');
+      }
+
+      var feedback = document.getElementById('doc-feedback');
+      var success  = document.getElementById('doc-success');
+
+      if (errors.length === 0) {
+        feedback.style.display = 'none';
+        success.style.display = 'block';
+        success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        feedback.innerHTML = errors.map(function(e) {
+          return '<div class="feedback-error-item">' + e + '</div>';
+        }).join('');
+        feedback.style.display = 'block';
+        feedback.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        success.style.display = 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>

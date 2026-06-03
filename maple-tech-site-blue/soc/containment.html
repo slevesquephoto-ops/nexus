@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Console de containment | SOC Maple Tech</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/soc.css">
+</head>
+<body class="soc-page">
+
+  <header>
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <img src="../assets/images/logo.png" alt="Maple Tech Solutions" class="logo-img"
+             onerror="this.style.display='none'">
+        <div>
+          <div class="logo-text">🍁 Maple <span>Tech</span></div>
+          <div class="logo-tagline">Solutions informatiques</div>
+        </div>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="../index.html">← Site principal</a></li>
+          <li><a href="index.html">Tableau de bord</a></li>
+          <li><a href="logs.html">Journaux</a></li>
+          <li><a href="threat-intel.html">Menaces</a></li>
+          <li><a href="containment.html" class="active">Containment</a></li>
+        </ul>
+      </nav>
+      <div class="soc-badge-header">SOC FICTIF</div>
+    </div>
+  </header>
+
+  <div class="alert-banner">
+    <span class="alert-pulse"></span>
+    <strong>⚠ ALERTE CRITIQUE EN COURS</strong> — Activité suspecte détectée. Analyse en cours.
+  </div>
+
+  <main class="soc-main">
+
+    <div class="soc-section-header">
+      <h1 class="soc-title">Console de containment</h1>
+      <p class="soc-subtitle">Incident INC-2024-0142 — Applique les quatre mesures de containment</p>
+    </div>
+
+    <div class="soc-info-box soc-info-box-blue">
+      Applique les quatre mesures ci-dessous dans l'ordre ou dans celui que tu juges approprié.
+      Chaque mesure doit être complétée pour obtenir le code de validation.
+      Utilise les informations identifiées dans les journaux et le profil de menace.
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="containment-progress-bar">
+      <span class="containment-progress-label">Mesures appliquées :</span>
+      <div class="containment-progress-dots">
+        <span class="progress-dot" id="dot-1"></span>
+        <span class="progress-dot" id="dot-2"></span>
+        <span class="progress-dot" id="dot-3"></span>
+        <span class="progress-dot" id="dot-4"></span>
+      </div>
+      <span id="progress-count" class="containment-progress-count">0 / 4</span>
+    </div>
+
+    <!-- Outil 1 : Blocage IP -->
+    <div class="containment-tool-card" id="tool-1">
+      <div class="containment-tool-header">
+        <div class="containment-tool-number">1</div>
+        <div class="containment-tool-title">
+          <h2>Blocage pare-feu — IP suspecte</h2>
+          <p>Ajoute une règle de pare-feu temporaire pour bloquer l'adresse source identifiée dans les journaux.</p>
+        </div>
+        <div class="tool-status-badge" id="status-1">EN ATTENTE</div>
+      </div>
+      <div class="containment-tool-body" id="body-1">
+        <div class="tool-input-group">
+          <label for="ip-input">Adresse IP à bloquer</label>
+          <input type="text" id="ip-input" placeholder="Ex. : 192.168.x.x" autocomplete="off">
+        </div>
+        <button class="soc-btn soc-btn-primary" onclick="applyIpBlock()">Appliquer la règle</button>
+        <div class="tool-feedback" id="feedback-1" style="display:none;"></div>
+      </div>
+      <div class="tool-applied-msg" id="applied-1" style="display:none;">
+        ✅ Règle appliquée — 192.168.56.23 est maintenant bloquée au niveau du pare-feu.
+      </div>
+    </div>
+
+    <!-- Outil 2 : Gestion des accès -->
+    <div class="containment-tool-card" id="tool-2">
+      <div class="containment-tool-header">
+        <div class="containment-tool-number">2</div>
+        <div class="containment-tool-title">
+          <h2>Gestion des accès — Référence client</h2>
+          <p>Localise le compte client compromis et force la réinitialisation de son mot de passe.</p>
+        </div>
+        <div class="tool-status-badge" id="status-2">EN ATTENTE</div>
+      </div>
+      <div class="containment-tool-body" id="body-2">
+        <div class="tool-input-group">
+          <label for="ref-input">Référence client à rechercher</label>
+          <input type="text" id="ref-input" placeholder="Ex. : MTS-XX-XXXX" autocomplete="off">
+        </div>
+        <button class="soc-btn soc-btn-secondary" onclick="searchAccount()">Rechercher le compte</button>
+        <div class="tool-feedback" id="feedback-2" style="display:none;"></div>
+        <div id="account-found" style="display:none;" class="account-found-card">
+          <div class="account-found-header">
+            <span class="account-found-icon">👤</span>
+            <div>
+              <div class="account-found-name">Compte client trouvé : <span class="mono">MTS-CL-2048</span></div>
+              <div class="account-found-status">Statut : <span class="status-badge status-critical">Compromis</span></div>
+            </div>
+          </div>
+          <button class="soc-btn soc-btn-primary" onclick="forceReset()" style="margin-top:1rem;">
+            Forcer la réinitialisation du mot de passe
+          </button>
+        </div>
+      </div>
+      <div class="tool-applied-msg" id="applied-2" style="display:none;">
+        ✅ Réinitialisation forcée — le compte MTS-CL-2048 ne peut plus être utilisé sans nouveau mot de passe.
+      </div>
+    </div>
+
+    <!-- Outil 3 : Service web -->
+    <div class="containment-tool-card" id="tool-3">
+      <div class="containment-tool-header">
+        <div class="containment-tool-number">3</div>
+        <div class="containment-tool-title">
+          <h2>Services web — Désactivation du portail</h2>
+          <p>Mets temporairement hors ligne la ressource ciblée le temps de corriger la vulnérabilité.</p>
+        </div>
+        <div class="tool-status-badge" id="status-3">EN ATTENTE</div>
+      </div>
+      <div class="containment-tool-body" id="body-3">
+        <div class="service-list">
+          <div class="service-item">
+            <div class="service-info">
+              <div class="service-name mono">/client-portal/</div>
+              <div class="service-desc">Portail d'accès client — ressource ciblée lors de l'incident</div>
+            </div>
+            <div class="service-toggle-wrap">
+              <span class="service-state" id="portal-state-label">ACTIF</span>
+              <button class="service-toggle-btn service-toggle-active" id="portal-toggle" onclick="togglePortal()">
+                <span class="toggle-track">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="service-item service-item-other">
+            <div class="service-info">
+              <div class="service-name mono">/</div>
+              <div class="service-desc">Page d'accueil principale</div>
+            </div>
+            <div class="service-toggle-wrap">
+              <span class="service-state">ACTIF</span>
+              <span class="service-no-action">— maintenir en ligne</span>
+            </div>
+          </div>
+          <div class="service-item service-item-other">
+            <div class="service-info">
+              <div class="service-name mono">/services.html</div>
+              <div class="service-desc">Page des services</div>
+            </div>
+            <div class="service-toggle-wrap">
+              <span class="service-state">ACTIF</span>
+              <span class="service-no-action">— maintenir en ligne</span>
+            </div>
+          </div>
+        </div>
+        <div class="tool-feedback" id="feedback-3" style="display:none;"></div>
+      </div>
+      <div class="tool-applied-msg" id="applied-3" style="display:none;">
+        ✅ /client-portal/ désactivé temporairement — aucun accès externe n'est possible jusqu'à la correction.
+      </div>
+    </div>
+
+    <!-- Outil 4 : Escalade -->
+    <div class="containment-tool-card" id="tool-4">
+      <div class="containment-tool-header">
+        <div class="containment-tool-number">4</div>
+        <div class="containment-tool-title">
+          <h2>Escalade — Aviser la direction</h2>
+          <p>Un incident critique ne doit pas être géré seul. Avise la personne responsable selon la procédure interne.</p>
+        </div>
+        <div class="tool-status-badge" id="status-4">EN ATTENTE</div>
+      </div>
+      <div class="containment-tool-body" id="body-4">
+        <div class="tool-input-group">
+          <label for="escal-name">Ton nom / rôle</label>
+          <input type="text" id="escal-name" placeholder="Ex. : Analyste SOC junior" autocomplete="off">
+        </div>
+        <div class="tool-input-group">
+          <label for="escal-msg">Résumé de l'incident pour la direction</label>
+          <textarea id="escal-msg" rows="4" placeholder="Décris brièvement : quoi s'est passé, quand, depuis quelle IP, et quelles mesures ont été prises."></textarea>
+        </div>
+        <button class="soc-btn soc-btn-primary" onclick="submitEscalation()">Transmettre l'escalade</button>
+        <div class="tool-feedback" id="feedback-4" style="display:none;"></div>
+      </div>
+      <div class="tool-applied-msg" id="applied-4" style="display:none;">
+        ✅ Escalade transmise — la direction a été avisée de l'incident INC-2024-0142.
+      </div>
+    </div>
+
+    <!-- Zone de validation finale (cachée) -->
+    <div id="validation-zone" style="display:none;" class="soc-card soc-card-success">
+      <div class="soc-card-header">
+        <span class="soc-card-icon">✅</span>
+        <h2>Containment complété</h2>
+      </div>
+      <p class="validation-message">
+        Excellent travail. Les quatre mesures de containment ont été appliquées avec succès.
+        L'adresse suspecte est bloquée, le compte compromis est sécurisé,
+        le portail est hors ligne et la direction est avisée.
+      </p>
+      <div class="validation-code-block">
+        <div class="validation-code-label">Code de validation défensif</div>
+        <div class="validation-code" id="validation-code-display"></div>
+        <div class="validation-code-note">Note ce code dans ton rapport d'incident (section Code de validation).</div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="soc-nav-actions">
+      <a href="threat-intel.html" class="soc-btn soc-btn-secondary">← Renseignement menace</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Maple Tech Solutions</h4>
+        <p style="font-size:0.82rem;line-height:1.6;">Système SOC interne — usage exclusif des équipes autorisées.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation SOC</h4>
+        <ul>
+          <li><a href="index.html">Tableau de bord</a></li>
+          <li><a href="logs.html">Journaux</a></li>
+          <li><a href="threat-intel.html">Menaces</a></li>
+          <li><a href="containment.html">Containment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Incident actif</h4>
+        <ul>
+          <li>Réf. : <span class="mono">INC-2024-0142</span></li>
+          <li>Sévérité : Critique</li>
+          <li>Statut : En cours d'analyse</li>
+        </ul>
+      </div>
+    </div>
+    <p>© 2024 Maple Tech Solutions inc. — Environnement SOC fictif à des fins pédagogiques.</p>
+  </footer>
+
+  <script>
+    var _v = ['MTS','BLUE','2048'].join('-');
+    var done = { 1: false, 2: false, 3: false, 4: false };
+
+    function markDone(n) {
+      done[n] = true;
+      var statusEl = document.getElementById('status-' + n);
+      statusEl.textContent = 'APPLIQUÉ';
+      statusEl.classList.add('tool-status-done');
+      document.getElementById('body-' + n).style.display = 'none';
+      document.getElementById('applied-' + n).style.display = 'block';
+      document.getElementById('dot-' + n).classList.add('dot-done');
+      var count = Object.values(done).filter(Boolean).length;
+      document.getElementById('progress-count').textContent = count + ' / 4';
+      var card = document.getElementById('tool-' + n);
+      card.classList.add('tool-card-done');
+      if (count === 4) revealCode();
+    }
+
+    function showFeedback(n, msg, isError) {
+      var el = document.getElementById('feedback-' + n);
+      el.innerHTML = '<div class="' + (isError ? 'feedback-error-item' : 'feedback-success-item') + '">' + msg + '</div>';
+      el.style.display = 'block';
+    }
+
+    function revealCode() {
+      var zone = document.getElementById('validation-zone');
+      zone.style.display = 'block';
+      document.getElementById('validation-code-display').textContent = _v;
+      zone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Outil 1 — Blocage IP
+    function applyIpBlock() {
+      var val = document.getElementById('ip-input').value.trim();
+      if (val === '192.168.56.23') {
+        markDone(1);
+      } else if (val === '') {
+        showFeedback(1, '⚠ Entre une adresse IP avant d\'appliquer la règle.', true);
+      } else {
+        showFeedback(1, '⛔ Cette adresse IP ne correspond pas à la source suspecte identifiée dans les journaux. Vérifie l\'entrée ALERTE dans les logs.', true);
+      }
+    }
+
+    // Outil 2 — Recherche compte
+    function searchAccount() {
+      var val = document.getElementById('ref-input').value.trim().toUpperCase();
+      var foundCard = document.getElementById('account-found');
+      var fb = document.getElementById('feedback-2');
+      fb.style.display = 'none';
+      if (val === 'MTS-CL-2048') {
+        foundCard.style.display = 'block';
+        foundCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else if (val === '') {
+        showFeedback(2, '⚠ Entre une référence client avant de lancer la recherche.', true);
+      } else {
+        foundCard.style.display = 'none';
+        showFeedback(2, '⛔ Référence introuvable. Consulte les journaux et le site public pour identifier la référence utilisée lors de l\'accès.', true);
+      }
+    }
+
+    function forceReset() {
+      markDone(2);
+    }
+
+    // Outil 3 — Toggle portail
+    var portalActive = true;
+    function togglePortal() {
+      portalActive = !portalActive;
+      var label = document.getElementById('portal-state-label');
+      var btn   = document.getElementById('portal-toggle');
+      if (!portalActive) {
+        label.textContent = 'DÉSACTIVÉ';
+        label.style.color = 'var(--soc-danger, #e05252)';
+        btn.classList.remove('service-toggle-active');
+        btn.classList.add('service-toggle-inactive');
+        markDone(3);
+      } else {
+        label.textContent = 'ACTIF';
+        label.style.color = '';
+        btn.classList.add('service-toggle-active');
+        btn.classList.remove('service-toggle-inactive');
+      }
+    }
+
+    // Outil 4 — Escalade
+    function submitEscalation() {
+      var name = document.getElementById('escal-name').value.trim();
+      var msg  = document.getElementById('escal-msg').value.trim();
+      if (!name || !msg) {
+        showFeedback(4, '⚠ Complète les deux champs avant de transmettre l\'escalade.', true);
+        return;
+      }
+      if (msg.length < 30) {
+        showFeedback(4, '⚠ Le résumé est trop court. Décris l\'incident avec suffisamment de détails pour que la direction puisse comprendre la situation.', true);
+        return;
+      }
+      markDone(4);
+    }
+  </script>
+
+</body>
+</html>

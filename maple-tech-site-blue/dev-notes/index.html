@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>dev-notes — internal</title>
+</head>
+<body>
+<style>
+  body { font-family: monospace; font-size:14px; padding:2rem; background:#fff; color:#222; max-width:700px; }
+  h1 { font-size:1rem; border-bottom:1px solid #ccc; padding-bottom:0.4rem; margin-bottom:1.5rem; }
+  h2 { font-size:0.9rem; color:#555; margin:1.5rem 0 0.5rem; }
+  pre { background:#f5f5f5; padding:1rem; border-left:3px solid #ccc; white-space:pre-wrap; line-height:1.7; font-size:13px; }
+  .done { color:#2a7; text-decoration:line-through; }
+  .todo { color:#c50; }
+  .critical { color:#c00; font-weight:bold; }
+  .muted { color:#888; font-size:12px; }
+</style>
+
+<h1>dev-notes / internal — DO NOT DEPLOY TO PRODUCTION</h1>
+
+<h2>Project: MTS Client Portal v1.2</h2>
+<pre>
+Author  : k.bouchard
+Updated : 2024-03-15
+Status  : staging — NOT production-ready
+</pre>
+
+<h2>TODO before production deploy</h2>
+<pre>
+<span class="critical">[ ] CRITICAL — Protect /client-portal with server-side auth (currently JS only)</span>
+<span class="critical">[ ] CRITICAL — Disable directory listing on Apache (/backup, /uploads exposed)</span>
+<span class="todo">[ ] Move validation logic to backend API endpoint</span>
+<span class="todo">[ ] Remove demo references from homepage (MTS-CL-2048 visible publiquement)</span>
+<span class="todo">[ ] Delete or restrict /backup — client-list-demo.txt still accessible</span>
+<span class="todo">[ ] Review /uploads folder — old upload endpoint still alive</span>
+<span class="todo">[ ] Remove this dev-notes directory before go-live</span>
+<span class="todo">[ ] Add CSP headers (currently none)</span>
+<span class="todo">[ ] Add robots.txt to block crawlers from hidden dirs</span>
+<span class="done">[x] Basic HTML/CSS structure done</span>
+<span class="done">[x] Portal form working (client-side only for now)</span>
+<span class="done">[x] Contact form cosmetic validation</span>
+</pre>
+
+<h2>Known issues</h2>
+<pre>
+- portal.js has hardcoded ACCESS_REF and SUCCESS_CODE
+  → fine for demo, must move to .env + backend before prod
+- /backup/client-list-demo.txt was left from Nov export
+  → jf said to keep for staging demo, remove before audit
+- Apache default config allows directory browsing
+  → need to add "Options -Indexes" in .htaccess or vhost
+</pre>
+
+<h2>Deployment notes</h2>
+<pre>
+Staging : http://192.168.x.x (local VM)
+Prod    : TBD — waiting for domain setup
+
+Deploy cmd:
+  sudo cp -r ./maple-tech-site/* /var/www/html/
+  sudo systemctl restart apache2
+</pre>
+
+<p class="muted">— internal use only — maple tech solutions dev team —</p>
+
+</body>
+</html>

@@ -11,7 +11,14 @@
       "Bash(curl -s \"http://localhost:4000/api/modules/linux-fund-1/progress?userId=fake-id\")",
       "Bash(python -m json.tool)",
       "Bash(xxd \"C:/Users/Steeve/Claude Code Projects/nexus/packages/frontend/public/favicon.ico\")",
-      "Bash(docker info *)"
+      "Bash(docker info *)",
+      "Bash(curl -s http://localhost:4000/api/parcours)",
+      "Bash(curl -s http://localhost:4000/api/parcours/comp10)",
+      "Bash(curl -s \"http://localhost:4000/api/parcours/comp10\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(t['id'], t['language'], t.get\\('_count',{}\\).get\\('modules','?'\\)\\) for t in d['tracks']]\")",
+      "Bash(grep -v \"^$\")",
+      "Bash(xargs grep *)",
+      "mcp__filesystem__read_text_file"
     ]
   }
 }
