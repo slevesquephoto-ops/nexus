@@ -2,8 +2,9 @@
 
 import React from 'react'
 
-function renderInline(text: string, plain = false): React.ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/)
+function renderInline(text: unknown, plain = false): React.ReactNode[] {
+  const str = String(text ?? '')
+  const parts = str.split(/(\*\*[^*]+\*\*|`[^`]+`)/)
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**'))
       return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>
@@ -17,7 +18,7 @@ function renderInline(text: string, plain = false): React.ReactNode[] {
 
 interface QcmAnswer { text: string; correct: boolean }
 interface QcmQuestion { id: string; type: 'qcm'; question: string; answers: QcmAnswer[] }
-interface ShortQuestion { id: string; type: 'short_answer'; question: string; answer: string }
+interface ShortQuestion { id: string; type: 'short_answer'; question: string; answer?: string; acceptedAnswers?: string[]; caseSensitive?: boolean; trimWhitespace?: boolean }
 type Question = QcmQuestion | ShortQuestion
 
 interface Props {
@@ -87,7 +88,10 @@ function ShortItem({ q, answers, submitted, onAnswer, onSubmit }: {
 
   function handleSubmit() {
     if (!current.trim() || isDone) return
-    const correct = current.trim().toLowerCase() === q.answer.trim().toLowerCase()
+    const normalize = (s: string) => (q.trimWhitespace !== false ? s.trim() : s)
+    const compare = (a: string, b: string) => q.caseSensitive ? a === b : a.toLowerCase() === b.toLowerCase()
+    const answers = q.acceptedAnswers ?? (q.answer ? [q.answer] : [])
+    const correct = answers.some(a => compare(normalize(current), normalize(a)))
     onSubmit(q.id, correct)
   }
 
@@ -119,7 +123,7 @@ function ShortItem({ q, answers, submitted, onAnswer, onSubmit }: {
       </div>
       {isDone && (
         <p className={`text-xs ${submitted[q.id] ? 'text-nx-cyan' : 'text-red-400'}`}>
-          {submitted[q.id] ? '✓ Correct !' : `✗ Réponse attendue : ${q.answer}`}
+          {submitted[q.id] ? '✓ Correct !' : `✗ Réponse attendue : ${(q.acceptedAnswers ?? (q.answer ? [q.answer] : []))[0] ?? ''}`}
         </p>
       )}
     </div>

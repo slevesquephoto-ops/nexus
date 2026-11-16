@@ -1,0 +1,535 @@
+module:
+  id: cyber-security-101-3-fr
+  trackId: cyber-security-101-fr
+  title: "Penser comme un attaquant, défendre comme un technicien"
+  description: "Comprendre la posture offensive, la surface d’attaque et transformer les observations en recommandations défensives"
+  order: 3
+  mascot: "slyx-off-def"
+  xpReward: 90
+  language: fr
+
+  # ── Métadonnées pédagogiques (pour référence enseignant — non chargées en DB) ──
+
+  estimatedDuration: "1h30 à 2h"
+  level: beginner
+
+  summary: |
+    Ce module introduit la pensée offensive de façon encadrée et professionnelle.
+    L'élève apprend à observer une situation comme pourrait le faire un attaquant,
+    mais toujours dans le but de mieux défendre les systèmes, les comptes, les données
+    et les utilisateurs.
+
+    Le module présente les notions de sécurité offensive, sécurité défensive, red team,
+    blue team, purple team, types de hackers et surface d'attaque. L'élève doit ensuite
+    transformer des observations potentiellement risquées en recommandations concrètes
+    pour un technicien en soutien informatique.
+
+  pedagogicalIntent: |
+    L'objectif n'est pas de glorifier l'attaque ni de donner l'impression que la cybersécurité
+    consiste seulement à trouver des failles. L'objectif est de développer une posture
+    professionnelle : comprendre ce qu'un attaquant pourrait remarquer afin de mieux protéger
+    les systèmes.
+
+    Ce module prépare directement les modules suivants sur l'éthique, l'autorisation, la portée
+    d'un mandat et la première mission de reconnaissance web. Les élèves doivent retenir qu'une
+    observation offensive utile doit toujours mener à une action défensive responsable.
+
+  learningOutcomes:
+    - "Distinguer sécurité offensive, sécurité défensive et collaboration purple team."
+    - "Différencier white hat, grey hat et black hat."
+    - "Comprendre que l'autorisation est ce qui distingue une action professionnelle d'une action inacceptable."
+    - "Définir la surface d'attaque d'une organisation."
+    - "Identifier des éléments qu'un attaquant pourrait remarquer."
+    - "Transformer une observation offensive en recommandation défensive réaliste."
+
+  prerequisites:
+    - "Avoir complété le module 1 du parcours Cyber Security 101."
+    - "Avoir complété le module 2 du parcours Cyber Security 101."
+    - "Comprendre les notions d'actif, de risque, de vulnérabilité et d'incident."
+    - "Comprendre la triade CIA : confidentialité, intégrité et disponibilité."
+
+    - type: teacher_note
+      title: "Intention pédagogique"
+      content: |
+        Ce module doit être présenté avec prudence. Les élèves peuvent être attirés par l'aspect
+        "hacker" du sujet. Il faut donc ramener constamment la discussion vers la responsabilité,
+        l'autorisation et la défense.
+
+        Questions de discussion suggérées :
+        - Pourquoi est-ce utile de comprendre la manière de penser d'un attaquant?
+        - Quelle est la différence entre chercher une faiblesse pour aider et chercher une faiblesse pour nuire?
+        - Est-ce qu'une action techniquement possible est automatiquement acceptable?
+        - Pourquoi une recommandation défensive est-elle aussi importante que la découverte d'un problème?
+
+  vocabulary:
+    - term: "Sécurité offensive"
+      fr: "Sécurité offensive"
+      definition: "Approche qui cherche à trouver des faiblesses de sécurité dans un cadre autorisé."
+    - term: "Sécurité défensive"
+      fr: "Sécurité défensive"
+      definition: "Approche qui vise à protéger, surveiller, détecter et répondre aux incidents."
+    - term: "Red team"
+      fr: "Équipe rouge"
+      definition: "Équipe qui simule des attaques autorisées pour tester la sécurité."
+    - term: "Blue team"
+      fr: "Équipe bleue"
+      definition: "Équipe qui protège les systèmes et répond aux événements de sécurité."
+    - term: "Purple team"
+      fr: "Équipe mauve"
+      definition: "Collaboration entre les approches offensive et défensive pour améliorer la sécurité."
+    - term: "White hat"
+      fr: "Hacker éthique"
+      definition: "Personne qui effectue des tests de sécurité avec autorisation."
+    - term: "Black hat"
+      fr: "Pirate malveillant"
+      definition: "Personne qui agit sans autorisation pour voler, nuire ou obtenir un avantage."
+    - term: "Grey hat"
+      fr: "Zone grise"
+      definition: "Personne qui agit parfois sans autorisation claire, même si l'intention n'est pas toujours malveillante."
+    - term: "Surface d'attaque"
+      fr: "Surface d'attaque"
+      definition: "Ensemble des points par lesquels un attaquant pourrait tenter d'obtenir de l'information, un accès ou un effet sur un système."
+
+  safetyReminder: |
+    Ce module contient des scénarios et des réflexions, mais aucun outil offensif réel n'est utilisé.
+    Les élèves ne doivent pas tester des sites web, des réseaux, des comptes ou des appareils réels.
+    L'objectif est d'apprendre à reconnaître les risques et à proposer des protections.
+
+  # ── Tâches ────────────────────────────────────────────────────────────────────
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-3-fr-t1
+      type: task
+      title: "Sécurité offensive et sécurité défensive"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Comprendre la différence entre sécurité offensive et sécurité défensive."
+        - "Reconnaître le rôle d'une équipe rouge, d'une équipe bleue et d'une équipe mauve."
+        - "Comprendre que les deux approches peuvent travailler ensemble pour améliorer la sécurité."
+      sections:
+
+        - type: theory
+          title: "Deux côtés du même objectif"
+          content: |
+            La cybersécurité peut être vue sous deux grands angles : l'approche offensive et
+            l'approche défensive.
+
+            La sécurité offensive cherche à trouver des faiblesses avant qu'un vrai attaquant
+            les exploite. Elle peut inclure des tests d'intrusion, des simulations d'attaque
+            ou des exercices contrôlés. Cette approche doit toujours être autorisée et encadrée.
+
+            La sécurité défensive cherche à protéger les systèmes, surveiller les événements,
+            détecter les comportements suspects, répondre aux incidents et réduire les risques.
+
+            Les deux approches ont le même objectif final : améliorer la sécurité de l'organisation.
+
+        - type: theory
+          title: "Red team, blue team et purple team"
+          content: |
+            Une équipe rouge, ou red team, simule des attaques autorisées afin de tester la sécurité.
+            Elle essaie de penser comme un attaquant, mais dans un cadre professionnel.
+
+            Une équipe bleue, ou blue team, protège les systèmes. Elle surveille les journaux,
+            configure les protections, répond aux alertes et améliore la défense.
+
+            Une équipe mauve, ou purple team, n'est pas toujours une équipe séparée. C'est souvent
+            une façon de faire travailler ensemble l'offensif et le défensif. Les découvertes de
+            l'équipe rouge servent alors à améliorer les protections de l'équipe bleue.
+
+        - type: command_table
+          commands:
+            - cmd: "Red team"
+              desc: "Simule des attaques autorisées pour trouver des faiblesses"
+            - cmd: "Blue team"
+              desc: "Protège, surveille, détecte et répond aux incidents"
+            - cmd: "Purple team"
+              desc: "Fait collaborer l'offensif et le défensif pour améliorer la sécurité"
+            - cmd: "Objectif commun"
+              desc: "Réduire les risques et mieux protéger l'organisation"
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: "Quel est le rôle principal d'une équipe rouge?"
+              answers:
+                - text: "Simuler des attaques autorisées pour trouver des faiblesses"
+                  correct: true
+                - text: "Remplacer tous les ordinateurs de l'entreprise"
+                  correct: false
+                - text: "Installer uniquement des imprimantes"
+                  correct: false
+                - text: "Ignorer les vulnérabilités découvertes"
+                  correct: false
+
+            - id: t1-q2
+              type: qcm
+              question: "Quel est le rôle principal d'une équipe bleue?"
+              answers:
+                - text: "Protéger, surveiller et répondre aux incidents."
+                  correct: true
+                - text: "Simuler des attaques autorisées pour identifier les faiblesses."
+                  correct: false
+                - text: "Exécuter des tests d’intrusion offensifs sur des serveurs ciblés."
+                  correct: false
+                - text: "Développer de nouvelles techniques d’exploitation pour la recherche en sécurité."
+                  correct: false
+
+            - id: t1-q3
+              type: qcm
+              question: "Pourquoi la sécurité offensive et la sécurité défensive doivent-elles collaborer?"
+              answers:
+                - text: "Pour que les faiblesses découvertes offensivement servent à améliorer les défenses réelles."
+                  correct: true
+                - text: "Parce que la sécurité offensive peut remplacer entièrement la sécurité défensive."
+                  correct: false
+                - text: "Pour que l’équipe rouge puisse surveiller les alertes à la place de l’équipe bleue."
+                  correct: false
+                - text: "Parce que les deux équipes utilisent exactement les mêmes outils et les mêmes techniques."
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-3-fr-t2
+      type: task
+      title: "Types de hackers et importance de l'autorisation"
+      order: 2
+      xpReward: 10
+      objectives:
+        - "Différencier white hat, grey hat et black hat."
+        - "Comprendre que l'autorisation change complètement le contexte d'une action."
+        - "Reconnaître qu'une bonne intention ne remplace pas une autorisation claire."
+      sections:
+
+        - type: theory
+          title: "L'autorisation change tout"
+          content: |
+            Une même action technique peut être acceptable ou inacceptable selon le contexte.
+            Tester un site web appartenant à l'entreprise avec une autorisation écrite peut être
+            un travail professionnel. Tester le site web d'une autre organisation sans autorisation
+            peut être illégal et contraire à l'éthique.
+
+            En cybersécurité, l'intention ne suffit pas. Il faut aussi avoir l'autorisation, connaître
+            la portée du mandat et respecter les limites données.
+
+        - type: theory
+          title: "White hat, grey hat et black hat"
+          content: |
+            Un white hat agit avec autorisation pour améliorer la sécurité. Il respecte un mandat,
+            une portée et des règles de travail.
+
+            Un black hat agit sans autorisation, souvent pour voler, nuire, extorquer ou obtenir
+            un avantage personnel.
+
+            Un grey hat agit dans une zone grise. Il peut croire qu'il aide, mais il agit parfois
+            sans autorisation claire. Cette situation peut créer des problèmes légaux, éthiques
+            et professionnels.
+
+        - type: theory
+          title: "Exemples de situations"
+          content: |
+            Exemple white hat : une entreprise engage un consultant pour tester un serveur précis,
+            pendant une période précise, avec des règles écrites.
+
+            Exemple black hat : une personne tente de deviner le mot de passe d'un compte qui ne lui
+            appartient pas.
+
+            Exemple grey hat : une personne trouve une faiblesse sur un site public, continue à fouiller
+            sans autorisation, puis affirme qu'elle voulait seulement aider.
+
+        - type: command_table
+          commands:
+            - cmd: "White hat"
+              desc: "Agit avec autorisation pour améliorer la sécurité"
+            - cmd: "Grey hat"
+              desc: "Agit dans une zone grise, souvent sans autorisation claire"
+            - cmd: "Black hat"
+              desc: "Agit sans autorisation pour voler, nuire ou obtenir un avantage"
+            - cmd: "Règle essentielle"
+              desc: "Une bonne intention ne remplace jamais une autorisation claire"
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Quel type de hacker agit avec autorisation pour améliorer la sécurité?"
+              answers:
+                - text: "White hat"
+                  correct: true
+                - text: "Black hat"
+                  correct: false
+                - text: "Utilisateur invité"
+                  correct: false
+                - text: "Aucun des choix"
+                  correct: false
+
+            - id: t2-q2
+              type: qcm
+              question: "Pourquoi une action peut-elle devenir problématique même si l'intention est bonne?"
+              answers:
+                - text: "Parce qu'elle peut être faite sans autorisation claire"
+                  correct: true
+                - text: "Parce qu'une bonne intention rend tout légal"
+                  correct: false
+                - text: "Parce que les systèmes informatiques n'ont jamais de règles"
+                  correct: false
+                - text: "Parce qu'il faut toujours éviter de documenter son travail"
+                  correct: false
+
+            - id: t2-q3
+              type: qcm
+              question: "Quel élément est la condition la plus importante avant de tester un système?"
+              answers:
+                - text: "L’autorisation — une permission claire et documentée de la personne responsable du système."
+                  correct: true
+                - text: "La compétence — le niveau technique du testeur est la condition principale."
+                  correct: false
+                - text: "L’urgence — la rapidité d’intervention justifie l’accès dans certains cas."
+                  correct: false
+                - text: "La curiosité — comprendre un système est légitime si l’objectif est l’apprentissage."
+                  correct: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-3-fr-t3
+      type: task
+      title: "Surface d'attaque"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Définir la surface d'attaque."
+        - "Identifier des exemples de surface d'attaque dans une petite organisation."
+        - "Comprendre pourquoi réduire la surface d'attaque diminue les risques."
+      sections:
+
+        - type: theory
+          title: "Ce qu'un attaquant pourrait voir"
+          content: |
+            La surface d'attaque représente l'ensemble des points par lesquels un attaquant pourrait
+            tenter d'obtenir de l'information, un accès ou un effet sur un système.
+
+            Plus une organisation expose de systèmes, de comptes, de services ou de mauvaises configurations,
+            plus sa surface d'attaque est grande. Réduire cette surface ne rend pas une organisation parfaite,
+            mais cela réduit les occasions d'erreur, d'abus ou d'exploitation.
+
+        - type: theory
+          title: "Exemples dans une petite entreprise"
+          content: |
+            Dans une petite entreprise, la surface d'attaque peut inclure :
+
+            - le site web public;
+            - les formulaires de connexion;
+            - les comptes courriel;
+            - les mots de passe faibles;
+            - le réseau Wi-Fi;
+            - les ordinateurs non mis à jour;
+            - les imprimantes réseau;
+            - les partages de fichiers;
+            - les ports ouverts;
+            - les sauvegardes mal protégées;
+            - les anciens comptes employés encore actifs.
+
+        - type: theory
+          title: "De l'observation à la défense"
+          content: |
+            Penser comme un attaquant ne veut pas dire attaquer. Cela veut dire observer les éléments
+            qui pourraient être utilisés contre l'organisation.
+
+            Un technicien doit ensuite transformer cette observation en action défensive.
+
+            Exemple : si un ancien compte employé est encore actif, un attaquant pourrait tenter de l'utiliser.
+            La réponse défensive serait de désactiver les comptes qui ne sont plus nécessaires et de vérifier
+            les connexions récentes.
+
+        - type: command_table
+          commands:
+            - cmd: "Compte oublié"
+              desc: "Désactiver le compte et vérifier les connexions récentes"
+            - cmd: "Mot de passe faible"
+              desc: "Appliquer une politique de mots de passe et activer la MFA"
+            - cmd: "Poste non mis à jour"
+              desc: "Installer les mises à jour et vérifier l'état de sécurité"
+            - cmd: "Partage trop ouvert"
+              desc: "Réviser les permissions selon le besoin réel"
+            - cmd: "Sauvegarde exposée"
+              desc: "Restreindre l'accès et vérifier la confidentialité des données"
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "Qu'est-ce que la surface d'attaque?"
+              answers:
+                - text: "L’ensemble des points par lesquels un attaquant pourrait tenter d’obtenir un accès ou d’affecter un système."
+                  correct: true
+                - text: "Les outils offensifs utilisés lors d’un test d’intrusion autorisé."
+                  correct: false
+                - text: "Le périmètre physique d’une salle serveur protégée."
+                  correct: false
+                - text: "La liste des failles connues dans une application web spécifique."
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "Quel élément peut faire partie de la surface d'attaque d'une organisation?"
+              answers:
+                - text: "Un ancien compte employé encore actif après son départ."
+                  correct: true
+                - text: "Une imprimante réseau complètement déconnectée depuis six mois."
+                  correct: false
+                - text: "Un ordinateur portable dont le disque dur est chiffré et qui est rangé hors ligne."
+                  correct: false
+                - text: "Un port réseau interne non exposé à Internet et sans service actif."
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Laquelle de ces actions réduit la surface d’attaque d’une organisation?"
+              answers:
+                - text: "Désactiver les comptes des employés dès la fin de leur emploi."
+                  correct: true
+                - text: "Donner les droits administrateur à tous les techniciens pour simplifier les interventions."
+                  correct: false
+                - text: "Conserver un ancien serveur web en ligne au cas où il serait utile plus tard."
+                  correct: false
+                - text: "Installer tous les services disponibles sur un serveur pour plus de fonctionnalités."
+                  correct: false
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
+    - id: cyber-security-101-3-fr-c1
+      type: challenge
+      title: "Vue attaquant, réponse défenseur"
+      order: 4
+      xpReward: 60
+      objectives:
+        - "Analyser des scénarios avec une double perspective."
+        - "Identifier ce qu'un attaquant pourrait remarquer."
+        - "Proposer une réponse défensive réaliste pour un technicien."
+      sections:
+
+        - type: theory
+          title: "Mission"
+          content: |
+            Dans ce défi, tu dois analyser cinq scénarios courts. Pour chaque scénario,
+            tu dois regarder la situation avec deux perspectives :
+
+            - la vue attaquant : qu'est-ce qu'une personne malveillante pourrait remarquer ou tenter?
+            - la réponse défenseur : que devrait faire un technicien ou une équipe TI pour réduire le risque?
+
+            Le but n'est pas d'expliquer comment attaquer. Le but est de transformer une observation
+            risquée en recommandation défensive.
+
+        - type: theory
+          title: "Structure de réponse obligatoire"
+          content: |
+            Pour chaque scénario, réponds en français avec la structure suivante :
+
+            1. Ce qu'un attaquant pourrait remarquer
+            2. Pourquoi c'est risqué
+            3. Ce qu'un technicien devrait faire
+
+            Tes réponses doivent être courtes, claires et professionnelles. Tu peux répondre sous forme
+            de tableau ou avec des sous-titres pour chaque scénario.
+
+        - type: theory
+          title: "Scénarios à analyser"
+          content: |
+            Scénario 1 : Un ancien employé a quitté l'entreprise il y a trois mois, mais son compte Microsoft 365
+            est encore actif.
+
+            Scénario 2 : Le réseau Wi-Fi invité utilise le même mot de passe depuis plusieurs années.
+
+            Scénario 3 : Un dossier partagé nommé "Sauvegardes" est accessible à tous les employés.
+
+            Scénario 4 : Plusieurs ordinateurs affichent des notifications de mises à jour ignorées depuis longtemps.
+
+            Scénario 5 : Un utilisateur garde son mot de passe écrit sur un papier sous son clavier.
+
+        - type: command_table
+          commands:
+            - cmd: "Vue attaquant"
+              desc: "Ce qu'une personne malveillante pourrait remarquer ou tenter"
+            - cmd: "Risque"
+              desc: "Lien avec la confidentialité, l'intégrité ou la disponibilité"
+            - cmd: "Réponse défenseur"
+              desc: "Action réaliste pour réduire le risque"
+            - cmd: "Ton professionnel"
+              desc: "Réponse claire, prudente et orientée vers la protection"
+
+      expectedDeliverables:
+        - "Une analyse des 5 scénarios en français."
+        - "Pour chaque scénario : vue attaquant, risque et réponse défenseur."
+        - "Au moins une recommandation défensive concrète par scénario."
+        - "Une conclusion de 3 à 5 phrases sur l'importance de penser comme un attaquant pour mieux défendre."
+      successCriteria:
+        - "L'élève distingue clairement observation offensive et réponse défensive."
+        - "Les risques sont expliqués simplement."
+        - "Les recommandations sont réalistes pour un technicien en soutien informatique."
+        - "Le ton demeure professionnel et responsable."
+        - "La conclusion démontre que l'élève comprend l'importance de l'autorisation et de la défense."
+      suggestedTableColumns:
+        - "Scénario"
+        - "Ce qu'un attaquant pourrait remarquer"
+        - "Pourquoi c'est risqué"
+        - "Réponse défensive recommandée"
+      gradingRubric:
+        - criterion: "Analyse de la vue attaquant"
+          points: 15
+          description: "L'élève identifie correctement ce qui pourrait attirer l'attention d'un attaquant."
+        - criterion: "Explication du risque"
+          points: 15
+          description: "L'élève explique clairement pourquoi la situation est risquée."
+        - criterion: "Recommandations défensives"
+          points: 20
+          description: "Les recommandations sont concrètes, réalistes et liées au rôle du technicien."
+        - criterion: "Clarté et structure"
+          points: 5
+          description: "La réponse est organisée et facile à lire."
+        - criterion: "Conclusion professionnelle"
+          points: 5
+          description: "La conclusion montre une compréhension responsable de la posture offensive."
+
+  # ── Métadonnées de complétion (référence — non chargées en DB) ──────────────
+
+  moduleCompletion:
+    requiredItems:
+      - cyber-security-101-3-fr-t1
+      - cyber-security-101-3-fr-t2
+      - cyber-security-101-3-fr-t3
+      - cyber-security-101-3-fr-c1
+    completionCriteria:
+      - "L'élève peut distinguer sécurité offensive et sécurité défensive."
+      - "L'élève comprend l'importance de l'autorisation."
+      - "L'élève peut définir la surface d'attaque."
+      - "L'élève peut transformer une observation offensive en recommandation défensive."
+      - "L'élève a remis l'analyse des 5 scénarios."
+    unlocks:
+      - cyber-security-101-4-fr
+
+  teacherCorrectionGuide:
+    commonMisconceptions:
+      - misconception: "Penser comme un attaquant veut dire apprendre à attaquer n'importe quoi."
+        correction: "La posture offensive sert à mieux défendre, uniquement dans un cadre autorisé et contrôlé."
+      - misconception: "Une bonne intention suffit pour tester un système."
+        correction: "Il faut une autorisation claire, une portée définie et des règles professionnelles."
+      - misconception: "La sécurité offensive et la sécurité défensive sont opposées."
+        correction: "Elles sont complémentaires et visent toutes les deux à réduire les risques."
+      - misconception: "La surface d'attaque concerne seulement les sites web."
+        correction: "Elle peut inclure les comptes, appareils, services, permissions, réseaux et données exposées."
+    suggestedFeedbackForChallenge:
+      excellent: |
+        Très bonne analyse. Tu distingues clairement ce qu'un attaquant pourrait remarquer
+        et les actions défensives qu'un technicien devrait proposer. Les recommandations sont réalistes
+        et le ton est professionnel.
+      satisfactory: |
+        Bonne base. Les risques principaux sont identifiés, mais certaines recommandations pourraient être
+        plus précises ou mieux reliées au rôle d'un technicien en soutien informatique.
+      needsImprovement: |
+        L'analyse est trop générale ou trop orientée vers l'attaque. Reprends chaque scénario en séparant
+        clairement la vue attaquant, le risque et la réponse défensive recommandée.
+
+  metadata:
+    version: "1.0"
+    author: "Steeve Levesque / NEXUS"
+    createdFor: "Parcours Cyber Security 101"

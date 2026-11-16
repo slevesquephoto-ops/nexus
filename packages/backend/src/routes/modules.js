@@ -101,7 +101,7 @@ router.get('/:id/full', requireAuth, async (req, res) => {
             content: true,
             progress: {
               where: { userId },
-              select: { completed: true, score: true },
+              select: { completed: true, score: true, submittedAt: true },
             },
           },
         },
@@ -113,6 +113,7 @@ router.get('/:id/full', requireAuth, async (req, res) => {
       ...task,
       completed: progress[0]?.completed ?? false,
       score: progress[0]?.score ?? null,
+      submittedAt: progress[0]?.submittedAt ?? null,
     }));
 
     res.json({ ...mod, tasks });

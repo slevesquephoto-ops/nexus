@@ -1,0 +1,798 @@
+module:
+  id: start-your-journey-2
+  trackId: start-your-journey-fr
+  title: 'Mission défensive : le portail client compromis'
+  description: Analyser une attaque simulée contre Maple Tech Solutions, identifier les traces dans un tableau de bord SOC fictif, contenir l'incident et produire un rapport défensif.
+  order: 2
+  mascot: "blue-team-white-cap"
+  xpReward: 130
+  language: fr
+  estimatedDuration: 2h30 à 3h
+  level: beginner
+  summary: |-
+    Ce module est la première mission défensive contrôlée du parcours Start your journey.
+    L'élève joue le rôle d'un membre débutant de l'équipe blue team de Maple Tech Solutions.
+
+    Une alerte indique qu'une adresse IP suspecte a découvert plusieurs pages non liées publiquement,
+    puis a tenté d'accéder au portail client oublié. L'élève doit lire l'alerte, analyser les journaux,
+    identifier les indices d'une reconnaissance web, comprendre le rôle d'une référence client exposée,
+    utiliser une base fictive de renseignement sur la menace, choisir des mesures de containment et produire
+    un court rapport d'incident.
+
+    Cette mission reprend le même scénario que la mission offensive précédente, mais du point de vue défensif.
+    Elle montre que les gestes offensifs laissent des traces et qu'une équipe défensive doit savoir les lire,
+    les interpréter et agir avec méthode.
+  pedagogicalIntent: |-
+    Ce module doit faire comprendre aux élèves que la cybersécurité défensive ne consiste pas seulement à bloquer
+    rapidement quelque chose qui semble suspect. Une bonne réponse défensive demande d'observer, confirmer,
+    préserver les preuves, comprendre la portée, choisir une mesure de containment appropriée et documenter l'incident.
+
+    L'objectif est de relier directement la mission red team précédente à une réponse blue team. Les élèves ont vu
+    comment un attaquant autorisé pouvait découvrir /client-portal et utiliser une référence client exposée. Ils doivent
+    maintenant reconnaître les traces de ce comportement dans des alertes, des journaux web et une plateforme fictive
+    de renseignement sur la menace.
+
+    Il est recommandé d'insister sur la nuance suivante : dans un laboratoire, on peut simuler l'observation d'un attaquant
+    pour apprendre. Dans une vraie organisation, la décision de bloquer, isoler ou continuer l'observation dépend des procédures,
+    du niveau de risque, de la criticité des systèmes et de l'autorité responsable.
+  learningOutcomes:
+  - Expliquer le rôle d'une équipe blue team dans une organisation.
+  - Lire une alerte de sécurité simple dans un tableau de bord SOC simulé.
+  - Identifier une adresse IP suspecte, une page ciblée et une activité anormale.
+  - Analyser des journaux web simples pour reconstruire une séquence d'attaque.
+  - Reconnaître les indices d'une reconnaissance web dans des requêtes HTTP.
+  - Associer des comportements observés à un acteur fictif dans une base de renseignement sur la menace.
+  - Choisir des mesures de containment adaptées à un incident web simulé.
+  - Distinguer containment, correction et prévention.
+  - Produire un court rapport d'incident avec preuves, impact potentiel et recommandations.
+  prerequisites:
+  - Avoir complété Cyber Security 101.
+  - Avoir complété la mission offensive Start your journey 1.
+  - Comprendre la notion de cible autorisée et de portée.
+  - Comprendre les codes HTTP de base, dont 200, 403 et 404.
+  - Comprendre le rôle de dirb dans une reconnaissance web.
+  - Comprendre que /client-portal représente le portail client oublié de Maple Tech Solutions.
+  - Comprendre que MTS-CL-2048 est une référence client exposée publiquement dans le scénario.
+  - type: teacher_note
+    title: Intention pédagogique
+    content: |
+      Ce module doit être présenté comme le miroir défensif de la mission red team.
+      L'élève n'exécute pas dirb ici. Il analyse plutôt les traces qu'une activité semblable aurait laissées.
+
+      Questions de discussion suggérées :
+      - Quelles traces une reconnaissance web peut-elle laisser dans des journaux?
+      - Pourquoi une tentative réussie après plusieurs échecs est-elle importante?
+      - Quelle est la différence entre bloquer une attaque, contenir un incident et corriger la cause?
+      - Pourquoi le rapport d'incident est-il aussi important que l'action technique?
+  vocabulary:
+  - term: Blue team
+    fr: Équipe défensive
+    definition: Équipe qui surveille, détecte, analyse, contient et documente les incidents de sécurité.
+  - term: SOC
+    fr: Centre des opérations de sécurité
+    definition: Environnement où les alertes, journaux et événements de sécurité sont surveillés et analysés.
+  - term: Alerte
+    fr: Security alert
+    definition: Signal indiquant qu'une activité potentiellement suspecte ou dangereuse doit être analysée.
+  - term: Journal web
+    fr: Web log
+    definition: Enregistrement des requêtes envoyées à un serveur web, incluant souvent l'heure, l'adresse IP, la méthode, le chemin et le code HTTP.
+  - term: Indicateur
+    fr: Indicator
+    definition: Élément observable qui peut aider à reconnaître une activité suspecte, comme une adresse IP, un chemin visité ou une séquence de requêtes.
+  - term: Threat intelligence
+    fr: Renseignement sur la menace
+    definition: Information structurée sur des comportements, groupes, techniques ou indicateurs liés à des menaces.
+  - term: Containment
+    fr: Confinement
+    definition: Mesure temporaire visant à limiter l'impact d'un incident pendant l'analyse et la correction.
+  - term: Incident report
+    fr: Rapport d'incident
+    definition: Document qui résume les faits observés, l'impact potentiel, les actions prises et les recommandations.
+  safetyReminder: |-
+    Cette mission est défensive et simulée. L'élève ne doit pas attaquer de cible réelle, scanner un système externe
+    ou tenter de reproduire l'incident sur un site public.
+
+    Les outils et tableaux de bord présentés dans le site Maple Tech Solutions sont fictifs. Ils servent à apprendre
+    les étapes d'une analyse défensive : lire, comprendre, documenter, contenir et recommander.
+
+    Dans un contexte professionnel réel, toute action de containment doit respecter les procédures internes, préserver
+    les preuves et être communiquée aux personnes responsables.
+  tasks:
+  - id: start-your-journey-2-t1
+    type: task
+    title: Comprendre le rôle blue team
+    order: 1
+    xpReward: 10
+    objectives:
+    - Définir le rôle d'une équipe défensive.
+    - Distinguer détection, analyse, containment et correction.
+    - Comprendre pourquoi il faut éviter les réactions impulsives pendant une alerte.
+    sections:
+    - type: theory
+      title: De l'autre côté de l'incident
+      content: |
+        Dans la mission offensive précédente, tu as utilisé une reconnaissance web autorisée pour découvrir un portail
+        client oublié. Dans cette mission, tu changes de rôle. Tu fais maintenant partie de l'équipe défensive de Maple
+        Tech Solutions.
+
+        Ton objectif n'est pas d'attaquer. Ton objectif est de comprendre ce qui s'est passé à partir des traces disponibles :
+        alertes, journaux web, comportements connus et actions de containment.
+    - type: theory
+      title: Détecter, analyser, contenir, corriger
+      content: |
+        Une équipe blue team travaille souvent en plusieurs étapes.
+
+        Détecter signifie repérer une activité anormale ou suspecte.
+        Analyser signifie comprendre les faits, les indices et la portée de l'incident.
+        Contenir signifie limiter l'impact pendant que l'analyse et les corrections continuent.
+        Corriger signifie réparer la cause du problème pour éviter qu'il se reproduise.
+
+        Ces étapes ne sont pas toujours parfaitement séparées, mais elles aident à garder une méthode professionnelle.
+    - type: theory
+      title: Ne pas agir au hasard
+      content: |
+        Bloquer une adresse IP immédiatement peut parfois être nécessaire. Mais agir trop vite sans comprendre peut aussi
+        faire perdre des preuves, masquer l'origine du problème ou interrompre un service inutilement.
+
+        Dans un laboratoire, on peut observer l'activité simulée pour apprendre. Dans une vraie organisation, la décision
+        dépend du risque, des procédures, des systèmes touchés et de l'autorité responsable.
+    - type: command_table
+      commands:
+      - cmd: Détection
+        desc: Repérer une activité suspecte ou une alerte
+      - cmd: Analyse
+        desc: Comprendre ce qui s'est passé à partir des preuves
+      - cmd: Containment
+        desc: Limiter temporairement l'impact de l'incident
+      - cmd: Correction
+        desc: Réparer la cause du problème pour éviter une répétition
+      - cmd: Rapport
+        desc: Documenter les faits, les actions et les recommandations
+    - type: questions
+      items:
+      - id: t1-q1
+        type: qcm
+        question: Quel est le rôle principal d'une équipe blue team?
+        answers:
+        - text: Détecter, analyser, contenir et documenter les incidents de sécurité
+          correct: true
+        - text: Lancer des scans contre des sites publics sans mandat
+          correct: false
+        - text: Effacer tous les journaux pour simplifier l'analyse
+          correct: false
+        - text: Remplacer toutes les procédures par des décisions improvisées
+          correct: false
+      - id: t1-q2
+        type: qcm
+        question: Quelle action décrit le mieux le containment?
+        answers:
+        - text: Limiter temporairement l'impact d'un incident pendant l'analyse et la correction
+          correct: true
+        - text: Supprimer immédiatement le portail exposé sans analyser les journaux ni préserver les preuves
+          correct: false
+        - text: Corriger toutes les failles en profondeur avant d'avertir la direction
+          correct: false
+        - text: Attendre que l'incident se reproduise pour disposer de plus de preuves avant d'agir
+          correct: false
+
+      - id: t1-q3
+        type: qcm
+        question: Pourquoi faut-il éviter de réagir au hasard lors d'une alerte de sécurité?
+        answers:
+        - text: Pour préserver les preuves, comprendre la portée de l'incident et choisir une mesure appropriée.
+          correct: true
+        - text: Parce qu'agir rapidement sans analyse efface automatiquement la menace détectée.
+          correct: false
+        - text: Parce que les alertes critiques sont presque toujours des faux positifs qui se résolvent seuls.
+          correct: false
+        - text: Pour éviter d'alerter les attaquants que leur activité a été repérée.
+          correct: false
+  - id: start-your-journey-2-t2
+    type: task
+    title: Lire l'alerte SOC
+    order: 2
+    xpReward: 15
+    objectives:
+    - Lire une alerte de sécurité simulée.
+    - Identifier la sévérité, l'adresse IP source, la page ciblée et le type d'activité.
+    - Prioriser les éléments importants d'une alerte.
+    sections:
+    - type: theory
+      title: Tableau de bord SOC simulé
+      content: |
+        Maple Tech Solutions utilise un tableau de bord SOC fictif pour suivre les alertes de sécurité.
+        Ce tableau de bord n'est pas un vrai outil de production, mais il imite des informations qu'un analyste
+        pourrait consulter : sévérité, heure, source, cible, type d'activité et statut.
+
+        Dans cette mission, l'alerte principale concerne le portail client oublié.
+    - type: command_table
+      commands:
+      - cmd: Sévérité
+        desc: Niveau d'urgence ou de gravité de l'alerte
+      - cmd: Source IP
+        desc: Adresse IP associée à l'activité suspecte
+      - cmd: Page ciblée
+        desc: Page ou ressource touchée par l'activité
+      - cmd: Type d'activité
+        desc: Nature générale de ce qui semble se produire
+      - cmd: Statut
+        desc: État actuel de l'alerte ou de l'incident
+    - type: theory
+      title: Alerte principale
+      content: |
+        Dans le tableau de bord, l'alerte principale devrait ressembler à ceci :
+
+        - Titre : Activité suspecte sur le portail client
+        - Sévérité : Critique
+        - Source IP : 192.168.56.23
+        - Page ciblée : /client-portal/
+        - Type : Reconnaissance web suivie de tentatives d'accès
+        - Statut : En cours d'analyse
+
+        Ces informations ne suffisent pas à elles seules pour conclure. Elles servent à orienter l'enquête.
+    - type: questions
+      items:
+      - id: t2-q1
+        type: qcm
+        question: Pourquoi une alerte portant sur /client-portal/ est-elle plus préoccupante qu'une alerte sur /services.html?
+        answers:
+        - text: Parce que /client-portal/ est une page oubliée et non protégée qui donnait accès aux données clients via une référence exposée.
+          correct: true
+        - text: Parce que /services.html est entièrement chiffrée et ne peut jamais être compromise.
+          correct: false
+        - text: Parce que /client-portal/ est la page d'accueil principale du site Maple Tech Solutions.
+          correct: false
+        - text: Parce que les portails clients génèrent toujours plus de trafic que les pages de services.
+          correct: false
+
+      - id: t2-q2
+        type: qcm
+        question: À quoi sert l'adresse IP source dans une alerte SOC?
+        answers:
+        - text: À orienter l'investigation en identifiant d'où provient l'activité suspecte.
+          correct: true
+        - text: À prouver avec certitude l'identité légale de l'attaquant.
+          correct: false
+        - text: À corriger automatiquement la vulnérabilité exploitée sur le serveur.
+          correct: false
+        - text: À chiffrer les communications pour bloquer de nouvelles requêtes.
+          correct: false
+
+      - id: t2-q3
+        type: qcm
+        question: Pourquoi une alerte de sévérité critique nécessite-t-elle une analyse avant d'agir?
+        answers:
+        - text: Parce que des actions hâtives peuvent détruire des preuves et masquer la cause réelle du problème.
+          correct: true
+        - text: Parce qu'une sévérité critique signifie que l'incident est déjà résolu automatiquement.
+          correct: false
+        - text: Parce qu'une sévérité critique indique presque toujours un faux positif à ignorer.
+          correct: false
+        - text: Parce que les alertes critiques doivent attendre validation de l'équipe rouge avant tout traitement.
+          correct: false
+
+  - id: start-your-journey-2-t3
+    type: task
+    title: Analyser les journaux web
+    order: 3
+    xpReward: 20
+    objectives:
+    - Lire une séquence de journaux web simples.
+    - Identifier les indices de reconnaissance web.
+    - Repérer les tentatives d'accès échouées et réussies.
+    - Reconstruire une chronologie courte de l'incident.
+    sections:
+    - type: theory
+      title: Les journaux racontent une partie de l'histoire
+      content: |
+        Un journal web enregistre les requêtes reçues par un serveur. Il peut contenir l'heure, l'adresse IP source,
+        la méthode HTTP, le chemin demandé et le code de réponse.
+
+        Un seul événement peut être banal. Mais une séquence d'événements peut révéler un comportement plus intéressant.
+        Par exemple, plusieurs requêtes rapides vers des pages non liées publiquement peuvent indiquer une reconnaissance web.
+    - type: command_table
+      commands:
+      - cmd: GET
+        desc: Méthode souvent utilisée pour demander une page ou une ressource
+      - cmd: POST
+        desc: Méthode souvent utilisée pour envoyer des données à un formulaire
+      - cmd: 200
+        desc: Ressource accessible ou action acceptée
+      - cmd: 403
+        desc: Accès refusé ou tentative rejetée
+      - cmd: 404
+        desc: Ressource non trouvée
+    - type: theory
+      title: Séquence simulée à analyser
+      content: |-
+        Observe la séquence suivante dans les journaux web simulés :
+
+        09:40:12  192.168.56.23  GET   /                 200
+        09:40:18  192.168.56.23  GET   /services.html     200
+        09:40:31  192.168.56.23  GET   /backup/           200
+        09:40:36  192.168.56.23  GET   /dev-notes/        200
+        09:40:41  192.168.56.23  GET   /client-portal/    200
+        09:41:02  192.168.56.23  POST  /client-portal/    403
+        09:41:18  192.168.56.23  POST  /client-portal/    403
+        09:41:29  192.168.56.23  POST  /client-portal/    200
+
+        La partie importante n'est pas seulement la dernière ligne. Il faut observer la progression : consultation du site,
+        découverte de chemins cachés, accès au portail, tentatives échouées, puis tentative réussie.
+    - type: theory
+      title: Interprétation prudente
+      content: |
+        On peut dire que cette séquence ressemble à une reconnaissance web suivie d'une tentative d'accès au portail client.
+        On ne doit pas inventer des faits invisibles dans les journaux. Par exemple, les journaux ne prouvent pas toujours
+        quel outil exact a été utilisé, mais ils montrent un comportement compatible avec une découverte de répertoires.
+    - type: questions
+      items:
+      - id: t3-q1
+        type: qcm
+        question: Quel indice suggère une reconnaissance web?
+        answers:
+        - text: Plusieurs requêtes vers des chemins non liés publiquement comme /backup/, /dev-notes/ et /client-portal/
+          correct: true
+        - text: Une seule visite normale de la page d'accueil
+          correct: false
+        - text: Une absence complète de requêtes HTTP
+          correct: false
+        - text: Une impression papier du rapport d'incident
+          correct: false
+      - id: t3-q2
+        type: qcm
+        question: Quelle méthode HTTP est utilisée lors des tentatives d'accès au portail client?
+        answers:
+        - text: POST
+          correct: true
+        - text: GET uniquement
+          correct: false
+        - text: DELETE
+          correct: false
+        - text: TRACE
+          correct: false
+      - id: t3-q3
+        type: qcm
+        question: Quel code HTTP indique que la dernière tentative d'accès au portail a réussi?
+        answers:
+        - text: 200
+          correct: true
+        - text: 403
+          correct: false
+        - text: 404
+          correct: false
+        - text: 500
+          correct: false
+      - id: t3-q4
+        type: qcm
+        question: Dans une séquence de journaux, pourquoi est-il important que les requêtes suspectes partagent la même adresse IP source?
+        answers:
+        - text: Cela suggère que les requêtes proviennent d'une même source, ce qui aide à reconstruire une séquence d'activité cohérente.
+          correct: true
+        - text: Cela prouve que l'attaquant n'a utilisé qu'un seul appareil et qu'il est donc facile à identifier.
+          correct: false
+        - text: Cela garantit qu'aucun autre attaquant n'a participé à l'incident.
+          correct: false
+        - text: Cela confirme automatiquement l'identité réelle de la personne derrière les requêtes.
+          correct: false
+  - id: start-your-journey-2-t4
+    type: task
+    title: Relier les indices à la menace
+    order: 4
+    xpReward: 15
+    objectives:
+    - Comprendre le rôle du renseignement sur la menace.
+    - Utiliser une fiche d'acteur fictif pour contextualiser une activité.
+    - Associer des comportements observés à un profil connu.
+    sections:
+    - type: theory
+      title: Renseignement sur la menace
+      content: |
+        Le renseignement sur la menace sert à regrouper des informations sur des comportements, des techniques,
+        des indicateurs et parfois des groupes d'attaquants. Dans cette mission, la plateforme est fictive,
+        mais l'idée est réaliste : une équipe défensive utilise le contexte pour mieux comprendre ce qu'elle observe.
+
+        Attention : associer une activité à un profil ne veut pas dire qu'on connaît avec certitude l'identité réelle
+        d'un attaquant. Dans ce laboratoire, le profil sert surtout à reconnaître des comportements.
+    - type: theory
+      title: Profil fictif NorthTrail
+      content: |-
+        Dans la plateforme de renseignement simulée, recherche ou consulte le profil NorthTrail.
+
+        Comportements connus :
+        - découverte de répertoires web;
+        - consultation de dossiers de sauvegarde exposés;
+        - recherche de notes de développement oubliées;
+        - tentatives sur des portails clients;
+        - abus de références client visibles publiquement.
+
+        Indicateurs fréquents :
+        - requêtes rapides vers /backup/, /dev-notes/, /uploads/ et /client-portal/;
+        - plusieurs tentatives POST vers un portail;
+        - accès réussi après quelques échecs.
+    - type: command_table
+      commands:
+      - cmd: NorthTrail
+        desc: Acteur fictif utilisé dans la mission
+      - cmd: Comportement connu
+        desc: Type d'activité déjà associé au profil
+      - cmd: Indicateur
+        desc: Élément observable qui aide à reconnaître une activité
+      - cmd: Attribution prudente
+        desc: Association possible, sans prétendre connaître l'identité réelle d'un attaquant
+    - type: questions
+      items:
+      - id: t4-q1
+        type: qcm
+        question: Quel acteur fictif est associé aux comportements observés dans cette mission?
+        answers:
+        - text: NorthTrail
+          correct: true
+        - text: ShadowBrokers49
+          correct: false
+        - text: RedPineGroup
+          correct: false
+        - text: EastCoast Recon
+          correct: false
+
+      - id: t4-q2
+        type: qcm
+        question: Quel comportement observé correspond au profil NorthTrail?
+        answers:
+        - text: Découverte de répertoires et tentatives sur un portail client
+          correct: true
+        - text: Installation officielle d'une mise à jour Apache2
+          correct: false
+        - text: Impression d'une facture locale
+          correct: false
+        - text: Création d'un nouveau compte enseignant
+          correct: false
+      - id: t4-q3
+        type: qcm
+        question: Pourquoi doit-on rester prudent lorsqu'on associe une activité observée à un profil de menace?
+        answers:
+        - text: Parce que les indicateurs montrent des comportements compatibles, mais ne prouvent pas l'identité réelle de l'attaquant.
+          correct: true
+        - text: Parce que les profils de menace sont toujours incorrects et n'ont aucune valeur dans une analyse réelle.
+          correct: false
+        - text: Parce qu'associer un profil à une activité suffit à identifier légalement un responsable.
+          correct: false
+        - text: Parce que les comportements observés confirment toujours sans ambiguïté l'acteur fictif associé.
+          correct: false
+  - id: start-your-journey-2-t5
+    type: task
+    title: Choisir les mesures de containment
+    order: 5
+    xpReward: 20
+    objectives:
+    - Choisir des mesures de containment adaptées au scénario.
+    - Préserver les preuves avant d'agir.
+    - Distinguer une mesure temporaire d'une correction permanente.
+    - Obtenir le code de validation défensif.
+    sections:
+    - type: theory
+      title: Contenir sans effacer les preuves
+      content: |
+        Après avoir confirmé une activité suspecte, l'équipe défensive doit limiter l'impact. Cependant, elle doit aussi
+        préserver les preuves utiles à l'analyse.
+
+        Dans ce scénario, les mesures raisonnables sont de préserver les journaux, bloquer temporairement l'adresse IP suspecte,
+        désactiver temporairement le portail client exposé et aviser la personne responsable.
+    - type: theory
+      title: Mesures temporaires et corrections permanentes
+      content: |
+        Bloquer une adresse IP ou désactiver temporairement un portail peut contenir l'incident, mais cela ne corrige pas
+        nécessairement la cause.
+
+        Les corrections permanentes pourraient inclure une vraie authentification, le retrait des références sensibles
+        de la page publique, la suppression des pages oubliées, une meilleure configuration du serveur et une surveillance
+        des journaux.
+    - type: command_table
+      commands:
+      - cmd: Préserver les journaux
+        desc: Garder les preuves nécessaires à l'analyse et au rapport
+      - cmd: Bloquer temporairement 192.168.56.23
+        desc: Limiter l'activité de la source suspecte dans le scénario
+      - cmd: Désactiver temporairement /client-portal/
+        desc: Réduire le risque d'accès pendant la correction
+      - cmd: Aviser la personne responsable
+        desc: Escalader l'incident selon la procédure
+      - cmd: Corriger l'authentification
+        desc: Mesure permanente à planifier avant remise en ligne
+    - type: theory
+      title: Code de validation
+      content: |
+        Dans la console de containment simulée, sélectionne les mesures appropriées. Si les bonnes actions sont choisies,
+        la plateforme affiche le code de validation défensif :
+
+        MTS-BLUE-2048
+    - type: questions
+      items:
+      - id: t5-q1
+        type: qcm
+        question: Quelle combinaison d'actions est la plus appropriée dans ce scénario?
+        answers:
+        - text: Préserver les journaux, bloquer temporairement l'IP suspecte, désactiver temporairement le portail et aviser la personne responsable
+          correct: true
+        - text: Supprimer immédiatement tout le site et effacer les journaux
+          correct: false
+        - text: Ignorer l'alerte puisque le site fonctionne encore
+          correct: false
+        - text: Publier les détails complets de l'incident sur la page d'accueil
+          correct: false
+      - id: t5-q2
+        type: qcm
+        question: Pourquoi bloquer l'adresse IP ne suffit-il pas comme correction permanente?
+        answers:
+        - text: Parce que la faiblesse du portail et de la référence exposée existe encore
+          correct: true
+        - text: Parce qu'un blocage IP installe automatiquement une vraie authentification
+          correct: false
+        - text: Parce que les journaux deviennent inutiles après le blocage
+          correct: false
+        - text: Parce que le portail devient plus sécuritaire si personne ne le documente
+          correct: false
+      - id: t5-q3
+        type: qcm
+        question: Dans cette simulation, qu'est-ce qu'obtenir le code de validation défensif confirme?
+        answers:
+        - text: Que les bonnes mesures de containment ont été sélectionnées dans la console simulée.
+          correct: true
+        - text: Que l'incident est définitivement résolu et qu'aucune autre action corrective n'est nécessaire.
+          correct: false
+        - text: Que l'adresse IP suspecte a été automatiquement bloquée de façon permanente par Apache.
+          correct: false
+        - text: Que le portail client a été protégé par une vraie authentification sécurisée.
+          correct: false
+  - id: start-your-journey-2-c1
+    type: challenge
+    title: "Challenge : rapport d'incident Maple Tech"
+    order: 6
+    xpReward: 50
+    objectives:
+    - Documenter une attaque web simulée du point de vue défensif.
+    - Identifier les preuves importantes dans une alerte et des journaux web.
+    - Expliquer l'impact potentiel de l'incident.
+    - Décrire les mesures de containment choisies.
+    - Proposer des recommandations pour éviter que l'incident se reproduise.
+    sections:
+    - type: theory
+      title: Mission
+      content: |-
+        Maple Tech Solutions a détecté une activité suspecte sur son portail client. Ton mandat est de produire
+        un court rapport d'incident à partir des informations disponibles dans le tableau de bord SOC simulé.
+
+        Tu dois expliquer ce qui s'est passé, quelles preuves appuient ton analyse, quelles mesures de containment
+        ont été prises et quelles corrections devraient être recommandées.
+    - type: theory
+      title: Portée du défi
+      content: |-
+        Ce défi est strictement défensif et simulé.
+
+        Tu dois utiliser les informations disponibles dans les pages SOC fictives de Maple Tech Solutions.
+        Tu ne dois pas scanner de site externe, attaquer un système réel ou inventer des preuves qui ne sont pas
+        présentes dans le scénario.
+    - type: theory
+      title: Étapes obligatoires
+      content: |-
+        Tu dois compléter les étapes suivantes :
+
+        1. Ouvrir le tableau de bord SOC simulé.
+        2. Lire l'alerte principale.
+        3. Identifier la page ciblée.
+        4. Identifier l'adresse IP suspecte.
+        5. Consulter les journaux web.
+        6. Repérer les indices de reconnaissance web.
+        7. Identifier la tentative d'accès réussie.
+        8. Consulter le profil fictif NorthTrail.
+        9. Choisir les mesures de containment appropriées.
+        10. Récupérer le code de validation défensif.
+        11. Produire un rapport d'incident court et structuré.
+    - type: theory
+      title: Structure obligatoire du rapport
+      content: |-
+        Ton rapport doit contenir les sections suivantes :
+
+        1. Titre de l'incident
+        2. Résumé court de l'incident
+        3. Page ciblée
+        4. Adresse IP suspecte
+        5. Preuves observées dans les journaux
+        6. Référence client utilisée
+        7. Profil de menace associé
+        8. Impact potentiel
+        9. Mesures de containment
+        10. Recommandations
+        11. Code de validation
+        12. Conclusion
+    - type: theory
+      title: Recommandations possibles
+      content: |-
+        Tes recommandations doivent être défensives, réalistes et reliées à l'incident. Par exemple :
+
+        - protéger /client-portal/ avec une vraie authentification;
+        - retirer la référence client MTS-CL-2048 de la page publique;
+        - retirer ou protéger les dossiers /backup/, /dev-notes/ et /uploads/;
+        - surveiller les journaux web pour détecter les scans de répertoires;
+        - mettre en place des alertes sur plusieurs échecs suivis d'un succès;
+        - conserver les journaux assez longtemps pour enquêter;
+        - documenter les procédures de réponse aux incidents;
+        - tester les corrections avant de remettre le portail en ligne.
+    - type: theory
+      title: "Connexion avec ta mission offensive"
+      content: |-
+        Dans ta mission Start your journey 1, tu as joué le rôle d'un attaquant autorisé. Tu peux maintenant regarder ce que tu as fait du point de vue d'un analyste défensif.
+
+        Dans la conclusion de ton rapport d'incident, réponds brièvement à cette question :
+
+        **En te basant sur ta mission offensive (SYJ1), nomme deux traces que tu as laissées et qu'un analyste SOC aurait pu détecter dans les journaux web.**
+
+        Cette réflexion n'a pas de mauvaise réponse — l'objectif est de faire le lien entre ce qu'un attaquant fait et ce qu'un défenseur peut voir.
+
+    - type: theory
+      title: Conseils pour réussir
+      content: |-
+        Ton rapport doit être précis et défensif. Il ne doit pas seulement dire qu'une attaque a eu lieu.
+        Il doit montrer comment tu le sais.
+
+        Avant de remettre ton travail, vérifie que :
+
+        - tu as identifié la bonne page ciblée;
+        - tu as identifié la bonne adresse IP suspecte;
+        - tu as cité au moins trois preuves tirées des journaux;
+        - tu as expliqué pourquoi la dernière tentative semble avoir réussi;
+        - tu as fourni le code de validation;
+        - tes mesures de containment sont raisonnables;
+        - tes recommandations corrigent la cause du problème.
+    expectedDeliverables:
+    - Un rapport d'incident en français.
+    - Une réflexion dans la conclusion reliant deux traces laissées lors de SYJ1 à ce que le SOC aurait pu détecter.
+    - Une capture d'écran de l'alerte principale.
+    - Une capture d'écran des journaux web ou des lignes importantes.
+    - Une capture d'écran du profil fictif NorthTrail ou des comportements associés.
+    - Une capture d'écran ou une note montrant les mesures de containment choisies.
+    - Le code de validation défensif.
+    - Une explication courte de l'impact potentiel.
+    - Au moins trois recommandations défensives.
+    successCriteria:
+    - La page ciblée est correctement identifiée.
+    - L'adresse IP suspecte est correctement identifiée.
+    - Les preuves sont pertinentes et lisibles.
+    - L'élève reconnaît une séquence de reconnaissance web suivie d'un accès réussi.
+    - La référence MTS-CL-2048 est reliée au scénario.
+    - Le profil NorthTrail est correctement associé aux comportements observés.
+    - Le code de validation MTS-BLUE-2048 est fourni.
+    - Les mesures de containment sont proportionnées et professionnelles.
+    - Les recommandations sont réalistes et corrigent la cause de l'incident.
+    suggestedTableColumns:
+    - Élément observé
+    - Preuve
+    - Interprétation prudente
+    - Impact potentiel
+    - Action ou recommandation
+    gradingRubric:
+    - criterion: Identification de l'incident
+      points: 10
+      description: L'élève identifie correctement la page ciblée, l'adresse IP suspecte et le type d'activité.
+    - criterion: Analyse des journaux
+      points: 15
+      description: L'élève utilise les journaux pour reconstruire la séquence de reconnaissance et d'accès.
+    - criterion: Renseignement sur la menace
+      points: 10
+      description: L'élève associe correctement NorthTrail aux comportements observés sans surinterpréter les preuves.
+    - criterion: Containment
+      points: 10
+      description: L'élève choisit des mesures de containment raisonnables et préserve les preuves.
+    - criterion: Code de validation
+      points: 5
+      description: L'élève fournit le bon code de validation défensif.
+    - criterion: Recommandations défensives
+      points: 10
+      description: L'élève propose des recommandations réalistes pour réduire le risque.
+    - criterion: Connexion offensive/défensive
+      points: 5
+      description: "L'élève identifie deux traces de sa mission SYJ1 visibles du côté défensif, faisant le lien entre les deux missions."
+    - criterion: Clarté du rapport
+      points: 5
+      description: Le rapport est structuré, clair et professionnel.
+  moduleCompletion:
+    requiredItems:
+    - start-your-journey-2-t1
+    - start-your-journey-2-t2
+    - start-your-journey-2-t3
+    - start-your-journey-2-t4
+    - start-your-journey-2-t5
+    - start-your-journey-2-c1
+    completionCriteria:
+    - L'élève comprend le rôle d'une équipe blue team.
+    - L'élève peut lire une alerte SOC simple.
+    - L'élève peut identifier une page ciblée et une adresse IP suspecte.
+    - L'élève peut analyser une séquence de journaux web.
+    - L'élève reconnaît les indices d'une reconnaissance web.
+    - L'élève associe les comportements observés au profil fictif NorthTrail.
+    - L'élève choisit des mesures de containment raisonnables.
+    - L'élève récupère le code de validation défensif.
+    - L'élève remet un rapport d'incident avec preuves, impact et recommandations.
+    unlocks:
+    - offensive-security-fr
+    - defensive-security-fr
+  teacherCorrectionGuide:
+    expectedAnswers:
+      note: "Ces éléments sont les réponses attendues — ne pas partager avec les élèves avant la mission."
+      pageCiblee: /client-portal/
+      ipSuspecte: "192.168.56.23"
+      referenceClient: MTS-CL-2048
+      comportement: "Reconnaissance web suivie de tentatives d'accès au portail client"
+      profilFictif: NorthTrail
+      codeValidation: MTS-BLUE-2048
+    commonMisconceptions:
+    - misconception: Une alerte critique signifie qu'il faut tout supprimer immédiatement.
+      correction: Il faut confirmer, préserver les preuves, contenir l'incident et suivre une procédure.
+    - misconception: Bloquer une IP corrige complètement l'incident.
+      correction: Le blocage peut contenir l'activité, mais il ne corrige pas le portail mal protégé ni l'information exposée.
+    - misconception: Un code HTTP 200 prouve toujours qu'une attaque complète a réussi.
+      correction: Un code 200 indique une réponse réussie, mais il faut interpréter le contexte et les autres preuves.
+    - misconception: Le renseignement sur la menace donne toujours l'identité réelle d'un attaquant.
+      correction: Il aide surtout à reconnaître des comportements et des indicateurs. L'attribution doit rester prudente.
+    - misconception: Les journaux sont seulement utiles après un incident majeur.
+      correction: Les journaux sont essentiels pour détecter, comprendre et documenter même un incident limité.
+    - misconception: Une recommandation défensive doit être compliquée pour être professionnelle.
+      correction: Une bonne recommandation peut être simple si elle corrige réellement la cause du risque.
+    suggestedFeedbackForChallenge:
+      excellent: Très bon rapport d'incident. Les preuves sont bien utilisées, la séquence d'attaque est claire, le containment est raisonnable et les recommandations corrigent les causes principales du problème.
+      satisfactory: Bon travail. L'incident est identifié et les éléments principaux sont présents. Pour améliorer le rapport, ajoute davantage de liens entre les journaux, la référence client exposée et les mesures de containment.
+      needsImprovement: Le rapport est incomplet ou trop vague. Reprends la structure demandée, identifie la page ciblée, l'adresse IP suspecte, les preuves dans les journaux, le code de validation et les recommandations défensives.
+  metadata:
+    version: '1.0'
+    author: Steeve Levesque / NEXUS
+    createdFor: Parcours Start your journey
+    notes: 'Première version de la mission défensive blue team. Elle complète la mission offensive du portail client oublié de Maple Tech Solutions.'
+    implementationSummaryForClaudeCode: |-
+      Résumé des éléments à implémenter dans le site fictif Maple Tech Solutions pour cette mission défensive.
+
+      Créer une section SOC simulée entièrement statique en HTML, CSS et JavaScript vanilla. Ne pas utiliser React,
+      Node.js, backend, base de données ou API réelle. Les pages doivent fonctionner sous Apache2 dans /var/www/html/.
+
+      Pages ou chemins souhaités :
+      - /soc/ ou /soc/index.html : tableau de bord SOC avec l'alerte principale.
+      - /soc/logs.html : visionneuse de journaux web simulés.
+      - /soc/threat-intel.html : fiche ou recherche du profil fictif NorthTrail.
+      - /soc/containment.html : console de containment simulée avec choix d'actions.
+      - /soc/report.html : page de soutien au rapport d'incident ou résumé des champs attendus.
+
+      Données clés à afficher :
+      - alerte : Activité suspecte sur le portail client.
+      - sévérité : Critique.
+      - source IP : 192.168.56.23.
+      - page ciblée : /client-portal/.
+      - type : reconnaissance web suivie de tentatives d'accès.
+      - référence utilisée dans le scénario : MTS-CL-2048.
+      - acteur fictif : NorthTrail.
+      - code de validation final : MTS-BLUE-2048.
+
+      Journaux web simulés à inclure :
+      - 09:40:12  192.168.56.23  GET   /                 200
+      - 09:40:18  192.168.56.23  GET   /services.html     200
+      - 09:40:31  192.168.56.23  GET   /backup/           200
+      - 09:40:36  192.168.56.23  GET   /dev-notes/        200
+      - 09:40:41  192.168.56.23  GET   /client-portal/    200
+      - 09:41:02  192.168.56.23  POST  /client-portal/    403
+      - 09:41:18  192.168.56.23  POST  /client-portal/    403
+      - 09:41:29  192.168.56.23  POST  /client-portal/    200
+
+      Profil NorthTrail à simuler :
+      - découverte de répertoires web;
+      - consultation de dossiers de sauvegarde exposés;
+      - recherche de notes de développement oubliées;
+      - tentatives sur des portails clients;
+      - abus de références client visibles publiquement;
+      - indicateurs : requêtes rapides vers /backup/, /dev-notes/, /uploads/ et /client-portal/, puis plusieurs POST vers le portail.
+
+      Console de containment :
+      - proposer plusieurs actions, dont certaines bonnes et certaines mauvaises;
+      - bonnes actions : préserver les journaux, bloquer temporairement 192.168.56.23, désactiver temporairement /client-portal/, aviser la personne responsable;
+      - mauvaises actions possibles : effacer les journaux, supprimer tout le site, ignorer l'alerte, publier les détails de l'incident;
+      - afficher MTS-BLUE-2048 seulement si les bonnes actions sont sélectionnées.
+
+      Le style doit rester cohérent avec Maple Tech Solutions : professionnel, crédible, simple, responsive,
+      avec une ambiance de tableau de bord de sécurité débutant. Les outils doivent être clairement fictifs mais réalistes.

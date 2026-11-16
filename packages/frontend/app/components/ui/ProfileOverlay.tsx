@@ -9,20 +9,23 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 interface ProfileOverlayProps {
   user: { username: string; xp: number; level: number; avatarId?: string | null }
   onClose: () => void
+  tasksCompleted?: number
+  showProfileLink?: boolean
 }
 
 function xpForLevel(level: number) { return level * 200 }
 
-export default function ProfileOverlay({ user, onClose }: ProfileOverlayProps) {
+export default function ProfileOverlay({ user, onClose, tasksCompleted: tasksCompletedProp, showProfileLink = true }: ProfileOverlayProps) {
   const router = useRouter()
-  const [tasksCompleted, setTasksCompleted] = useState<number | null>(null)
+  const [tasksCompleted, setTasksCompleted] = useState<number | null>(tasksCompletedProp ?? null)
 
   useEffect(() => {
+    if (tasksCompletedProp !== undefined) return
     fetch(`${API_URL}/api/users/me/stats`, { credentials: 'include' })
       .then(r => r.json())
       .then(data => setTasksCompleted(data.tasksCompleted ?? 0))
       .catch(() => {})
-  }, [])
+  }, [tasksCompletedProp])
 
   const needed  = xpForLevel(user.level)
   const xpInLvl = user.xp % needed
@@ -85,12 +88,14 @@ export default function ProfileOverlay({ user, onClose }: ProfileOverlayProps) {
           </div>
         </div>
 
-        <button
-          onClick={() => { router.push('/profile'); onClose() }}
-          className="w-full mt-2 px-4 py-2.5 rounded-xl border border-nx-border text-nx-text-dim hover:border-nx-yellow hover:text-nx-yellow transition-all duration-200 text-sm font-semibold"
-        >
-          Voir mon profil →
-        </button>
+        {showProfileLink && (
+          <button
+            onClick={() => { router.push('/profile'); onClose() }}
+            className="w-full mt-2 px-4 py-2.5 rounded-xl border border-nx-border text-nx-text-dim hover:border-nx-yellow hover:text-nx-yellow transition-all duration-200 text-sm font-semibold"
+          >
+            Voir mon profil →
+          </button>
+        )}
       </div>
     </div>
   )

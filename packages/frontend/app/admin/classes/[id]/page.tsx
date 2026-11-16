@@ -12,11 +12,11 @@ interface ModuleSummary { id: string; title: string; taskCount: number }
 interface StudentProgress { moduleId: string; completedTasks: number; totalTasks: number; pct: number }
 interface Student { id: string; username: string; xp: number; progress: StudentProgress[] }
 interface ClasseDetail {
-  classe: { id: string; name: string; inviteCode: string; parcours: { id: string; title: string } }
+  classe: { id: string; name: string; inviteCode: string; parcours: { id: string; title: string }[] }
   modules: ModuleSummary[]
   students: Student[]
 }
-interface ChallengeStudent { userId: string; username: string; status: 'not_started' | 'passed' | 'failed'; score: number | null }
+interface ChallengeStudent { userId: string; username: string; status: 'submitted' | 'passed' | 'failed'; score: number | null; submittedAt: string | null; response: string | null }
 interface Challenge { id: string; title: string; moduleTitle: string; xpReward: number; students: ChallengeStudent[] }
 
 function PctCell({ pct }: { pct: number }) {
@@ -31,7 +31,7 @@ function PctCell({ pct }: { pct: number }) {
 function StatusBadge({ status, score }: { status: ChallengeStudent['status']; score: number | null }) {
   if (status === 'passed') return <span className="text-green-400 text-xs font-medium">✓ réussi{score !== null ? ` (${score}/100)` : ''}</span>
   if (status === 'failed') return <span className="text-red-400 text-xs font-medium">✗ échoué{score !== null ? ` (${score}/100)` : ''}</span>
-  return <span className="text-nx-gray text-xs">● non démarré</span>
+  return <span className="text-nx-yellow text-xs font-medium">⏳ en attente</span>
 }
 
 export default function ClassProgressPage() {
@@ -41,8 +41,6 @@ export default function ClassProgressPage() {
   const [data, setData] = useState<ClasseDetail | null>(null)
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [loading, setLoading] = useState(true)
-  const [copiedCode, setCopiedCode] = useState(false)
-
   // XP modal state
   const [xpModal, setXpModal] = useState<{ userId: string; username: string } | null>(null)
   const [xpAmount, setXpAmount] = useState('')
@@ -52,16 +50,14 @@ export default function ClassProgressPage() {
   const [xpError, setXpError] = useState('')
 
   // Grade modal state
-  const [gradeModal, setGradeModal] = useState<{ taskId: string; taskTitle: string; userId: string; username: string } | null>(null)
+  const [gradeModal, setGradeModal] = useState<{ taskId: string; taskTitle: string; userId: string; username: string; response: string | null } | null>(null)
   const [gradeScore, setGradeScore] = useState('100')
   const [gradePassed, setGradePassed] = useState(true)
   const [gradeSubmitting, setGradeSubmitting] = useState(false)
   const [gradeError, setGradeError] = useState('')
+  const [resetConfirm, setResetConfirm] = useState(false)
+  const [resetSubmitting, setResetSubmitting] = useState(false)
 
-  // Add member state
-  const [addUsername, setAddUsername] = useState('')
-  const [addingUser, setAddingUser] = useState(false)
-  const [addError, setAddError] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
 
   const loadData = useCallback(() => {
@@ -81,13 +77,6 @@ export default function ClassProgressPage() {
   }, [id, router])
 
   useEffect(() => { loadData() }, [loadData])
-
-  function copyCode() {
-    if (!data) return
-    navigator.clipboard.writeText(data.classe.inviteCode)
-    setCopiedCode(true)
-    setTimeout(() => setCopiedCode(false), 1500)
-  }
 
   function exportCSV() {
     if (!data) return
@@ -136,11 +125,27 @@ export default function ClassProgressPage() {
     }
   }
 
-  function openGradeModal(taskId: string, taskTitle: string, userId: string, username: string) {
-    setGradeModal({ taskId, taskTitle, userId, username })
+  function openGradeModal(taskId: string, taskTitle: string, userId: string, username: string, response: string | null) {
+    setGradeModal({ taskId, taskTitle, userId, username, response })
     setGradeScore('100')
     setGradePassed(true)
     setGradeError('')
+    setResetConfirm(false)
+  }
+
+  async function handleReset() {
+    if (!gradeModal) return
+    setResetSubmitting(true)
+    try {
+      await fetch(`${API_URL}/api/admin/tasks/${gradeModal.taskId}/progress/${gradeModal.userId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      setGradeModal(null)
+      loadData()
+    } finally {
+      setResetSubmitting(false)
+    }
   }
 
   async function handleGradeSubmit(e: React.FormEvent) {
@@ -163,27 +168,6 @@ export default function ClassProgressPage() {
       loadData()
     } finally {
       setGradeSubmitting(false)
-    }
-  }
-
-  async function handleAdd(e: React.FormEvent) {
-    e.preventDefault()
-    if (!addUsername.trim()) return
-    setAddingUser(true)
-    setAddError('')
-    try {
-      const res = await fetch(`${API_URL}/api/admin/classes/${id}/students`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ username: addUsername.trim() }),
-      })
-      const body = await res.json()
-      if (!res.ok) { setAddError(body.error ?? 'Erreur'); return }
-      setAddUsername('')
-      loadData()
-    } finally {
-      setAddingUser(false)
     }
   }
 
@@ -252,11 +236,40 @@ export default function ClassProgressPage() {
       {/* Grade Modal */}
       {gradeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4 shadow-glow-cyan-sm">
+          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-md mx-4 space-y-4 shadow-glow-cyan-sm">
             <div>
               <h2 className="text-nx-text font-bold tracking-wide">Correction</h2>
               <p className="text-nx-gray text-sm mt-0.5">{gradeModal.taskTitle} · {gradeModal.username}</p>
             </div>
+            {gradeModal.response && (() => {
+              try {
+                const parsed = JSON.parse(gradeModal.response)
+                const validationEntries = Object.entries(parsed.validations ?? {}) as [string, { question: string; answer: string }][]
+                const questionEntries = Object.entries(parsed.questionAnswers ?? {}) as [string, { question: string; answer: string }][]
+                const allAnswers = [...validationEntries, ...questionEntries].filter(([, v]) => v && v.answer && v.answer !== '✓')
+                return (
+                  <div className="bg-nx-bg rounded-lg border border-nx-border p-3 space-y-3 text-sm max-h-64 overflow-y-auto">
+                    {parsed.note && (
+                      <div>
+                        <p className="text-nx-gray text-xs uppercase tracking-widest mb-1">Note de l&apos;élève</p>
+                        <p className="text-white whitespace-pre-wrap text-sm">{parsed.note}</p>
+                      </div>
+                    )}
+                    {allAnswers.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-nx-gray text-xs uppercase tracking-widest">Réponses</p>
+                        {allAnswers.map(([k, v]) => (
+                          <div key={k} className="space-y-0.5">
+                            <p className="text-nx-gray text-xs">{v.question}</p>
+                            <p className="text-nx-cyan font-mono text-xs bg-nx-surface px-2 py-1 rounded">{v.answer}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              } catch { return null }
+            })()}
             <form onSubmit={handleGradeSubmit} className="space-y-3">
               <div>
                 <label className="text-nx-gray text-xs block mb-1">Score / 100</label>
@@ -280,6 +293,27 @@ export default function ClassProgressPage() {
                 </button>
               </div>
             </form>
+            <div className="border-t border-nx-border pt-3">
+              {!resetConfirm ? (
+                <button
+                  type="button"
+                  onClick={() => setResetConfirm(true)}
+                  className="w-full py-2 text-xs text-nx-gray hover:text-red-400 transition-colors tracking-wide"
+                >
+                  Réinitialiser le défi (permettre une nouvelle soumission)
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs text-red-400 text-center">La soumission sera supprimée. L&apos;élève pourra soumettre à nouveau.</p>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setResetConfirm(false)} className="flex-1 py-2 border border-nx-border text-nx-gray rounded-lg text-xs hover:text-white transition-colors">Annuler</button>
+                    <button type="button" onClick={handleReset} disabled={resetSubmitting} className="flex-1 py-2 bg-red-500/20 border border-red-500/40 text-red-400 rounded-lg text-xs hover:bg-red-500/30 transition-colors disabled:opacity-50">
+                      {resetSubmitting ? '…' : 'Confirmer'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -290,18 +324,11 @@ export default function ClassProgressPage() {
           <div>
             <Link href="/admin/classes" className="text-nx-gray hover:text-white text-sm transition-colors">← Classes</Link>
             <h1 className="text-white text-2xl font-bold mt-2">{classe.name}</h1>
-            <p className="text-nx-gray text-sm mt-0.5">{classe.parcours.title}</p>
+            <p className="text-nx-gray text-sm mt-0.5">
+              {classe.parcours.map(p => p.title).join(' · ') || 'Aucun parcours'}
+            </p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="text-right">
-              <p className="text-nx-gray text-xs">Code d&apos;invitation</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-white text-sm font-mono">{classe.inviteCode}</span>
-                <button onClick={copyCode} className="px-2 py-1 bg-nx-surface border border-nx-border text-xs rounded-lg hover:border-nx-cyan/50 text-nx-gray hover:text-white transition-colors">
-                  {copiedCode ? '✓' : 'Copier'}
-                </button>
-              </div>
-            </div>
             {students.length > 0 && (
               <button onClick={exportCSV} className="px-3 py-1.5 bg-nx-surface border border-nx-border text-xs text-nx-gray hover:text-white rounded-lg hover:border-nx-yellow/50 transition-colors self-end">
                 Exporter CSV
@@ -368,12 +395,19 @@ export default function ClassProgressPage() {
             <div className="space-y-6">
               {challenges.map(challenge => (
                 <div key={challenge.id} className="bg-nx-surface border border-nx-border rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 border-b border-nx-border flex items-center justify-between">
-                    <div>
+                  <div className="px-4 py-3 border-b border-nx-border flex items-center justify-between gap-3">
+                    <div className="min-w-0">
                       <p className="text-white font-semibold text-sm">{challenge.title}</p>
                       <p className="text-nx-gray text-xs mt-0.5">{challenge.moduleTitle}</p>
                     </div>
-                    <span className="text-nx-yellow text-xs font-semibold shrink-0">{challenge.xpReward} XP</span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {challenge.students.filter(s => s.status === 'submitted').length > 0 && (
+                        <span className="text-[10px] font-bold bg-nx-yellow/10 text-nx-yellow border border-nx-yellow/30 rounded-full px-2 py-0.5">
+                          {challenge.students.filter(s => s.status === 'submitted').length} en attente
+                        </span>
+                      )}
+                      <span className="text-nx-yellow text-xs font-semibold">{challenge.xpReward} XP</span>
+                    </div>
                   </div>
                   {challenge.students.length === 0 ? (
                     <p className="text-nx-gray text-sm px-4 py-3">Aucun élève.</p>
@@ -385,9 +419,9 @@ export default function ClassProgressPage() {
                             <p className="text-white text-sm w-28 truncate">{s.username}</p>
                             <StatusBadge status={s.status} score={s.score} />
                           </div>
-                          {(s.status === 'not_started' || s.status === 'failed') && (
+                          {(s.status === 'submitted' || s.status === 'failed') && (
                             <button
-                              onClick={() => openGradeModal(challenge.id, challenge.title, s.userId, s.username)}
+                              onClick={() => openGradeModal(challenge.id, challenge.title, s.userId, s.username, s.response)}
                               className="px-3 py-1 text-xs border border-nx-yellow/50 text-nx-yellow rounded-lg hover:bg-nx-yellow/10 transition-colors"
                             >
                               Corriger
@@ -406,18 +440,6 @@ export default function ClassProgressPage() {
         {/* Tab: Membres */}
         {activeTab === 'membres' && (
           <div className="space-y-4">
-            <form onSubmit={handleAdd} className="flex gap-2">
-              <input
-                type="text" placeholder="Ajouter par nom d'utilisateur…" value={addUsername}
-                onChange={e => setAddUsername(e.target.value)}
-                className="flex-1 bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
-              />
-              <button type="submit" disabled={addingUser || !addUsername.trim()} className="px-4 py-2.5 bg-nx-surface border border-nx-yellow/50 text-nx-yellow text-sm font-semibold rounded-lg hover:bg-nx-yellow/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap">
-                {addingUser ? '…' : 'Ajouter'}
-              </button>
-            </form>
-            {addError && <p className="text-red-400 text-xs">{addError}</p>}
-
             {students.length === 0 ? (
               <p className="text-nx-gray text-sm">Aucun élève dans cette classe.</p>
             ) : (

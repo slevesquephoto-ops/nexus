@@ -140,6 +140,54 @@ router.get('/me/current-position', requireAuth, async (req, res) => {
   }
 });
 
+router.get('/class', requireAuth, async (req, res) => {
+  try {
+    const memberships = await prisma.classeMember.findMany({
+      where: { userId: req.user.id },
+      include: {
+        classe: {
+          include: {
+            members: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    xp: true,
+                    level: true,
+                    avatarId: true,
+                    taskProgress: { where: { completed: true }, select: { id: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const classes = memberships.map(m => ({
+      id: m.classe.id,
+      name: m.classe.name,
+      members: m.classe.members
+        .map(cm => ({
+          id: cm.user.id,
+          username: cm.user.username,
+          xp: cm.user.xp,
+          level: cm.user.level,
+          avatarId: cm.user.avatarId,
+          tasksCompleted: cm.user.taskProgress.length,
+        }))
+        .sort((a, b) => b.xp - a.xp),
+    }));
+
+    res.json({ classes });
+  } catch (err) {
+    console.error('[GET /api/users/class]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/me/avatars', requireAuth, async (req, res) => {
   const { AVATARS } = require('../lib/avatars');
   const userId = req.user.id;

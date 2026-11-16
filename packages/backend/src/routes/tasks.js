@@ -16,21 +16,19 @@ async function checkAvatarRewards(userId, completedTaskId) {
   });
   const moduleComplete = completedCount === moduleTaskIds.length;
 
-  let newAvatar = null;
+  const newAvatars = [];
 
   if (moduleComplete) {
-    const moduleReward = await prisma.avatarReward.findFirst({
+    const moduleRewards = await prisma.avatarReward.findMany({
       where: { triggerType: 'module', triggerId: task.moduleId },
     });
-    if (moduleReward) {
+    for (const reward of moduleRewards) {
       const alreadyHas = await prisma.userAvatarReward.findFirst({
-        where: { userId, avatarRewardId: moduleReward.id },
+        where: { userId, avatarRewardId: reward.id },
       });
       if (!alreadyHas) {
-        await prisma.userAvatarReward.create({
-          data: { userId, avatarRewardId: moduleReward.id },
-        });
-        newAvatar = moduleReward;
+        await prisma.userAvatarReward.create({ data: { userId, avatarRewardId: reward.id } });
+        newAvatars.push(reward);
       }
     }
 
@@ -44,24 +42,22 @@ async function checkAvatarRewards(userId, completedTaskId) {
       where: { userId, taskId: { in: allTrackTaskIds }, completed: true },
     });
     if (completedTrackCount === allTrackTaskIds.length) {
-      const trackReward = await prisma.avatarReward.findFirst({
+      const trackRewards = await prisma.avatarReward.findMany({
         where: { triggerType: 'track', triggerId: task.module.trackId },
       });
-      if (trackReward) {
-        const alreadyHasTrack = await prisma.userAvatarReward.findFirst({
-          where: { userId, avatarRewardId: trackReward.id },
+      for (const reward of trackRewards) {
+        const alreadyHas = await prisma.userAvatarReward.findFirst({
+          where: { userId, avatarRewardId: reward.id },
         });
-        if (!alreadyHasTrack) {
-          await prisma.userAvatarReward.create({
-            data: { userId, avatarRewardId: trackReward.id },
-          });
-          if (!newAvatar) newAvatar = trackReward;
+        if (!alreadyHas) {
+          await prisma.userAvatarReward.create({ data: { userId, avatarRewardId: reward.id } });
+          newAvatars.push(reward);
         }
       }
     }
   }
 
-  return newAvatar;
+  return newAvatars;
 }
 
 router.get('/:id', async (req, res) => {
@@ -149,16 +145,15 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
     let newAvatarData = null;
     if (isNew) {
       try {
-        const newAvatar = await checkAvatarRewards(userId, taskId);
-        if (newAvatar) {
-          const { AVATARS } = require('../lib/avatars');
-          const avatarFile = AVATARS.find(a => a.id === newAvatar.avatarId)?.file ?? null;
-          newAvatarData = {
-            avatarId: newAvatar.avatarId,
-            title: newAvatar.title,
-            description: newAvatar.description,
-            file: avatarFile,
-          };
+        const { AVATARS } = require('../lib/avatars');
+        const earned = await checkAvatarRewards(userId, taskId);
+        if (earned.length > 0) {
+          newAvatarData = earned.map(a => ({
+            avatarId: a.avatarId,
+            title: a.title,
+            description: a.description,
+            file: AVATARS.find(x => x.id === a.avatarId)?.file ?? null,
+          }));
         }
       } catch (avatarErr) {
         console.warn('[complete] Avatar reward skipped:', avatarErr.message);
@@ -184,7 +179,7 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
       xpGained,
       user: { xp: updatedUser.xp, level: updatedUser.level },
       nextTaskId,
-      newAvatar: newAvatarData,
+      newAvatars: newAvatarData ?? [],
     });
   } catch (err) {
     console.error('[POST /api/tasks/:id/complete]', err);
@@ -192,4 +187,40 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/:id/submit', requireAuth, async (req, res) => {
+  const taskId = req.params.id;
+  const userId = req.user.id;
+  const { note, validations, questionAnswers } = req.body;
+
+  try {
+    const task = await prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true, type: true },
+    });
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    if (task.type !== 'CHALLENGE') return res.status(400).json({ error: 'Only challenges can be submitted' });
+
+    const existing = await prisma.taskProgress.findUnique({
+      where: { userId_taskId: { userId, taskId } },
+    });
+    if (existing && (existing.completed || existing.score !== null)) {
+      return res.status(409).json({ error: 'Challenge already graded' });
+    }
+
+    const response = JSON.stringify({ note: note ?? '', validations: validations ?? {}, questionAnswers: questionAnswers ?? {} });
+
+    await prisma.taskProgress.upsert({
+      where: { userId_taskId: { userId, taskId } },
+      create: { userId, taskId, completed: false, submittedAt: new Date(), response },
+      update: { submittedAt: new Date(), response },
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[POST /api/tasks/:id/submit]', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;
+module.exports.checkAvatarRewards = checkAvatarRewards;

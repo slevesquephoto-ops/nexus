@@ -1,0 +1,1 @@
+ALTER TABLE "Track" ADD COLUMN "language" TEXT NOT NULL DEFAULT 'fr';

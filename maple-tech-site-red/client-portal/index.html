@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portail client — Maple Tech Solutions</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="portal-page">
+
+  <header>
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <img src="../assets/images/logo.png" alt="Maple Tech Solutions" class="logo-img"
+             onerror="this.style.display='none'">
+        <div>
+          <div class="logo-text">🍁 Maple <span>Tech</span></div>
+          <div class="logo-tagline">Solutions informatiques</div>
+        </div>
+      </a>
+      <!-- Pas de navigation vers les pages cachées dans le menu -->
+      <nav>
+        <ul>
+          <li><a href="../index.html">Accueil</a></li>
+          <li><a href="../services.html">Services</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="portal-main">
+    <div class="portal-card">
+      <div class="portal-logo">
+        <div class="lock-icon">🔐</div>
+        <h1>Portail client</h1>
+        <p class="portal-desc">
+          Cet espace est réservé aux clients de Maple Tech Solutions.<br>
+          Entrez votre référence de soutien pour accéder à vos dossiers.
+        </p>
+      </div>
+
+      <form id="portal-form">
+        <div class="form-group">
+          <label for="support-ref">Référence de soutien</label>
+          <input
+            type="text"
+            id="support-ref"
+            name="support-ref"
+            placeholder="Ex. : MTS-CL-XXXX"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          >
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;font-size:1rem;padding:0.85rem;">
+          Accéder →
+        </button>
+      </form>
+
+      <div id="portal-result"></div>
+
+      <p style="text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--muted);">
+        Vous ne connaissez pas votre référence ?<br>
+        Contactez-nous au <strong>(450) 555-0187</strong>.
+      </p>
+    </div>
+  </main>
+
+  <footer style="background:#101e30;color:rgba(255,255,255,0.5);text-align:center;padding:1.25rem;font-size:0.8rem;">
+    © 2024 Maple Tech Solutions inc.
+  </footer>
+
+  <script src="../assets/js/portal.js"></script>
+
+</body>
+</html>

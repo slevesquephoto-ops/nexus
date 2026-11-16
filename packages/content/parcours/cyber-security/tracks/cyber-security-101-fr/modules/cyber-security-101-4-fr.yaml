@@ -1,0 +1,738 @@
+module:
+  id: cyber-security-101-4-fr
+  trackId: cyber-security-101-fr
+  title: "Éthique, vie privée et limites légales"
+  description: "Comprendre l’autorisation, la portée d’un mandat, la protection des renseignements personnels et les bons réflexes professionnels"
+  order: 4
+  mascot: "slyx-balance"
+  xpReward: 110
+  language: fr
+
+  # ── Métadonnées pédagogiques (pour référence enseignant — non chargées en DB) ──
+
+  estimatedDuration: "2h à 2h30"
+  level: beginner
+
+  summary: |
+    Ce module introduit les limites éthiques, légales et professionnelles en cybersécurité.
+    L'élève apprend qu'un accès technique ne donne pas automatiquement le droit d'accéder
+    à un système, à une boîte courriel, à un fichier ou à des renseignements personnels.
+
+    Le module aborde l'autorisation, la portée d'un mandat, les accords de confidentialité,
+    les contrats de services, la documentation professionnelle et les réflexes de base associés
+    à la protection des renseignements personnels, notamment dans l'esprit de la Loi 25 au Québec.
+
+  pedagogicalIntent: |
+    Ce module sert de garde-fou avant les laboratoires techniques. Les élèves doivent comprendre
+    qu'en cybersécurité, la bonne question n'est pas seulement "Est-ce que je peux le faire?",
+    mais aussi "Est-ce que j'ai le droit de le faire?", "Est-ce nécessaire?" et "Est-ce documenté?".
+
+    Les scénarios proposés sont volontairement proches du soutien informatique : accès à une boîte
+    courriel, mot de passe partagé, données découvertes hors mandat, clé USB inconnue et demande
+    ambiguë d'un gestionnaire. Le but est de développer un jugement professionnel, pas de donner
+    un avis juridique complet.
+
+  learningOutcomes:
+    - "Comprendre l'importance de l'autorisation claire avant d'accéder à un système ou à des données."
+    - "Définir la portée d'un mandat et reconnaître une situation hors portée."
+    - "Reconnaître des exemples de renseignements personnels dans un contexte informatique."
+    - "Appliquer le principe du minimum nécessaire lors d'une intervention."
+    - "Réagir de façon professionnelle à une demande ambiguë ou risquée."
+    - "Savoir quoi documenter lors d'une intervention sensible."
+    - "Analyser des scénarios en utilisant les notions d'autorisation, de portée, de confidentialité et d'escalade."
+
+  prerequisites:
+    - "Avoir complété le module 1 du parcours Cyber Security 101."
+    - "Avoir complété le module 2 du parcours Cyber Security 101."
+    - "Avoir complété le module 3 du parcours Cyber Security 101."
+    - "Comprendre les notions de cybersécurité, risque, surface d'attaque et responsabilité professionnelle."
+
+    - type: teacher_note
+      title: "Intention pédagogique"
+      content: |
+        Ce module doit être présenté comme une sensibilisation professionnelle, pas comme un cours
+        complet de droit. Il est recommandé de rappeler aux élèves qu'un technicien ne doit pas improviser
+        lorsqu'une situation touche des renseignements personnels ou une demande d'accès sensible.
+
+        Questions de discussion suggérées :
+        - Est-ce qu'un patron peut toujours autoriser l'accès à la boîte courriel d'un employé?
+        - Pourquoi faut-il documenter une demande d'accès sensible?
+        - Que devrait faire un consultant lorsqu'il découvre des données hors mandat?
+        - Pourquoi le partage de mot de passe pose-t-il un problème de traçabilité?
+        - Quelle est la différence entre aider rapidement et aider correctement?
+
+  vocabulary:
+    - term: "Autorisation"
+      fr: "Autorisation"
+      definition: "Permission claire permettant d'effectuer une action précise dans un contexte défini."
+    - term: "Portée du mandat"
+      fr: "Scope"
+      definition: "Limites précises de ce qui est permis dans une intervention ou un test de sécurité."
+    - term: "Hors mandat"
+      fr: "Out of scope"
+      definition: "Élément ou action qui dépasse ce qui a été autorisé."
+    - term: "Renseignement personnel"
+      fr: "Renseignement personnel"
+      definition: "Information qui concerne une personne physique et permet de l'identifier directement ou indirectement."
+    - term: "Confidentialité"
+      fr: "Confidentialité"
+      definition: "Principe selon lequel seules les personnes autorisées doivent accéder à une information."
+    - term: "NDA"
+      fr: "Accord de confidentialité"
+      definition: "Entente qui encadre ce qu'une personne peut ou ne peut pas divulguer."
+    - term: "Contrat de services"
+      fr: "Contrat de services"
+      definition: "Document qui décrit un mandat, des responsabilités, des limites et des livrables."
+    - term: "Escalade"
+      fr: "Escalade"
+      definition: "Action de transférer une situation à une personne ou une équipe responsable lorsque le technicien ne doit pas décider seul."
+    - term: "Minimum nécessaire"
+      fr: "Minimum nécessaire"
+      definition: "Principe consistant à accéder seulement aux informations nécessaires pour accomplir une tâche autorisée."
+    - term: "Incident de confidentialité"
+      fr: "Incident de confidentialité"
+      definition: "Situation impliquant par exemple un accès, une utilisation, une communication non autorisée ou une perte de renseignements personnels."
+
+  safetyReminder: |
+    Ce module ne demande aucune manipulation offensive. Les élèves doivent analyser des situations
+    et choisir une réponse professionnelle. La règle principale est simple : si une demande touche
+    des données sensibles, des renseignements personnels ou un accès inhabituel, il faut ralentir,
+    vérifier l'autorisation, limiter l'accès, documenter et escalader au besoin.
+
+  # ── Tâches ────────────────────────────────────────────────────────────────────
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-4-fr-t1
+      type: task
+      title: "Autorisation et portée du mandat"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Comprendre qu'une action technique doit être autorisée."
+        - "Définir la portée d'un mandat en cybersécurité."
+        - "Reconnaître une action hors mandat."
+      sections:
+
+        - type: theory
+          title: "Pouvoir le faire ne veut pas dire avoir le droit de le faire"
+          content: |
+            En informatique, un technicien peut parfois avoir beaucoup de pouvoirs techniques :
+            accéder à des consoles d'administration, réinitialiser des mots de passe, consulter
+            des journaux, modifier des permissions ou intervenir sur des serveurs.
+
+            Mais un pouvoir technique n'est pas une autorisation générale. Une action doit être
+            permise par une procédure, une demande valide, une politique interne, un mandat ou une
+            autorisation claire.
+
+            Avant d'agir, un technicien devrait se demander :
+
+            - Qui demande l'intervention?
+            - Est-ce que cette personne a l'autorité nécessaire?
+            - Quelle action précise est demandée?
+            - Est-ce que cette action est nécessaire?
+            - Est-ce que des données personnelles ou sensibles sont impliquées?
+            - Est-ce que je dois documenter ou escalader la situation?
+
+        - type: theory
+          title: "La portée du mandat"
+          content: |
+            La portée du mandat, souvent appelée scope, définit les limites de ce qui est autorisé.
+            Elle peut préciser la cible, la période, les outils permis, les actions interdites,
+            les personnes responsables et les preuves à remettre.
+
+            Exemple : un consultant peut être autorisé à tester un seul serveur web précis pendant
+            une journée donnée. Cette autorisation ne lui permet pas automatiquement de tester
+            les autres serveurs, les comptes employés, les boîtes courriel ou les systèmes de paie.
+
+            Sortir du mandat peut créer des problèmes légaux, éthiques, contractuels et professionnels.
+
+        - type: theory
+          title: "Exemples d'actions autorisées ou non"
+          content: |
+            Autorisé : vérifier un compte utilisateur à la suite d'un billet de soutien valide.
+
+            Autorisé : tester une cible de laboratoire fournie par l'enseignant dans NEXUS.
+
+            Ambigu : accéder à la boîte courriel d'un collègue absent seulement parce qu'un gestionnaire
+            le demande verbalement.
+
+            Non autorisé : scanner le site web d'une entreprise externe sans mandat.
+
+            Hors mandat : découvrir un autre serveur pendant un contrat limité, puis commencer à le tester
+            sans demander d'autorisation supplémentaire.
+
+        - type: command_table
+          commands:
+            - cmd: "Autorisation"
+              desc: "Permission claire pour effectuer une action précise"
+            - cmd: "Portée"
+              desc: "Limites de ce qui est permis dans le mandat"
+            - cmd: "Hors mandat"
+              desc: "Action ou cible qui dépasse ce qui a été autorisé"
+            - cmd: "Réflexe professionnel"
+              desc: "Arrêter, vérifier, documenter et escalader si la situation est ambiguë"
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: "Pourquoi un accès administrateur ne donne-t-il pas automatiquement le droit de tout consulter?"
+              answers:
+                - text: "Parce que le droit d'accès dépend de l'autorisation, du besoin réel et du contexte"
+                  correct: true
+                - text: "Parce qu'un administrateur ne peut jamais aider les utilisateurs"
+                  correct: false
+                - text: "Parce que les mots de passe ne servent à rien"
+                  correct: false
+                - text: "Parce que toutes les données sont publiques"
+                  correct: false
+
+            - id: t1-q2
+              type: qcm
+              question: "Que signifie la portée d'un mandat?"
+              answers:
+                - text: "Les limites précises de ce qui est autorisé"
+                  correct: true
+                - text: "La vitesse d'un ordinateur"
+                  correct: false
+                - text: "Le nombre de courriels dans une boîte"
+                  correct: false
+                - text: "Le choix du fond d'écran"
+                  correct: false
+
+            - id: t1-q3
+              type: qcm
+              question: "Qu’est-ce qui est indispensable avant d’accéder à un système ou à des données dans le cadre d’une intervention?"
+              answers:
+                - text: "Une autorisation — une permission claire et documentée de la personne responsable."
+                  correct: true
+                - text: "Une compétence technique suffisante pour effectuer l’action sans risque d’erreur."
+                  correct: false
+                - text: "Une urgence reconnue qui justifie l’accès immédiat sans délai."
+                  correct: false
+                - text: "Une habitude établie, car les actions répétées régulièrement n’ont pas besoin d’être réévaluées."
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-4-fr-t2
+      type: task
+      title: "Vie privée, renseignements personnels et Loi 25"
+      order: 2
+      xpReward: 15
+      objectives:
+        - "Comprendre la notion de renseignement personnel."
+        - "Reconnaître des exemples de renseignements personnels dans un contexte informatique."
+        - "Appliquer des réflexes simples inspirés de la Loi 25."
+      sections:
+
+        - type: theory
+          title: "Qu'est-ce qu'un renseignement personnel?"
+          content: |
+            Un renseignement personnel est une information qui concerne une personne physique
+            et qui permet de l'identifier directement ou indirectement.
+
+            Exemples possibles : nom, adresse, numéro de téléphone, adresse courriel personnelle,
+            numéro d'assurance sociale, information financière, dossier client, information médicale,
+            dossier d'employé, photo identifiable, historique de communications ou combinaison
+            d'informations permettant d'identifier une personne.
+
+            En soutien informatique, ces renseignements peuvent se retrouver dans des boîtes courriel,
+            des dossiers partagés, des sauvegardes, des bases de données, des postes de travail,
+            des téléphones, des captures d'écran ou des journaux.
+
+        - type: theory
+          title: "Ce qu'il faut retenir de la Loi 25"
+          content: |
+            Au Québec, la Loi 25 a modernisé les règles liées à la protection des renseignements personnels.
+            Pour un technicien, il n'est pas nécessaire de devenir juriste, mais il faut développer
+            de bons réflexes professionnels.
+
+            Les renseignements personnels doivent être protégés pendant tout leur cycle de vie :
+            collecte, utilisation, conservation, communication et destruction.
+
+            Une organisation doit aussi prendre au sérieux les incidents de confidentialité, par exemple
+            lorsqu'il y a accès non autorisé, communication non autorisée, utilisation non autorisée,
+            perte ou exposition de renseignements personnels.
+
+            Le technicien doit donc éviter de fouiller inutilement, limiter l'accès au minimum nécessaire,
+            suivre les procédures internes, documenter les situations sensibles et aviser les personnes
+            responsables lorsqu'un risque de confidentialité est découvert.
+
+        - type: theory
+          title: "Le minimum nécessaire"
+          content: |
+            Le principe du minimum nécessaire est un excellent réflexe pour un technicien.
+
+            Il signifie qu'on devrait accéder seulement aux informations nécessaires pour accomplir
+            une tâche autorisée. Par exemple, si le but est de vérifier qu'une sauvegarde existe,
+            il n'est pas nécessaire d'ouvrir tous les fichiers personnels qu'elle contient.
+
+            Si le but est de dépanner l'accès à un dossier, il n'est pas nécessaire de lire le contenu
+            de tous les documents du dossier. Si le but est de retrouver un fichier précis dans une
+            boîte courriel, la méthode devrait être encadrée et documentée.
+
+        - type: command_table
+          commands:
+            - cmd: "Renseignement personnel"
+              desc: "Information qui permet d'identifier une personne directement ou indirectement"
+            - cmd: "Cycle de vie"
+              desc: "Collecte, utilisation, conservation, communication et destruction"
+            - cmd: "Minimum nécessaire"
+              desc: "Accéder seulement à ce qui est nécessaire pour la tâche autorisée"
+            - cmd: "Incident de confidentialité"
+              desc: "Accès, utilisation, communication non autorisée, perte ou exposition de renseignements personnels"
+            - cmd: "Réflexe"
+              desc: "Limiter, documenter et escalader"
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Lequel de ces éléments peut être un renseignement personnel?"
+              answers:
+                - text: "Une adresse courriel personnelle associée à une personne identifiable"
+                  correct: true
+                - text: "Le modèle générique d'un clavier"
+                  correct: false
+                - text: "La couleur d'un câble réseau non associé à une personne"
+                  correct: false
+                - text: "Le nom d'un logiciel sans information utilisateur"
+                  correct: false
+
+            - id: t2-q2
+              type: qcm
+              question: "Quel réflexe respecte le principe du minimum nécessaire?"
+              answers:
+                - text: "Consulter seulement les informations nécessaires à la tâche autorisée"
+                  correct: true
+                - text: "Lire tous les courriels d'un utilisateur par curiosité"
+                  correct: false
+                - text: "Copier tous les fichiers d'un client sans raison"
+                  correct: false
+                - text: "Partager une capture d'écran contenant des données sensibles dans un groupe public"
+                  correct: false
+
+            - id: t2-q3
+              type: qcm
+              question: "Quel terme désigne une situation où des renseignements personnels sont perdus, exposés ou consultés sans autorisation?"
+              answers:
+                - text: "Un incident de confidentialité — situation impliquant une atteinte aux renseignements personnels."
+                  correct: true
+                - text: "Une vulnérabilité de données — faiblesse connue d’un système de stockage d’informations."
+                  correct: false
+                - text: "Une brèche de service — interruption du fonctionnement normal d’un système."
+                  correct: false
+                - text: "Un risque résiduel — partie du risque qui subsiste après l’application des protections."
+                  correct: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-4-fr-t3
+      type: task
+      title: "NDA, contrats et documentation professionnelle"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Comprendre le rôle d'un accord de confidentialité."
+        - "Comprendre le rôle d'un contrat de services."
+        - "Savoir quoi documenter lors d'une intervention sensible."
+      sections:
+
+        - type: theory
+          title: "Accord de confidentialité"
+          content: |
+            Un NDA, ou accord de confidentialité, est une entente qui encadre ce qu'une personne
+            peut divulguer ou non à propos des informations obtenues dans un contexte professionnel.
+
+            Par exemple, un consultant peut voir des informations internes, des configurations,
+            des adresses de serveurs, des données clients ou des procédures privées. L'accord de
+            confidentialité lui rappelle qu'il ne doit pas divulguer ces informations à des personnes
+            non autorisées.
+
+            Un NDA ne donne pas automatiquement le droit d'accéder à tout. Il encadre surtout
+            la confidentialité des informations obtenues dans le cadre autorisé.
+
+        - type: theory
+          title: "Contrat de services"
+          content: |
+            Un contrat de services décrit généralement le mandat, les responsabilités, les limites,
+            les livrables, les dates, les personnes responsables et les systèmes concernés.
+
+            Dans un contexte de cybersécurité, le contrat ou le mandat devrait préciser ce qui est permis.
+            Par exemple : quelle cible peut être testée, quels outils peuvent être utilisés, quels horaires
+            sont autorisés et quoi faire en cas de découverte sensible.
+
+            Si une situation n'est pas prévue ou semble dépasser le mandat, le bon réflexe est de demander
+            une clarification avant de continuer.
+
+        - type: theory
+          title: "Quoi documenter?"
+          content: |
+            La documentation protège l'organisation, le client, les utilisateurs et le technicien.
+            Elle permet de comprendre ce qui a été demandé, ce qui a été fait, pourquoi cela a été fait
+            et à qui la situation a été signalée.
+
+            Lors d'une intervention sensible, il peut être utile de documenter :
+
+            - qui a demandé l'intervention;
+            - quelle autorisation a été donnée;
+            - quelle cible ou quelles données sont concernées;
+            - quelles actions ont été effectuées;
+            - quelles limites ont été respectées;
+            - ce qui a été découvert;
+            - à qui la situation a été signalée;
+            - quelles recommandations ont été proposées.
+
+        - type: command_table
+          commands:
+            - cmd: "NDA"
+              desc: "Protège la confidentialité des informations obtenues"
+            - cmd: "Contrat de services"
+              desc: "Décrit le mandat, les limites et les livrables"
+            - cmd: "Documentation"
+              desc: "Trace professionnelle des demandes, actions et découvertes"
+            - cmd: "Clarification"
+              desc: "Demande à faire lorsque la situation dépasse ou semble dépasser le mandat"
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "Quel est le rôle principal d'un accord de confidentialité?"
+              answers:
+                - text: "Encadrer ce qui peut ou ne peut pas être divulgué"
+                  correct: true
+                - text: "Autoriser automatiquement l'accès à tous les systèmes"
+                  correct: false
+                - text: "Remplacer toutes les procédures de sécurité"
+                  correct: false
+                - text: "Donner les droits administrateur à tous les employés"
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "Que devrait faire un consultant s'il découvre une situation qui dépasse son mandat?"
+              answers:
+                - text: "Arrêter ou limiter son action, documenter et demander une clarification"
+                  correct: true
+                - text: "Continuer à fouiller pour satisfaire sa curiosité"
+                  correct: false
+                - text: "Copier toutes les données avant de prévenir le client"
+                  correct: false
+                - text: "Publier la découverte sur les réseaux sociaux"
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Quel élément permet de montrer ce qui a été demandé, fait et signalé lors d’une intervention sensible?"
+              answers:
+                - text: "La documentation — trace écrite des demandes, actions et découvertes lors d’une intervention."
+                  correct: true
+                - text: "Le NDA — entente qui protège la confidentialité des informations obtenues."
+                  correct: false
+                - text: "Le contrat de services — document qui décrit uniquement les livrables et les délais convenus."
+                  correct: false
+                - text: "Le rapport d’incident — document produit uniquement après une cyberattaque confirmée."
+                  correct: false
+
+    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-4-fr-t4
+      type: task
+      title: "Scénarios de décision professionnelle"
+      order: 4
+      xpReward: 15
+      objectives:
+        - "Analyser des demandes ambiguës dans un contexte de soutien informatique."
+        - "Choisir une réponse prudente, documentée et professionnelle."
+        - "Identifier les situations où il faut demander une autorisation ou escalader."
+      sections:
+
+        - type: theory
+          title: "Comment analyser une demande sensible"
+          content: |
+            Lorsqu'une demande semble sensible, il faut éviter de répondre trop vite. Une demande peut
+            venir d'un patron, d'un collègue, d'un client ou d'un utilisateur pressé. Cela ne signifie pas
+            automatiquement que l'action est autorisée ou appropriée.
+
+            Une bonne méthode consiste à répondre à cinq questions :
+
+            1. Quelle action est demandée?
+            2. Qui demande cette action?
+            3. Est-ce que cette personne peut autoriser cette action?
+            4. Quels systèmes ou renseignements personnels sont concernés?
+            5. Est-ce que je dois refuser, demander une autorisation écrite, limiter l'action ou escalader?
+
+        - type: theory
+          title: "Scénario 1 : boîte courriel d'un collègue absent"
+          content: |
+            Vous travaillez au soutien informatique. Votre patron vous demande d'accéder à la boîte
+            courriel d'un collègue absent pour retrouver un document urgent. Le collègue n'a pas donné
+            son autorisation directement.
+
+            Une réponse professionnelle ne consiste pas à ouvrir immédiatement la boîte courriel.
+            Il faut vérifier la procédure interne, demander une autorisation claire, limiter l'accès
+            au besoin précis, documenter la demande et privilégier une méthode encadrée.
+
+        - type: theory
+          title: "Scénario 2 : données hors mandat"
+          content: |
+            Vous êtes consultant externe. Votre contrat vous autorise à tester un serveur web précis.
+            Pendant vos vérifications, vous découvrez un dossier contenant des renseignements personnels
+            qui ne font pas partie du mandat.
+
+            Une réponse professionnelle consiste à ne pas explorer inutilement les données, ne pas les copier,
+            documenter minimalement la découverte, arrêter ou limiter l'action, puis aviser le contact autorisé.
+
+        - type: theory
+          title: "Scénario 3 : mot de passe partagé"
+          content: |
+            Un gestionnaire vous donne le mot de passe d'un employé et vous dit :
+            "Connecte-toi avec son compte, c'est plus rapide."
+
+            Une réponse professionnelle consiste à refuser cette méthode et à proposer une solution traçable :
+            délégation officielle, accès temporaire autorisé, procédure administrative ou intervention avec
+            un compte nominatif et journalisé.
+
+        - type: theory
+          title: "Scénario 4 : clé USB inconnue"
+          content: |
+            Un employé apporte une clé USB trouvée dans le stationnement et demande au technicien
+            de l'ouvrir pour savoir à qui elle appartient.
+
+            Une réponse professionnelle consiste à ne pas l'ouvrir sur un poste de production.
+            La clé doit être traitée comme un média suspect. Il faut suivre la procédure interne,
+            utiliser un environnement isolé si l'organisation en possède un, ou escalader la situation.
+
+        - type: command_table
+          commands:
+            - cmd: "Demande ambiguë"
+              desc: "Ralentir et vérifier avant d'agir"
+            - cmd: "Accès courriel"
+              desc: "Demander une autorisation claire et limiter l'accès"
+            - cmd: "Données hors mandat"
+              desc: "Ne pas fouiller, documenter minimalement et signaler"
+            - cmd: "Mot de passe partagé"
+              desc: "Refuser la méthode et proposer une solution traçable"
+            - cmd: "Clé USB inconnue"
+              desc: "Ne pas ouvrir sur un poste de production"
+
+        - type: questions
+          items:
+            - id: t4-q1
+              type: qcm
+              question: "Que devrait faire un technicien avant d'accéder à la boîte courriel d'un collègue absent?"
+              answers:
+                - text: "Vérifier la procédure, obtenir une autorisation claire, limiter l'accès et documenter"
+                  correct: true
+                - text: "Lire tous les courriels pour trouver quelque chose d'intéressant"
+                  correct: false
+                - text: "Partager le contenu de la boîte avec toute l'équipe"
+                  correct: false
+                - text: "Supprimer les courriels personnels sans demander"
+                  correct: false
+
+            - id: t4-q2
+              type: qcm
+              question: "Pourquoi le partage d'un mot de passe est-il problématique?"
+              answers:
+                - text: "Parce qu'il nuit à la traçabilité et peut permettre des actions non attribuables"
+                  correct: true
+                - text: "Parce qu'il rend toujours l'ordinateur plus rapide"
+                  correct: false
+                - text: "Parce qu'il remplace la documentation"
+                  correct: false
+                - text: "Parce qu'il empêche toute connexion au réseau"
+                  correct: false
+
+            - id: t4-q3
+              type: qcm
+              question: "Quel terme désigne l’action de transférer une situation qui dépasse le rôle du technicien vers une personne responsable?"
+              answers:
+                - text: "Escalader — transférer une situation sensible à une personne ou équipe habilitée à décider."
+                  correct: true
+                - text: "Déléguer — confier une tâche habituelle à un collègue de même niveau."
+                  correct: false
+                - text: "Documenter — noter les informations liées à une action ou à un incident."
+                  correct: false
+                - text: "Archiver — conserver les informations dans un système de stockage à long terme."
+                  correct: false
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
+    - id: cyber-security-101-4-fr-c1
+      type: challenge
+      title: "Rapport de décision éthique et professionnelle"
+      order: 5
+      xpReward: 60
+      objectives:
+        - "Produire une analyse éthique et professionnelle."
+        - "Justifier une décision avec les notions d'autorisation, de portée, de vie privée et de documentation."
+        - "Adopter un ton prudent et responsable dans une situation sensible."
+      sections:
+
+        - type: theory
+          title: "Mission"
+          content: |
+            Dans ce défi, tu dois analyser trois scénarios professionnels liés à la cybersécurité,
+            à la vie privée ou à une demande d'accès sensible.
+
+            Le but n'est pas de répondre seulement "oui" ou "non". Tu dois expliquer ta décision,
+            identifier les risques, préciser ce qui doit être documenté et proposer une action
+            professionnelle.
+
+            Tu dois choisir trois scénarios parmi ceux présentés dans ce module, ou utiliser les trois
+            scénarios assignés par ton enseignant.
+
+        - type: theory
+          title: "Structure de réponse obligatoire"
+          content: |
+            Pour chaque scénario, réponds en français avec la structure suivante :
+
+            1. Quelle est la demande ou la situation?
+            2. Est-ce autorisé? Pourquoi?
+            3. Quels renseignements personnels ou sensibles pourraient être concernés?
+            4. Quels sont les risques?
+            5. Que devrait faire le technicien?
+            6. Qu'est-ce qui devrait être documenté?
+
+            Tu peux répondre sous forme de texte structuré ou sous forme de tableau.
+
+        - type: theory
+          title: "Scénarios du défi"
+          content: |
+            Deux scénarios sont obligatoires. Le troisième est ton choix parmi C, D ou G.
+
+            **Scénario E — OBLIGATOIRE**
+            Un client te contacte et te demande de faire "une petite vérification rapide" sur le site web de son principal compétiteur. Il dit que "c'est pour voir comment ils sont organisés". Il n'a évidemment aucune autorisation du compétiteur.
+
+            **Scénario F — OBLIGATOIRE**
+            Tu es en stage dans une entreprise. Un collègue stagiaire te demande de l'aider à accéder au VPN de son ami "pour tester une connexion". Il affirme que son ami est d'accord, mais il n'y a aucune preuve écrite, aucune autorisation et aucun mandat.
+
+            **Scénario C — au choix**
+            Un gestionnaire te remet le mot de passe d'un employé et te demande de te connecter avec ce compte pour "aller plus vite".
+
+            **Scénario D — au choix**
+            Un employé t'apporte une clé USB trouvée dans le stationnement de l'entreprise et te demande de l'ouvrir pour savoir à qui elle appartient.
+
+            **Scénario G — au choix**
+            Tu travailles chez un client et tu réalises que les sauvegardes nocturnes contiennent des dossiers de clients particuliers. Ton mandat portait uniquement sur la vérification du serveur de messagerie.
+
+            d'un compétiteur.
+
+        - type: theory
+          title: "Conseils pour réussir"
+          content: |
+            Une bonne réponse professionnelle doit être prudente, claire et réaliste.
+
+            Tu peux utiliser des décisions comme :
+
+            - procéder, si l'autorisation est claire et que l'action est nécessaire;
+            - refuser, si la demande est clairement non autorisée;
+            - mettre en pause, si la situation est ambiguë;
+            - demander une autorisation écrite;
+            - limiter l'accès au minimum nécessaire;
+            - escalader vers une personne responsable;
+            - documenter la demande, les actions et les découvertes.
+
+            N'oublie pas : en cybersécurité, la qualité du jugement est aussi importante que la compétence technique.
+
+        - type: command_table
+          commands:
+            - cmd: "Autorisation"
+              desc: "Est-ce que l'action est clairement permise?"
+            - cmd: "Portée"
+              desc: "Est-ce que la situation respecte les limites du mandat?"
+            - cmd: "Vie privée"
+              desc: "Des renseignements personnels ou sensibles sont-ils concernés?"
+            - cmd: "Minimum nécessaire"
+              desc: "Peut-on accomplir la tâche avec moins d'accès?"
+            - cmd: "Documentation"
+              desc: "Que faut-il noter pour garder une trace professionnelle?"
+            - cmd: "Escalade"
+              desc: "Qui doit être avisé si la situation dépasse le rôle du technicien?"
+
+      expectedDeliverables:
+        - "Une analyse de 3 scénarios en français."
+        - "Pour chaque scénario : demande, autorisation, données concernées, risques, action recommandée et documentation."
+        - "Une décision claire pour chaque scénario : procéder, refuser, mettre en pause, demander une autorisation écrite ou escalader."
+        - "Une conclusion de 3 à 5 phrases sur l'importance de l'éthique et de la vie privée en soutien informatique."
+      successCriteria:
+        - "L'élève identifie correctement les demandes sensibles."
+        - "L'élève comprend que l'accès technique ne suffit pas à justifier une action."
+        - "L'élève applique les notions d'autorisation, de portée et de minimum nécessaire."
+        - "L'élève propose des actions réalistes pour un technicien en soutien informatique."
+        - "Le ton est professionnel, prudent et clair."
+      suggestedTableColumns:
+        - "Scénario"
+        - "Autorisation"
+        - "Données concernées"
+        - "Risques"
+        - "Action recommandée"
+        - "Documentation nécessaire"
+      gradingRubric:
+        - criterion: "Analyse de l'autorisation et de la portée"
+          points: 15
+          description: "L'élève identifie si la demande est autorisée, ambiguë ou hors mandat."
+        - criterion: "Reconnaissance des données sensibles"
+          points: 10
+          description: "L'élève reconnaît les renseignements personnels ou sensibles potentiellement concernés."
+        - criterion: "Évaluation des risques"
+          points: 10
+          description: "L'élève explique les risques de confidentialité, de traçabilité, d'abus ou d'incident."
+        - criterion: "Action professionnelle recommandée"
+          points: 15
+          description: "L'élève propose une action réaliste : refuser, limiter, documenter, demander une autorisation ou escalader."
+        - criterion: "Clarté et ton professionnel"
+          points: 5
+          description: "La réponse est organisée, claire et professionnelle."
+        - criterion: "Conclusion"
+          points: 5
+          description: "La conclusion montre l'importance du jugement professionnel en cybersécurité."
+
+  # ── Métadonnées de complétion (référence — non chargées en DB) ──────────────
+
+  moduleCompletion:
+    requiredItems:
+      - cyber-security-101-4-fr-t1
+      - cyber-security-101-4-fr-t2
+      - cyber-security-101-4-fr-t3
+      - cyber-security-101-4-fr-t4
+      - cyber-security-101-4-fr-c1
+    completionCriteria:
+      - "L'élève comprend l'importance de l'autorisation."
+      - "L'élève peut définir la portée d'un mandat."
+      - "L'élève peut reconnaître des renseignements personnels."
+      - "L'élève peut appliquer le principe du minimum nécessaire."
+      - "L'élève peut analyser une demande sensible et proposer une réponse professionnelle."
+      - "L'élève a remis le rapport de décision éthique et professionnelle."
+    unlocks:
+      - cyber-security-101-5-fr
+
+  teacherCorrectionGuide:
+    commonMisconceptions:
+      - misconception: "Si un patron le demande, c'est automatiquement autorisé."
+        correction: "Une demande doit respecter les politiques, la portée, les rôles et les règles de protection des renseignements personnels."
+      - misconception: "Un technicien administrateur peut consulter toutes les données."
+        correction: "Le rôle technique ne donne pas automatiquement le droit d'accéder aux données. Il faut un besoin réel et une autorisation."
+      - misconception: "Un NDA donne le droit d'accéder à tout."
+        correction: "Un NDA encadre la confidentialité des informations, mais ne remplace pas la portée du mandat."
+      - misconception: "Si je découvre des données par hasard, je peux les explorer pour vérifier."
+        correction: "Il faut limiter l'exploration, documenter minimalement et signaler la découverte à la personne responsable."
+      - misconception: "Partager un mot de passe est acceptable si c'est plus rapide."
+        correction: "Le partage de mot de passe nuit à la traçabilité et peut créer des risques d'abus ou de responsabilité."
+    suggestedFeedbackForChallenge:
+      excellent: |
+        Très bonne analyse. Tu identifies clairement les enjeux d'autorisation, de portée,
+        de vie privée et de documentation. Les décisions proposées sont prudentes, réalistes
+        et adaptées au rôle d'un technicien.
+      satisfactory: |
+        Bonne base. Tu reconnais les principaux risques, mais certaines décisions devraient être
+        mieux justifiées ou mieux reliées à la portée du mandat et au principe du minimum nécessaire.
+      needsImprovement: |
+        L'analyse est trop rapide ou trop centrée sur l'action technique. Reprends chaque scénario
+        en vérifiant l'autorisation, les données concernées, les risques, la documentation et l'escalade.
+
+  metadata:
+    version: "1.0"
+    author: "Steeve Levesque / NEXUS"
+    createdFor: "Parcours Cyber Security 101"

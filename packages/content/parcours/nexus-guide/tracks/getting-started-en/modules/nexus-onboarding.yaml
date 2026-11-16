@@ -1,0 +1,435 @@
+module:
+  id: nexus-onboarding
+  trackId: getting-started-en
+  title: "Getting Started with NEXUS"
+  description: "Learn how to use the NEXUS platform and set up your virtual machines"
+  order: 1
+  mascot: "nexus-logo-mascot"
+  xpReward: 0
+
+  tasks:
+
+    # ── TASK 1 ────────────────────────────────────────────────────────────────
+    - id: nexus-onboarding-t1
+      type: task
+      title: "Welcome to NEXUS"
+      order: 1
+      xpReward: 5
+      sections:
+        - type: theory
+          content: |
+            ## Welcome, Agent.
+
+            **NEXUS** is your new learning platform for Soutien Informatique courses.
+
+            Here is how it works:
+            - **Parcours** are complete learning programs (ex : Nexus-Guide, Compétence 10...)
+            - **Tracks** are learning paths inside a Parcours (ex : Linux, Windows, Networking...)
+            - **Modules** are chapters inside a track
+            - **Tasks** are lessons inside a module — like this one
+            - **Challenges** are hands-on exercises evaluated by your teacher at the end of each module
+
+
+            Think of it as a tree:
+            **Parcours** → **Track** → **Module** → **Task** → **Challenge**
+
+            You progress by completing tasks and earning **XP (Experience Points)**.
+            As you accumulate XP, you unlock new avatar costumes for your profile.
+
+        - type: theory
+          content: |
+            ## How to navigate
+
+            On the left sidebar, you can see all available **tracks** grouped
+            by course. Click on a track to open its **map** — a visual path
+            showing all the modules you need to complete.
+
+        - type: image
+          src: "/content-images/nexus-guide-1.png"
+          alt: "NEXUS sidebar showing Parcours, Tracks and Modules"
+          caption: "The sidebar — your learning path at a glance"
+
+        - type: theory
+          content: |
+            Click on a **module island** on the map to open its tasks.
+            Complete all tasks in order to unlock the next module.
+
+            The **challenge** at the end of each module is a hands-on exercise
+            that your teacher will evaluate. You need to complete all tasks
+            before the challenge becomes available.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "What is a 'Track' in NEXUS?"
+              answers:
+                - text: "A single lesson"
+                  correct: false
+                - text: "A learning path (ex: Linux, Windows, Networking)"
+                  correct: true
+                - text: "A hands-on exercise"
+                  correct: false
+                - text: "Your user profile"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "What do you need to complete before a Challenge becomes available?"
+              answers:
+                - text: "Only the first task"
+                  correct: false
+                - text: "At least 50% of the tasks"
+                  correct: false
+                - text: "All tasks in the module"
+                  correct: true
+                - text: "Nothing — challenges are always available"
+                  correct: false
+
+    # ── TASK 2 ────────────────────────────────────────────────────────────────
+    - id: nexus-onboarding-t2
+      type: task
+      title: "What is a Virtual Machine?"
+      order: 2
+      xpReward: 5
+      sections:
+        - type: theory
+          content: |
+            ## Virtual Machines (VMs)
+
+            A **virtual machine** is a simulated computer that runs inside your
+            real computer. It behaves exactly like a real PC — it has its own
+            operating system, files, and settings — but it is completely isolated
+            from your main system.
+
+            Think of it as a **computer inside your computer**.
+
+            **Why do we use VMs in this course?**
+
+            - You can practice Linux commands safely without affecting your real PC
+            - If you break something, you can reset the VM and start fresh
+            - Each challenge comes with a pre-configured VM containing the files
+              you need to find and analyze
+            - You can run Linux on a Windows computer without installing it
+
+        - type: theory
+          content: |
+            ## VM Software
+
+            To run virtual machines, you need **virtualization software**.
+            Two options are available for this course:
+
+            | Software | Best for | License |
+            |----------|----------|---------|
+            | **VMware Workstation Pro** | Windows, better performance | Free for personal use |
+            | **VirtualBox** | Windows, macOS, Linux | Free and open-source |
+
+            **Both work with our VM files** — choose the one you prefer,
+            or use whichever is already installed on your computer.
+
+            In the next tasks, we will guide you through installing both options.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "What is a virtual machine?"
+              answers:
+                - text: "A very fast physical computer"
+                  correct: false
+                - text: "A simulated computer running inside your real computer"
+                  correct: true
+                - text: "A type of USB drive"
+                  correct: false
+                - text: "A cloud server"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "If you accidentally delete important files inside a VM, what can you do?"
+              answers:
+                - text: "Nothing — the files are gone forever"
+                  correct: false
+                - text: "Call technical support"
+                  correct: false
+                - text: "Reset or re-import the VM to start fresh"
+                  correct: true
+                - text: "Restart your real computer"
+                  correct: false
+
+    # ── TASK 3 ────────────────────────────────────────────────────────────────
+    - id: nexus-onboarding-t3
+      type: task
+      title: "Installing VMware Workstation Pro"
+      order: 3
+      xpReward: 5
+      sections:
+        - type: theory
+          content: |
+            ## VMware Workstation Pro
+
+            VMware Workstation Pro is a professional virtualization tool.
+            It is now **free for personal and educational use**.
+
+            ### Installation steps
+
+            **Step 1 — Download VMware Workstation Pro**
+
+            Go to the official VMware download page:
+            [https://www.vmware.com/products/workstation-pro.html](https://www.vmware.com/products/workstation-pro.html)
+
+            Click **"Download for Free"** and create a free Broadcom account
+            if you don't already have one.
+
+            **Step 2 — Run the installer**
+
+            Double-click the downloaded `.exe` file and follow the installation wizard:
+            - Accept the license agreement
+            - Choose the installation folder (default is fine)
+            - **Uncheck** "Enhanced Keyboard Driver" if you don't need it
+            - Click **Install**
+
+            **Step 3 — Launch VMware**
+
+            After installation, open VMware Workstation Pro.
+            When asked for a license key, select **"Use VMware Workstation Pro for Personal Use"**
+            — this gives you the full version for free.
+
+        - type: theory
+          content: |
+            ## Verify your installation
+
+            When VMware opens successfully, you should see the main window
+            with options to **Create a New Virtual Machine** or **Open a Virtual Machine**.
+
+            If you see this screen — you are ready to import the course VMs! ✓
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "VMware Workstation Pro is now free for which type of use?"
+              answers:
+                - text: "Commercial use only"
+                  correct: false
+                - text: "Personal and educational use"
+                  correct: true
+                - text: "It is never free"
+                  correct: false
+                - text: "Only for students under 18"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "During VMware installation, which option should you select for a free license?"
+              answers:
+                - text: "Enter a purchased license key"
+                  correct: false
+                - text: "Use the 30-day trial"
+                  correct: false
+                - text: "Use VMware Workstation Pro for Personal Use"
+                  correct: true
+                - text: "Skip the license step"
+                  correct: false
+
+    # ── TASK 4 ────────────────────────────────────────────────────────────────
+    - id: nexus-onboarding-t4
+      type: task
+      title: "Installing VirtualBox (Alternative)"
+      order: 4
+      xpReward: 5
+      sections:
+        - type: theory
+          content: |
+            ## VirtualBox
+
+            VirtualBox is a **free and open-source** alternative to VMware.
+            It works on Windows, macOS, and Linux.
+
+            If VMware is already installed on your computer, you can skip this task.
+            VirtualBox is an alternative — you only need one virtualization tool.
+
+            ### Installation steps
+
+            **Step 1 — Download VirtualBox**
+
+            Go to the official website:
+            [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
+
+            Under **"VirtualBox platform packages"**, click
+            **"Windows hosts"** to download the installer.
+
+            Also download the **"VirtualBox Extension Pack"** from the same page
+            — it adds USB support and other useful features.
+
+            **Step 2 — Install VirtualBox**
+
+            Run the downloaded `.exe` file:
+            - Click **Next** through the wizard
+            - Keep default options
+            - You may see a warning about network interfaces — click **Yes** to continue
+            - Click **Install**
+
+            **Step 3 — Install the Extension Pack**
+
+            After VirtualBox is installed:
+            - Open VirtualBox
+            - Go to **File → Tools → Extension Pack Manager**
+            - Click the **Install** button and select the `.vbox-extpack` file you downloaded
+            - Accept the license
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "VirtualBox is developed and maintained by which company?"
+              answers:
+                - text: "Microsoft"
+                  correct: false
+                - text: "VMware"
+                  correct: false
+                - text: "Oracle"
+                  correct: true
+                - text: "Canonical"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "Do you need both VMware AND VirtualBox installed?"
+              answers:
+                - text: "Yes, both are required for this course"
+                  correct: false
+                - text: "No, you only need one virtualization tool"
+                  correct: true
+                - text: "Yes, different VMs require different software"
+                  correct: false
+                - text: "Only VirtualBox is supported"
+                  correct: false
+
+    # ── TASK 5 ────────────────────────────────────────────────────────────────
+    - id: nexus-onboarding-t5
+      type: task
+      title: "Downloading and Importing a VM"
+      order: 5
+      xpReward: 10
+      sections:
+        - type: theory
+          content: |
+            ## VM File Format: OVA
+
+            Course VMs are distributed as **OVA files** (Open Virtualization Appliance).
+            This is a universal format that works with both VMware and VirtualBox.
+
+            Each challenge in NEXUS that requires a VM will provide a **download link**
+            directly in the challenge instructions.
+
+            ## How to import an OVA file
+
+            ### In VMware Workstation Pro
+
+            1. Open VMware Workstation Pro
+            2. Click **File → Open**
+            3. Navigate to your downloaded `.ova` file and click **Open**
+            4. Choose a name and location for the VM
+            5. Click **Import** — wait for the import to complete
+            6. The VM will appear in your library on the left
+
+            ### In VirtualBox
+
+            1. Open VirtualBox
+            2. Click **File → Import Appliance** (or press `Ctrl+I`)
+            3. Click the folder icon and select your `.ova` file
+            4. Click **Next** to review the VM settings
+            5. Click **Finish** — wait for the import to complete
+            6. The VM will appear in your VirtualBox library
+
+        - type: theory
+          content: |
+            ## Starting the VM and logging in
+
+            Once imported, **start the VM** by double-clicking it or clicking
+            the **Start / Power On** button.
+
+            Wait for Ubuntu to boot — this usually takes 30-60 seconds the first time.
+
+            **Login credentials** are provided in each challenge's instructions.
+            Typically they look like:
+
+            ```
+            Username: student
+            Password: nexus2024
+            ```
+
+            Once logged in, open a **Terminal** by pressing `Ctrl+Alt+T`
+            and you are ready to start the challenge!
+
+        - type: theory
+          content: |
+            ## Important tips
+
+            - **Snapshots:** Before starting a challenge, take a snapshot
+              (VMware: `VM → Snapshot → Take Snapshot`). This lets you
+              revert to a clean state if needed.
+
+            - **Mouse capture:** Click inside the VM window to "capture" your mouse.
+              Press `Ctrl+Alt` (VMware) or `Right Ctrl` (VirtualBox) to release it.
+
+            - **Shared clipboard:** You can enable copy-paste between your host
+              and the VM in the VM settings.
+
+            - **VM files are large:** OVA files are typically 1-4 GB.
+              Make sure you have enough disk space before downloading.
+
+        - type: questions
+          items:
+            - id: q1
+              type: qcm
+              question: "What file format are NEXUS course VMs distributed in?"
+              answers:
+                - text: ".iso"
+                  correct: false
+                - text: ".vmdk"
+                  correct: false
+                - text: ".ova"
+                  correct: true
+                - text: ".zip"
+                  correct: false
+
+            - id: q2
+              type: qcm
+              question: "In VMware, what menu do you use to import an OVA file?"
+              answers:
+                - text: "Edit → Import"
+                  correct: false
+                - text: "File → Open"
+                  correct: true
+                - text: "VM → Import Appliance"
+                  correct: false
+                - text: "Tools → Add VM"
+                  correct: false
+
+            - id: q3
+              type: qcm
+              question: "After importing and starting the VM, how do you open a terminal in Ubuntu?"
+              answers:
+                - text: "Double-click the desktop"
+                  correct: false
+                - text: "Press Ctrl+Alt+T"
+                  correct: true
+                - text: "Press F1"
+                  correct: false
+                - text: "Click Start → Terminal"
+                  correct: false
+
+            - id: q4
+              type: qcm
+              question: "What is the purpose of taking a VM snapshot before a challenge?"
+              answers:
+                - text: "To take a screenshot of the VM screen"
+                  correct: false
+                - text: "To save disk space"
+                  correct: false
+                - text: "To be able to revert to a clean state if needed"
+                  correct: true
+                - text: "It is required by NEXUS to validate the challenge"
+                  correct: false

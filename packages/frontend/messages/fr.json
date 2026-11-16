@@ -1,0 +1,99 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "close": "Fermer",
+    "add": "Ajouter",
+    "create": "Créer",
+    "creating": "Création…",
+    "noActivity": "Aucune activité encore."
+  },
+  "time": {
+    "justNow": "à l'instant",
+    "minutesAgo": "il y a {count}m",
+    "hoursAgo": "il y a {count}h",
+    "daysAgo": "il y a {count}j"
+  },
+  "login": {
+    "title": "Connexion",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion…",
+    "errorDefault": "Erreur de connexion",
+    "errorServer": "Impossible de contacter le serveur"
+  },
+  "nav": {
+    "myMap": "Ma carte",
+    "map": "Carte",
+    "profile": "Profil",
+    "classe": "Classe",
+    "admin": "Admin"
+  },
+  "sidebar": {
+    "navigation": "Navigation",
+    "loading": "Chargement…",
+    "noClass": "Aucun cours assigné.",
+    "contactTeacher": "Contacte ton professeur pour rejoindre une classe."
+  },
+  "profile": {
+    "loading": "Chargement…",
+    "level": "Niveau {level}",
+    "levelShort": "Niv. {level}",
+    "xpUntilNext": "{xp} XP avant Niv. {next}",
+    "stats": "Statistiques",
+    "tasksCompleted": "tasks complétées",
+    "modulesCompleted": "modules complétés",
+    "tracksCompleted": "tracks complétés",
+    "totalXp": "XP total",
+    "badges": "Mes badges",
+    "noBadges": "Aucun badge encore.",
+    "avatars": "Mes avatars",
+    "avatarUnlockHint": "Complète des modules pour débloquer de nouveaux avatars ! 🐧",
+    "xpHistory": "Historique XP"
+  },
+  "map": {
+    "selectTrack": "Sélectionne un track dans la sidebar pour commencer.",
+    "locked": "Verrouillé",
+    "lockedHint": "Complète le parcours prérequis d'abord"
+  },
+  "classe": {
+    "title": "Ma classe",
+    "loading": "Chargement de ta classe…",
+    "noClass": "Tu n'es dans aucune classe.",
+    "xp": "XP",
+    "you": "toi"
+  },
+  "admin": {
+    "classes": "Classes",
+    "students": "Étudiants",
+    "profs": "Profs",
+    "dashboard": "Dashboard",
+    "loading": "Chargement…",
+    "noClasses": "Aucune classe encore",
+    "noClassesHint": "Créez votre première classe pour commencer.",
+    "newClass": "+ Nouvelle classe",
+    "createClass": "Créer une classe",
+    "className": "Nom de la classe",
+    "selectParcours": "Sélectionner un parcours (optionnel)…",
+    "inviteCode": "Code d'invitation",
+    "copy": "Copier",
+    "copied": "✓ Copié",
+    "progression": "Progression →",
+    "assignedParcours": "Parcours assignés",
+    "noParcours": "Aucun parcours assigné.",
+    "addParcours": "+ Ajouter un parcours",
+    "chooseParcours": "Choisir un parcours…",
+    "allTracks": "Tous les tracks",
+    "manageTracks": "Gérer",
+    "closeTracks": "Fermer",
+    "trackHint": "Coche les tracks visibles pour cette classe. Si tous cochés → pas de restriction.",
+    "loadingTracks": "Chargement des tracks…",
+    "noTracks": "Aucun track dans ce parcours.",
+    "deleteClass": "Supprimer",
+    "confirmDelete": "Confirmer"
+  }
+}
