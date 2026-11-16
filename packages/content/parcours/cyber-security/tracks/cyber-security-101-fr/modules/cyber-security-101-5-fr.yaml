@@ -1,0 +1,609 @@
+module:
+  id: cyber-security-101-5-fr
+  trackId: cyber-security-101-fr
+  title: "Prêt pour la mission"
+  description: "Vérifier son environnement, comprendre le cadre autorisé et confirmer les règles du laboratoire"
+  order: 5
+  mascot: "slyx-terminal2"
+  xpReward: 80
+  language: fr
+
+  # ── Métadonnées pédagogiques (pour référence enseignant — non chargées en DB) ──
+
+  estimatedDuration: "1h30"
+  level: beginner
+
+  summary: |
+    Ce module conclut la track Cyber Security 101. L'élève ne réalise pas encore de mission offensive
+    ou défensive complète. Il vérifie plutôt qu'il comprend les règles, les limites et les responsabilités
+    liées à l'utilisation d'outils de cybersécurité dans un laboratoire.
+
+    À la fin du module, l'élève doit être capable d'expliquer ce qu'est une cible autorisée,
+    pourquoi le contexte légal et éthique est essentiel, ce qu'il doit documenter pendant une mission
+    et comment vérifier que son environnement de laboratoire est prêt.
+
+    Ce module sert de passerelle vers la prochaine track : Start your journey.
+
+  pedagogicalIntent: |
+    L'objectif est de transformer les apprentissages de Cyber Security 101 en engagement professionnel.
+    Avant de commencer une première mission terrain, l'élève doit comprendre que les outils cyber
+    ne sont pas des jouets et que la différence entre une activité légitime et une activité interdite
+    repose souvent sur l'autorisation, la portée du mandat et la documentation.
+
+    Le module agit comme une certification de préparation : l'élève confirme qu'il comprend les règles
+    et qu'il est prêt à travailler dans un environnement contrôlé.
+
+  learningOutcomes:
+    - "Expliquer la différence entre une cible locale, une cible externe et une cible autorisée."
+    - "Comprendre pourquoi on ne doit jamais tester un système sans autorisation claire."
+    - "Définir la portée d'une mission de laboratoire."
+    - "Identifier les preuves à conserver pendant une mission cyber."
+    - "Décrire quoi faire en cas de découverte hors mandat."
+    - "Vérifier que son environnement de laboratoire est prêt pour la prochaine track."
+    - "Formuler un engagement professionnel avant d'utiliser des outils de cybersécurité."
+
+  prerequisites:
+    - "Avoir complété les modules précédents de Cyber Security 101."
+    - "Comprendre les notions de base : actif, risque, vulnérabilité, incident et autorisation."
+    - "Comprendre les notions d'éthique, de portée de mandat et de protection des renseignements personnels."
+    - "Savoir utiliser un navigateur et un terminal de base."
+
+    - type: teacher_note
+      title: "Intention pédagogique"
+      content: |
+        Ce module remplace l'ancienne mission offensive de fin de Cyber Security 101.
+        La mission offensive complète sera déplacée dans la track Start your journey.
+
+        L'intention est de terminer Cyber Security 101 avec une étape de préparation responsable :
+        l'élève sait maintenant ce qu'est la cybersécurité, ce qu'on protège, comment penser les risques,
+        pourquoi l'autorisation est essentielle et comment se préparer à un laboratoire.
+
+        Ce module peut être utilisé comme seuil d'accès à la prochaine track.
+
+  vocabulary:
+    - term: "Laboratoire cyber"
+      fr: "Laboratoire cyber"
+      definition: "Environnement contrôlé où les élèves peuvent pratiquer des actions de cybersécurité autorisées."
+    - term: "Cible autorisée"
+      fr: "Cible autorisée"
+      definition: "Système, site, service ou appareil que l'élève a explicitement le droit de tester dans le cadre du cours."
+    - term: "Cible externe"
+      fr: "Cible externe"
+      definition: "Système qui ne fait pas partie du laboratoire autorisé, par exemple un site public ou un appareil appartenant à quelqu'un d'autre."
+    - term: "localhost"
+      fr: "localhost"
+      definition: "Nom qui désigne la machine locale utilisée par l'élève."
+    - term: "Portée"
+      fr: "Portée"
+      definition: "Limites précises d'une mission : cible, outils permis, actions permises, actions interdites et durée."
+    - term: "Preuve"
+      fr: "Preuve"
+      definition: "Élément conservé pour démontrer ce qui a été observé ou réalisé : capture d'écran, commande, résultat, note ou rapport."
+    - term: "Découverte hors mandat"
+      fr: "Découverte hors mandat"
+      definition: "Information, système ou vulnérabilité trouvée en dehors des limites prévues par la mission."
+
+  safetyReminder: |
+    Ce module prépare l'élève à utiliser des outils de cybersécurité dans un cadre autorisé.
+    L'élève ne doit jamais scanner, tester ou explorer un système qui n'est pas explicitement fourni
+    par l'enseignant dans le cadre du laboratoire.
+
+  # ── Tâches ────────────────────────────────────────────────────────────────────
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-5-fr-t1
+      type: task
+      title: "Comprendre le laboratoire cyber"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Comprendre le rôle d'un laboratoire dans l'apprentissage de la cybersécurité."
+        - "Distinguer une pratique autorisée d'une action non autorisée."
+        - "Comprendre pourquoi l'environnement doit être contrôlé."
+      sections:
+
+        - type: theory
+          title: "Pourquoi utiliser un laboratoire?"
+          content: |
+            En cybersécurité, certaines actions peuvent être utiles dans un contexte de formation,
+            mais problématiques ou illégales si elles sont réalisées sur un système non autorisé.
+
+            Un laboratoire cyber permet de pratiquer dans un environnement contrôlé. Les cibles sont
+            préparées pour l'apprentissage, les risques sont limités et les consignes sont connues.
+
+            Dans NEXUS, les missions cyber doivent toujours respecter le cadre donné par l'enseignant :
+            cible autorisée, outils permis, actions permises et preuves attendues.
+
+        - type: theory
+          title: "Capacité technique et autorisation"
+          content: |
+            Être capable de faire une action ne signifie pas avoir le droit de la faire.
+
+            Par exemple, un outil peut permettre de tester des pages web ou de découvrir des services.
+            Cet outil devient légitime seulement si la cible est autorisée et si l'action respecte
+            la portée du mandat.
+
+            C'est une règle professionnelle fondamentale : l'autorisation vient avant l'action technique.
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: "Pourquoi utilise-t-on un laboratoire cyber dans ce cours?"
+              answers:
+                - text: "Pour pratiquer dans un environnement contrôlé et autorisé."
+                  correct: true
+                - text: "Pour apprendre à tester n'importe quel site web public."
+                  correct: false
+                - text: "Pour contourner les règles de l'école."
+                  correct: false
+                - text: "Pour éviter de documenter les actions réalisées."
+                  correct: false
+
+            - id: t1-q2
+              type: qcm
+              question: "Quelle phrase décrit le mieux une règle professionnelle en cybersécurité?"
+              answers:
+                - text: "Si un outil fonctionne, on peut l'utiliser partout."
+                  correct: false
+                - text: "L'autorisation doit être claire avant d'effectuer un test."
+                  correct: true
+                - text: "Une page cachée est toujours une page libre d'accès."
+                  correct: false
+                - text: "Un technicien peut explorer toutes les données s'il a un compte administrateur."
+                  correct: false
+
+            - id: t1-q3
+              type: qcm
+              question: "Pourquoi la cible doit-elle être explicitement autorisée avant d’utiliser un outil de cybersécurité?"
+              answers:
+                - text: "Parce qu’un test non autorisé peut être illégal et causer des dommages à un système réel."
+                  correct: true
+                - text: "Parce que les outils cyber fonctionnent uniquement sur des systèmes appartenant à l’utilisateur."
+                  correct: false
+                - text: "Parce que la cible autorisée est toujours plus vulnérable qu’une cible non autorisée."
+                  correct: false
+                - text: "Parce que l’enseignant doit toujours voir les résultats pour corriger les exercices."
+                  correct: false
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-5-fr-t2
+      type: task
+      title: "Cible locale, cible externe et portée"
+      order: 2
+      xpReward: 10
+      objectives:
+        - "Comprendre la différence entre localhost, une cible locale et une cible externe."
+        - "Définir la portée d'une mission simple."
+        - "Reconnaître les limites qui seront utilisées dans la prochaine track."
+      sections:
+
+        - type: theory
+          title: "localhost et cible locale"
+          content: |
+            Le terme localhost désigne la machine locale. Quand un élève ouvre une adresse comme
+            http://localhost, il communique avec un service qui fonctionne sur sa propre VM ou son propre poste.
+
+            Une cible locale est utile pour apprendre, car elle permet de pratiquer sans toucher à des systèmes
+            externes. Elle limite les risques et clarifie le cadre de travail.
+
+        - type: theory
+          title: "Cible externe"
+          content: |
+            Une cible externe est un système qui n'appartient pas au laboratoire autorisé. Cela peut être
+            un site web public, une adresse IP sur Internet, un appareil du réseau de l'école, la machine
+            d'un collègue ou un service d'une vraie entreprise.
+
+            Même si une cible externe semble accessible, cela ne veut pas dire qu'elle peut être testée.
+
+        - type: theory
+          title: "La portée d'une mission"
+          content: |
+            La portée, ou scope, définit exactement ce qui est permis pendant une mission.
+
+            Une portée claire peut préciser :
+            - la cible autorisée;
+            - les outils permis;
+            - les actions permises;
+            - les actions interdites;
+            - la durée de la mission;
+            - les preuves attendues;
+            - la personne à avertir en cas de problème.
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Que désigne généralement localhost?"
+              answers:
+                - text: "La machine locale utilisée par l'élève."
+                  correct: true
+                - text: "Un serveur public sur Internet."
+                  correct: false
+                - text: "La machine d'un autre élève."
+                  correct: false
+                - text: "Un site web externe choisi au hasard."
+                  correct: false
+
+            - id: t2-q2
+              type: qcm
+              question: "Quel élément fait partie de la portée d'une mission?"
+              answers:
+                - text: "La cible autorisée et les actions permises."
+                  correct: true
+                - text: "Tous les sites que l'élève peut trouver."
+                  correct: false
+                - text: "Tous les appareils connectés au réseau."
+                  correct: false
+                - text: "Toutes les données accessibles techniquement."
+                  correct: false
+
+            - id: t2-q3
+              type: qcm
+              question: "Lequel de ces exemples représente une cible externe qui ne peut pas être testée sans autorisation?"
+              answers:
+                - text: "Le site web d’une entreprise commerciale accessible sur Internet."
+                  correct: true
+                - text: "La VM de laboratoire fournie par l’enseignant pour ce cours."
+                  correct: false
+                - text: "La page locale hébergée sur http://localhost dans ta propre VM."
+                  correct: false
+                - text: "Un serveur de test fictif créé dans le cadre d’un exercice NEXUS."
+                  correct: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-5-fr-t3
+      type: task
+      title: "Préparer les preuves et la documentation"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Identifier les preuves utiles pendant une mission cyber."
+        - "Comprendre pourquoi la documentation est importante."
+        - "Savoir quoi noter pendant une activité de laboratoire."
+      sections:
+
+        - type: theory
+          title: "Pourquoi documenter?"
+          content: |
+            En cybersécurité, documenter ses actions est essentiel. La documentation permet de comprendre
+            ce qui a été fait, de reproduire une observation, de communiquer avec une équipe et de justifier
+            une décision.
+
+            Un bon technicien ne se contente pas de dire : « ça marche » ou « j'ai trouvé quelque chose ».
+            Il précise la cible, l'heure, l'outil utilisé, le résultat observé et les limites de son analyse.
+
+        - type: theory
+          title: "Exemples de preuves"
+          content: |
+            Les preuves peuvent prendre plusieurs formes :
+
+            - capture d'écran d'une page ou d'un résultat;
+            - commande utilisée dans le terminal;
+            - sortie d'une commande;
+            - code HTTP observé;
+            - chemin ou page découverte;
+            - note sur une observation;
+            - recommandation ou conclusion.
+
+            Les preuves doivent être pertinentes. Il ne faut pas copier ou exposer des données personnelles
+            inutilement.
+
+        - type: theory
+          title: "Découverte hors mandat"
+          content: |
+            Si tu découvres une information ou un système qui semble sortir du cadre de la mission,
+            tu ne dois pas continuer à l'explorer par curiosité.
+
+            La bonne réaction est de t'arrêter, prendre une note minimale, éviter de copier des données sensibles
+            et avertir l'enseignant ou la personne responsable.
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "Quelle preuve est généralement utile dans un laboratoire cyber?"
+              answers:
+                - text: "Une capture d'écran pertinente avec une courte explication."
+                  correct: true
+                - text: "Une copie complète de toutes les données trouvées."
+                  correct: false
+                - text: "Une supposition non vérifiée."
+                  correct: false
+                - text: "Un message disant seulement : « j'ai réussi »."
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "Que dois-tu faire si tu découvres une donnée hors mandat?"
+              answers:
+                - text: "Continuer à fouiller pour comprendre toute la situation."
+                  correct: false
+                - text: "Copier les données pour les montrer à tout le monde."
+                  correct: false
+                - text: "T'arrêter, documenter minimalement et avertir la personne responsable."
+                  correct: true
+                - text: "Publier la découverte pour aider les autres."
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Laquelle de ces informations est utile à noter pendant une mission cyber?"
+              answers:
+                - text: "La commande exacte utilisée et le résultat observé dans le terminal."
+                  correct: true
+                - text: "L’historique complet de navigation de l’utilisateur sur le site cible."
+                  correct: false
+                - text: "Toutes les données personnelles trouvées pendant la mission pour les inclure dans le rapport."
+                  correct: false
+                - text: "Les noms des autres élèves présents en classe pendant la mission."
+                  correct: false
+
+    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
+    - id: cyber-security-101-5-fr-t4
+      type: task
+      title: "Vérifier son environnement"
+      order: 4
+      xpReward: 10
+      objectives:
+        - "Vérifier que l'environnement de laboratoire est accessible."
+        - "Identifier les outils de base qui seront utilisés dans les prochaines missions."
+        - "Comprendre que la vérification ne signifie pas encore commencer la mission offensive."
+      sections:
+
+        - type: theory
+          title: "Vérification avant mission"
+          content: |
+            Avant une mission, il faut vérifier que l'environnement est prêt. Cela évite de confondre
+            un problème technique avec un problème de cybersécurité.
+
+            Dans la prochaine track, l'enseignant fournira une cible Maple Tech Solutions préparée
+            pour le laboratoire. À cette étape, tu dois seulement comprendre comment vérifier un service,
+            une page locale et les outils nécessaires.
+
+        - type: command_table
+          title: "Commandes de vérification utiles"
+          headers:
+            - "Commande"
+            - "Rôle"
+          rows:
+            - command: "pwd"
+              description: "Afficher le répertoire courant."
+            - command: "ip addr"
+              description: "Afficher les interfaces réseau de la machine."
+            - command: "curl http://localhost"
+              description: "Vérifier qu'un site local répond, si une cible locale est fournie."
+            - command: "systemctl status apache2 --no-pager"
+              description: "Vérifier l'état du service Apache, si Apache est utilisé dans la VM."
+            - command: "dirb"
+              description: "Vérifier que l'outil dirb est disponible, sans lancer de scan."
+
+        - type: theory
+          title: "Attention"
+          content: |
+            Vérifier que dirb est installé ne veut pas dire lancer une reconnaissance.
+            Dans ce module, tu ne dois pas scanner de cible. La reconnaissance web sera faite dans
+            la prochaine track, avec une cible et une consigne précises.
+
+        - type: questions
+          items:
+            - id: t4-q1
+              type: qcm
+              question: "Quelle commande peut vérifier qu'une page locale répond?"
+              answers:
+                - text: "curl http://localhost"
+                  correct: true
+                - text: "rm -rf /"
+                  correct: false
+                - text: "scan internet"
+                  correct: false
+                - text: "sudo shutdown now"
+                  correct: false
+
+            - id: t4-q2
+              type: qcm
+              question: "Que signifie vérifier que dirb est disponible dans ce module?"
+              answers:
+                - text: "Confirmer que l'outil existe, sans scanner de cible."
+                  correct: true
+                - text: "Scanner immédiatement tous les sites accessibles."
+                  correct: false
+                - text: "Tester le réseau de l'école."
+                  correct: false
+                - text: "Chercher les appareils des autres élèves."
+                  correct: false
+
+            - id: t4-q3
+              type: qcm
+              question: "Pourquoi la cible de laboratoire est-elle préparée à l’avance par l’enseignant plutôt que par chaque élève?"
+              answers:
+                - text: "Pour que tous les élèves travaillent sur un environnement contrôlé et identique, sans dépendre d’un système externe."
+                  correct: true
+                - text: "Pour que la cible soit aussi difficile que possible à trouver avec dirb."
+                  correct: false
+                - text: "Parce que les élèves ne sont pas encore capables de déployer leur propre environnement Linux."
+                  correct: false
+                - text: "Parce que la loi oblige l’enseignant à surveiller directement chaque cible utilisée en classe."
+                  correct: false
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
+    - id: cyber-security-101-5-fr-c1
+      type: challenge
+      title: "Autorisation de mission"
+      order: 5
+      xpReward: 40
+      objectives:
+        - "Confirmer la compréhension des règles de laboratoire."
+        - "Expliquer les limites d'une mission cyber autorisée."
+        - "Préparer l'élève à la track Start your journey."
+      sections:
+
+        - type: mission
+          title: "Consigne du défi"
+          content: |
+            Tu termines Cyber Security 101. Avant d'accéder aux premières missions terrain,
+            tu dois compléter une courte fiche d'autorisation de mission.
+
+            Cette fiche confirme que tu comprends les règles du laboratoire, les limites d'une cible autorisée,
+            la notion de portée et les preuves attendues.
+
+        - type: theory
+          title: "Réponds aux questions suivantes"
+          content: |
+            Rédige des réponses courtes, en français.
+
+            1. Quelle est la différence entre une cible locale et une cible externe?
+            2. Pourquoi ne doit-on pas scanner un site public sans autorisation?
+            3. Que signifie la portée d'une mission cyber?
+            4. Que dois-tu faire si tu découvres une information hors mandat?
+            5. Donne deux exemples de preuves utiles pendant une mission.
+            6. Quelle cible fictive sera utilisée dans la prochaine track?
+            7. Écris une phrase d'engagement professionnel indiquant que tu utiliseras les outils cyber uniquement dans les laboratoires autorisés.
+
+        - type: hint
+          hints:
+            - "Pense à localhost, aux sites publics et aux machines des autres élèves."
+            - "La portée indique ce qui est permis et ce qui est interdit."
+            - "Une preuve peut être une capture d'écran, une commande ou un résultat observé."
+            - "La cible fictive de la prochaine track est Maple Tech Solutions."
+
+        - type: teacher_note
+          content: |
+            **Grille de correction (40 XP)**
+            - Différence entre cible locale et cible externe : 5 pts
+            - Explication de l'autorisation : 5 pts
+            - Définition de la portée : 5 pts
+            - Réaction à une découverte hors mandat : 5 pts
+            - Exemples de preuves : 5 pts
+            - Identification de Maple Tech Solutions : 5 pts
+            - Engagement professionnel clair : 5 pts
+            - Clarté générale des réponses : 5 pts
+
+        - type: questions
+          items:
+            - id: c1-q1
+              type: qcm
+              question: "Laquelle de ces affirmations décrit correctement une cible autorisée dans un laboratoire NEXUS?"
+              answers:
+                - text: "Un environnement local préparé par l’enseignant, explicitement désigné pour les exercices."
+                  correct: true
+                - text: "Tout site web accessible depuis le navigateur de la VM pendant les heures de cours."
+                  correct: false
+                - text: "Une adresse IP inconnue sur le réseau de l’école, à condition de ne pas modifier les données."
+                  correct: false
+                - text: "N’importe quel service local, même s’il n’est pas fourni dans le cadre du laboratoire."
+                  correct: false
+
+            - id: c1-q2
+              type: qcm
+              question: "Quelle phrase représente le meilleur engagement professionnel?"
+              answers:
+                - text: "J'utiliserai les outils cyber uniquement sur les cibles autorisées par l'enseignant."
+                  correct: true
+                - text: "J'utiliserai les outils cyber sur tous les sites qui semblent intéressants."
+                  correct: false
+                - text: "Je scannerai d'abord et je demanderai l'autorisation ensuite."
+                  correct: false
+                - text: "Je peux tester une cible externe si je ne modifie rien."
+                  correct: false
+
+      instructions: |
+        Complète une courte fiche d'autorisation de mission en français.
+
+        Ta fiche doit répondre aux questions suivantes :
+        - Quelle est la différence entre une cible locale et une cible externe?
+        - Pourquoi ne doit-on pas scanner un site public sans autorisation?
+        - Que signifie la portée d'une mission cyber?
+        - Que dois-tu faire si tu découvres une information hors mandat?
+        - Donne deux exemples de preuves utiles pendant une mission.
+        - Quelle cible fictive sera utilisée dans la prochaine track?
+        - Écris une phrase d'engagement professionnel.
+
+      expectedDeliverables:
+        - "Une fiche de préparation complétée en français."
+        - "Des réponses courtes mais claires."
+        - "Deux exemples de preuves utiles."
+        - "Une phrase d'engagement professionnel."
+      successCriteria:
+        - "L'élève distingue clairement cible locale et cible externe."
+        - "L'élève explique l'importance de l'autorisation."
+        - "L'élève comprend la notion de portée."
+        - "L'élève sait quoi faire en cas de découverte hors mandat."
+        - "L'élève identifie Maple Tech Solutions comme cible fictive de la prochaine track."
+      gradingRubric:
+        - criterion: "Cible locale et cible externe"
+          points: 5
+          description: "L'élève explique correctement la différence."
+        - criterion: "Autorisation"
+          points: 5
+          description: "L'élève explique pourquoi une autorisation est nécessaire."
+        - criterion: "Portée de mission"
+          points: 5
+          description: "L'élève décrit les limites d'une mission cyber."
+        - criterion: "Découverte hors mandat"
+          points: 5
+          description: "L'élève propose une réaction prudente et professionnelle."
+        - criterion: "Preuves"
+          points: 5
+          description: "L'élève donne deux exemples pertinents de preuves."
+        - criterion: "Préparation à la prochaine track"
+          points: 5
+          description: "L'élève identifie Maple Tech Solutions."
+        - criterion: "Engagement professionnel"
+          points: 5
+          description: "L'élève formule un engagement clair."
+        - criterion: "Clarté"
+          points: 5
+          description: "Les réponses sont compréhensibles et cohérentes."
+
+  # ── Métadonnées de complétion (référence — non chargées en DB) ──────────────
+
+  moduleCompletion:
+    requiredItems:
+      - cyber-security-101-5-fr-t1
+      - cyber-security-101-5-fr-t2
+      - cyber-security-101-5-fr-t3
+      - cyber-security-101-5-fr-t4
+      - cyber-security-101-5-fr-c1
+    completionCriteria:
+      - "L'élève comprend les règles du laboratoire cyber."
+      - "L'élève distingue une cible autorisée d'une cible externe."
+      - "L'élève comprend la notion de portée."
+      - "L'élève sait quoi documenter pendant une mission."
+      - "L'élève a complété la fiche d'autorisation de mission."
+    unlocks:
+      - cyber-start-your-journey-fr
+
+  teacherCorrectionGuide:
+    commonMisconceptions:
+      - misconception: "Si une page est accessible, j'ai le droit de la tester."
+        correction: "L'accessibilité technique ne donne pas l'autorisation. La cible doit être explicitement autorisée."
+      - misconception: "localhost est toujours dangereux."
+        correction: "localhost désigne la machine locale. Dans un laboratoire, c'est souvent une cible contrôlée et sécuritaire pour apprendre."
+      - misconception: "Une page cachée est forcément protégée."
+        correction: "Une page non liée publiquement n'est pas automatiquement protégée. La protection dépend du contrôle d'accès."
+      - misconception: "Il faut copier toutes les données trouvées pour prouver une faille."
+        correction: "Il faut limiter les preuves au nécessaire et éviter de copier des données sensibles inutilement."
+      - misconception: "Si je découvre quelque chose hors mandat, je continue pour mieux comprendre."
+        correction: "Il faut arrêter l'exploration, documenter minimalement et signaler la découverte."
+
+    suggestedFeedbackForChallenge:
+      excellent: |
+        Très bonne préparation. Les règles d'autorisation, de portée et de documentation sont bien comprises.
+        L'élève est prêt à passer aux premières missions terrain.
+      satisfactory: |
+        Bonne base. Les règles principales sont comprises, mais certaines réponses gagneraient à être plus précises,
+        surtout sur la portée ou les preuves attendues.
+      needsImprovement: |
+        La préparation est incomplète. Revois les notions de cible autorisée, de portée et de découverte hors mandat
+        avant de commencer les missions terrain.
+
+metadata:
+  version: "2.0-draft"
+  author: "Steeve Levesque / NEXUS"
+  createdFor: "Parcours Cyber Security"
+  notes: |
+    Version révisée du module 5. Ce module devient la conclusion de Cyber Security 101.
+    L'ancienne mission offensive avec dirb est déplacée vers la track Start your journey.

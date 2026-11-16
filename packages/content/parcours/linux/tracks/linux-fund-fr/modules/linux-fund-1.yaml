@@ -1,0 +1,1222 @@
+module:
+  id: linux-fund-1-fr
+  trackId: linux-fund-1-fr
+  title: "Linux Fundamentals 1 — Premier contact"
+  description: "Découvrir Linux, comprendre le terminal, se repérer dans l’arborescence et lire des fichiers sans modifier le système."
+  order: 1
+  mascot: "tux-terminal"
+  xpReward: 120
+  estimatedDuration: "60 à 90 minutes avec démonstration en classe"
+  language: "fr"
+  targetEnvironment:
+    distribution: "Ubuntu 24.04 LTS"
+    user: "student"
+    notes: "Ubuntu 24.04 LTS est utilisé comme base stable pour éviter les changements fréquents dans les VM."
+  pedagogicalIntent:
+    - "Démystifier Linux."
+    - "Faire pratiquer les premières commandes du terminal."
+    - "Construire les bases nécessaires avant les manipulations de fichiers."
+    - "Évaluer une compétence minimale de repérage dans le terminal."
+    - "Introduire l’univers NEXUS sans surcharger la théorie."
+  gradingPolicy:
+    sectionQuestions: "Sans pénalité; les élèves peuvent recommencer."
+    challengeQuestions: "Avec pénalité selon les règles de NEXUS."
+    xp: "Ludique seulement; ne correspond pas directement à une pondération officielle."
+  nexusFeaturesRecommended:
+    - type: "mission"
+      display: "Carte narrative sombre avec icône de briefing."
+    - type: "warning"
+      display: "Encadré jaune ou orange avec icône d’avertissement."
+    - type: "hint"
+      display: "Indice progressif dépliable, idéalement consommable un à la fois."
+    - type: "terminal_exercise"
+      display: "Bloc action à réaliser dans la VM, avec commande(s) attendue(s)."
+    - type: "validation"
+      display: "Question de validation liée à une action réelle."
+    - type: "teacher_note"
+      display: "Note visible seulement par l’enseignant."
+
+  tasks:
+
+    # ── TÂCHE 1 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t1
+      type: task
+      title: "Briefing NEXUS — Premier contact"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Comprendre le rôle du module."
+        - "Savoir que les actions seront réalisées dans une vraie VM Linux."
+        - "Adopter une posture de technicien prudent : observer avant de modifier."
+      sections:
+        - type: mission
+          title: "Briefing de départ"
+          content: |
+            Bienvenue dans ton premier module Linux de NEXUS.
+
+            Tu viens d’obtenir un accès contrôlé à une machine Linux. Pour l’instant, ton objectif n’est pas de réparer, pirater, supprimer ou modifier le système. Ton objectif est beaucoup plus important : **apprendre à te repérer**.
+
+            Un bon technicien ne commence pas par taper des commandes au hasard. Il observe, vérifie où il se trouve, identifie le compte utilisé, comprend l’arborescence, puis lit les informations disponibles avant d’agir.
+
+        - type: theory
+          title: "Ce que tu vas apprendre"
+          content: |
+            Dans ce module, tu vas apprendre à :
+
+            - distinguer Linux, le noyau et une distribution;
+            - comprendre le rôle d’Ubuntu 24.04 LTS dans le cours;
+            - utiliser le terminal et reconnaître l’invite de commande;
+            - identifier ton utilisateur avec `whoami`;
+            - vérifier ton emplacement avec `pwd`;
+            - comprendre les chemins absolus et relatifs;
+            - lister les fichiers avec `ls`, `ls -l` et `ls -a`;
+            - naviguer avec `cd`;
+            - lire des fichiers avec `cat`, `head`, `tail` et `wc -l`.
+
+        - type: warning
+          title: "Règle de sécurité du module"
+          content: |
+            Dans ce premier module, tu ne dois pas utiliser de commandes destructives.
+            Les commandes comme `rm`, `sudo`, `mv`, `cp`, `>` et `>>` seront vues plus tard.
+
+            Pour l’instant, tu vas surtout **observer et lire**.
+
+        - type: teacher_note
+          title: "Intention pédagogique"
+          content: |
+            Présenter ce module comme une prise de contact. Les élèves ont déjà vu un peu
+            de virtualisation et un peu de ligne de commande Windows, mais les chemins
+            absolus et relatifs doivent être enseignés explicitement.
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: "Dans ce premier module, quelle est la meilleure attitude à adopter comme technicien ?"
+              answers:
+                - text: "Taper rapidement des commandes pour voir ce qui arrive."
+                  correct: false
+                - text: "Observer, vérifier où on se trouve, puis lire les informations disponibles."
+                  correct: true
+                - text: "Supprimer les fichiers inutiles pour nettoyer le système."
+                  correct: false
+                - text: "Utiliser sudo dès qu’une commande ne fonctionne pas."
+                  correct: false
+              feedback:
+                correct: "Exact. Un technicien commence par comprendre l’environnement avant d’agir."
+                incorrect: "Relis le briefing : dans ce module, l’objectif est d’observer et de se repérer."
+
+    # ── TÂCHE 2 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t2
+      type: task
+      title: "C’est quoi Linux ?"
+      order: 2
+      xpReward: 10
+      objectives:
+        - "Distinguer le noyau Linux du système complet utilisé par l’élève."
+        - "Comprendre pourquoi Linux est important en soutien informatique."
+      sections:
+        - type: theory
+          title: "Linux : le noyau au centre du système"
+          content: |
+            Dans le langage courant, on dit souvent “Linux” pour parler d’un système
+            d’exploitation complet. Techniquement, Linux désigne d’abord le **noyau**
+            (*kernel*).
+
+            Le noyau est la partie centrale qui permet au système de communiquer avec
+            le matériel : processeur, mémoire, disque, périphériques, réseau, etc.
+
+            Une distribution Linux ajoute autour de ce noyau plusieurs éléments :
+            des outils système, des bibliothèques, un shell, un gestionnaire de paquets,
+            des services, parfois une interface graphique et des applications.
+
+        - type: theory
+          title: "Une distribution Linux en couches"
+          content: |
+            On peut représenter une distribution Linux comme une série de couches :
+
+            1. **Matériel** : processeur, mémoire, disque, carte réseau.
+            2. **Noyau Linux** : communication entre le matériel et le système.
+            3. **Outils système et bibliothèques** : fonctions de base utilisées par le système.
+            4. **Shell et services** : commandes, processus, réseau, journaux, utilisateurs.
+            5. **Gestionnaire de paquets** : installation et mise à jour des logiciels.
+            6. **Interface graphique et applications** : environnement utilisé par l’humain.
+
+        - type: image
+          src: "/content-images/linux-conept.webp"
+          alt: "Concept Distro Linux"
+          caption: "Diagramme du concept de distribution Linux"
+
+        - type: theory
+          title: "Pourquoi apprendre Linux ?"
+          content: |
+            Linux est utilisé dans plusieurs contextes importants :
+
+            - serveurs web;
+            - systèmes infonuagiques;
+            - équipements réseau;
+            - systèmes embarqués;
+            - outils de cybersécurité;
+            - téléphones Android;
+            - environnements de développement.
+
+            En soutien informatique, même si ton poste principal est sous Windows,
+            tu peux rencontrer Linux dans des serveurs, des équipements spécialisés,
+            des machines virtuelles, des appliances ou des outils de diagnostic.
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Techniquement, Linux désigne d’abord :"
+              answers:
+                - text: "Un logiciel de traitement de texte."
+                  correct: false
+                - text: "Le noyau du système."
+                  correct: true
+                - text: "Une marque d’ordinateur."
+                  correct: false
+                - text: "Une interface graphique obligatoire."
+                  correct: false
+              feedback:
+                correct: "Exact. Dans le langage courant, on dit souvent Linux pour tout le système, mais Linux est d’abord le noyau."
+                incorrect: "Pense à la partie centrale qui communique avec le matériel."
+
+            - id: t2-q2
+              type: qcm
+              question: "Quel élément permet d’installer et de mettre à jour des logiciels dans une distribution Linux ?"
+              answers:
+                - text: "Le gestionnaire de paquets."
+                  correct: true
+                - text: "Le fond d’écran."
+                  correct: false
+                - text: "Le clavier."
+                  correct: false
+                - text: "Le BIOS seulement."
+                  correct: false
+
+            - id: t2-q3
+              type: short_answer
+              question: "Quel mot anglais désigne le noyau du système ?"
+              acceptedAnswers:
+                - "kernel"
+                - "Kernel"
+              trimWhitespace: true
+              caseSensitive: false
+
+    # ── TÂCHE 3 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t3
+      type: task
+      title: "Distributions Linux et Ubuntu 24.04 LTS"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Comprendre ce qu’est une distribution Linux."
+        - "Identifier Ubuntu 24.04 LTS comme environnement de référence du module."
+      sections:
+        - type: theory
+          title: "C’est quoi une distribution ?"
+          content: |
+            Une **distribution Linux** est un système complet construit autour du noyau Linux.
+            Les distributions n’utilisent pas toutes exactement les mêmes choix techniques.
+
+            Elles peuvent varier selon :
+
+            - la version du noyau utilisée;
+            - les outils installés par défaut;
+            - le gestionnaire de paquets;
+            - l’environnement graphique;
+            - la fréquence des mises à jour;
+            - le public visé : débutants, serveurs, cybersécurité, entreprises, etc.
+
+        - type: command_table
+          title: "Quelques distributions connues"
+          commands:
+            - cmd: "Ubuntu"
+              desc: "Populaire pour l’apprentissage, les postes de travail, les serveurs et le cloud."
+            - cmd: "Debian"
+              desc: "Très stable, souvent utilisée comme base pour d’autres distributions."
+            - cmd: "Fedora"
+              desc: "Distribution moderne, souvent proche des nouvelles technologies Linux."
+            - cmd: "Kali Linux"
+              desc: "Distribution spécialisée en cybersécurité et tests d’intrusion."
+            - cmd: "Red Hat Enterprise Linux"
+              desc: "Distribution commerciale très présente en entreprise."
+            - cmd: "Arch Linux"
+              desc: "Distribution très flexible, généralement destinée aux utilisateurs avancés."
+
+        - type: theory
+          title: "Pourquoi Ubuntu 24.04 LTS dans ce module ?"
+          content: |
+            Dans NEXUS, l’environnement principal de ce module est **Ubuntu 24.04 LTS**.
+
+            LTS signifie **Long Term Support**, c’est-à-dire support à long terme.
+            Ce choix est pratique en enseignement parce qu’il limite les changements
+            trop fréquents dans les machines virtuelles et offre une base stable pour les exercices.
+
+            Dans certains exercices plus avancés, tu pourrais installer une version plus récente
+            de Linux à partir de zéro. Mais pour les modules fondamentaux, Ubuntu 24.04 LTS
+            est la référence.
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "Qu’est-ce qu’une distribution Linux ?"
+              answers:
+                - text: "Un système complet construit autour du noyau Linux."
+                  correct: true
+                - text: "Une commande qui supprime des fichiers."
+                  correct: false
+                - text: "Un type de câble réseau."
+                  correct: false
+                - text: "Un antivirus Linux."
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "Que signifie LTS dans Ubuntu 24.04 LTS ?"
+              answers:
+                - text: "Linux Terminal System"
+                  correct: false
+                - text: "Long Term Support"
+                  correct: true
+                - text: "Latest Technical Shell"
+                  correct: false
+                - text: "Local Transfer Service"
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Pourquoi choisir une version LTS pour une VM de cours ?"
+              answers:
+                - text: "Parce qu’elle change tous les jours."
+                  correct: false
+                - text: "Parce qu’elle offre une base plus stable et prévisible."
+                  correct: true
+                - text: "Parce qu’elle ne contient aucun terminal."
+                  correct: false
+                - text: "Parce qu’elle fonctionne seulement sans Internet."
+                  correct: false
+
+    # ── TÂCHE 4 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t4
+      type: task
+      title: "Terminal, shell et invite de commande"
+      order: 4
+      xpReward: 10
+      objectives:
+        - "Distinguer terminal, shell et ligne de commande."
+        - "Lire les informations de base dans l’invite de commande."
+      sections:
+        - type: theory
+          title: "Trois mots souvent mélangés"
+          content: |
+            Quand on débute, on utilise souvent les mots **terminal**, **shell** et
+            **ligne de commande** comme s’ils voulaient dire exactement la même chose.
+            Ils sont liés, mais ils ne désignent pas tout à fait la même chose.
+
+            - Le **terminal** est l’application ou la fenêtre où tu tapes les commandes.
+            - Le **shell** est le programme qui interprète tes commandes. Sur Ubuntu, c’est souvent Bash.
+            - La **ligne de commande** est la méthode de travail où tu contrôles le système avec du texte.
+
+        - type: code_block
+          label: "Exemple d’invite de commande"
+          content: |
+            student@nexus-vm:~$
+
+        - type: theory
+          title: "Lire l’invite de commande"
+          content: |
+            Dans cet exemple :
+
+            - `student` est le nom de l’utilisateur connecté;
+            - `nexus-vm` est le nom de la machine;
+            - `~` indique le répertoire personnel de l’utilisateur;
+            - `$` indique généralement un utilisateur normal;
+            - `#` indiquerait généralement une session administrateur/root.
+
+        - type: warning
+          title: "Utilisateur normal ou administrateur ?"
+          content: |
+            Dans ce module, tu dois travailler comme utilisateur normal. Si tu vois `#`
+            à la fin de l’invite, tu es probablement dans une session administrateur.
+            C’est plus risqué, car les erreurs peuvent avoir plus d’impact.
+
+        - type: terminal_exercise
+          title: "Observer le terminal"
+          instructions: |
+            Ouvre le terminal dans ta VM. Observe l’invite de commande, puis repère :
+            le nom d’utilisateur, le nom de la machine et le symbole de fin de ligne.
+          expectedCommands: []
+
+        - type: questions
+          items:
+            - id: t4-q1
+              type: qcm
+              question: "Quel élément interprète les commandes que tu tapes ?"
+              answers:
+                - text: "Le shell."
+                  correct: true
+                - text: "L’écran."
+                  correct: false
+                - text: "Le câble réseau."
+                  correct: false
+                - text: "Le fond d’écran."
+                  correct: false
+
+            - id: t4-q2
+              type: qcm
+              question: "Dans l’invite student@nexus-vm:~$, que représente `~` ?"
+              answers:
+                - text: "Le répertoire personnel de l’utilisateur."
+                  correct: true
+                - text: "Le répertoire racine."
+                  correct: false
+                - text: "Un fichier supprimé."
+                  correct: false
+                - text: "Le nom de la machine."
+                  correct: false
+
+            - id: t4-q3
+              type: qcm
+              question: "Quel symbole indique généralement une session administrateur/root ?"
+              answers:
+                - text: "$"
+                  correct: false
+                - text: "#"
+                  correct: true
+                - text: "~"
+                  correct: false
+                - text: "@"
+                  correct: false
+
+    # ── TÂCHE 5 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t5
+      type: task
+      title: "Premiers repères : whoami, pwd, clear, history"
+      order: 5
+      xpReward: 15
+      objectives:
+        - "Identifier l’utilisateur actuel."
+        - "Vérifier son emplacement avant d’agir."
+        - "Nettoyer l’affichage et consulter l’historique des commandes."
+      sections:
+        - type: theory
+          title: "Avant d’agir, on se repère"
+          content: |
+            En soutien informatique, il est important de savoir **sous quel compte** tu travailles
+            et **dans quel dossier** tu te trouves.
+
+            Deux commandes deviennent donc des réflexes :
+
+            - `whoami` : affiche le nom de l’utilisateur actuel;
+            - `pwd` : affiche le chemin complet du dossier actuel.
+
+        - type: command_table
+          title: "Commandes de repérage"
+          commands:
+            - cmd: "whoami"
+              desc: "Affiche le nom de l’utilisateur actuellement connecté."
+            - cmd: "pwd"
+              desc: "Print Working Directory — affiche le chemin complet du dossier actuel."
+            - cmd: "clear"
+              desc: "Nettoie l’affichage du terminal sans effacer l’historique."
+            - cmd: "history"
+              desc: "Affiche les commandes déjà tapées dans le terminal."
+
+        - type: code_block
+          label: "Exemples"
+          content: |
+            student@nexus-vm:~$ whoami
+            student
+
+            student@nexus-vm:~$ pwd
+            /home/student
+
+            student@nexus-vm:~$ clear
+
+            student@nexus-vm:~$ history
+            1  whoami
+            2  pwd
+            3  clear
+            4  history
+
+        - type: terminal_exercise
+          title: "Vérifie ton identité et ton emplacement"
+          instructions: |
+            Dans ta VM, exécute les commandes suivantes :
+
+            1. `whoami`
+            2. `pwd`
+            3. `history`
+
+            Note mentalement le résultat. Tu en auras besoin pour répondre aux questions.
+          expectedCommands:
+            - "whoami"
+            - "pwd"
+            - "history"
+
+        - type: validation
+          title: "Validation rapide"
+          items:
+            - id: t5-v1
+              type: short_answer
+              question: "Quelle commande permet de savoir sous quel compte tu travailles ?"
+              acceptedAnswers:
+                - "whoami"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "La commande ressemble à une question en anglais."
+                - "Elle veut dire : qui suis-je ?"
+
+            - id: t5-v2
+              type: short_answer
+              question: "Quelle commande affiche le chemin complet du dossier actuel ?"
+              acceptedAnswers:
+                - "pwd"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Elle signifie Print Working Directory."
+
+        - type: questions
+          items:
+            - id: t5-q1
+              type: qcm
+              question: "Pourquoi `pwd` est-elle une commande importante avant de modifier des fichiers ?"
+              answers:
+                - text: "Elle permet de vérifier où l’on se trouve avant d’agir."
+                  correct: true
+                - text: "Elle supprime les fichiers temporaires."
+                  correct: false
+                - text: "Elle installe les mises à jour."
+                  correct: false
+                - text: "Elle redémarre le terminal."
+                  correct: false
+
+            - id: t5-q2
+              type: short_answer
+              question: "Quelle commande nettoie l’affichage du terminal ?"
+              acceptedAnswers:
+                - "clear"
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t5-q3
+              type: short_answer
+              question: "Quelle commande affiche les commandes déjà tapées ?"
+              acceptedAnswers:
+                - "history"
+              trimWhitespace: true
+              caseSensitive: false
+
+    # ── TÂCHE 6 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t6
+      type: task
+      title: "Comprendre l’arborescence Linux"
+      order: 6
+      xpReward: 15
+      objectives:
+        - "Comprendre la racine `/`."
+        - "Comprendre le répertoire personnel `/home/student`."
+        - "Distinguer `/`, `~`, `.`, `..`, chemin absolu et chemin relatif."
+      sections:
+        - type: theory
+          title: "Linux est organisé comme un arbre"
+          content: |
+            Le système de fichiers Linux commence à un seul point de départ : `/`.
+            On l’appelle la **racine** du système.
+
+            Contrairement à Windows, Linux n’organise pas ses fichiers autour de lettres
+            de lecteurs comme `C:` ou `D:`. Tout est placé quelque part sous `/`.
+
+        - type: theory
+          title: "Comparaison avec Windows"
+          content: |
+            Sous Windows, le dossier personnel d’un utilisateur ressemble souvent à ceci :
+
+            `C:\Users\Steeve`
+
+            Sous Linux, le dossier personnel d’un utilisateur ressemble plutôt à ceci :
+
+            `/home/student`
+
+            Le symbole `~` est un raccourci qui représente le dossier personnel de
+            l’utilisateur actuel.
+
+        - type: command_table
+          title: "Symboles essentiels"
+          commands:
+            - cmd: "/"
+              desc: "Racine du système de fichiers Linux."
+            - cmd: "~"
+              desc: "Raccourci vers le répertoire personnel de l’utilisateur actuel."
+            - cmd: "."
+              desc: "Le dossier actuel."
+            - cmd: ".."
+              desc: "Le dossier parent, c’est-à-dire un niveau plus haut."
+            - cmd: "/home/student"
+              desc: "Exemple de chemin absolu vers le dossier personnel de l’utilisateur student."
+
+        - type: theory
+          title: "Chemin absolu et chemin relatif"
+          content: |
+            Un **chemin absolu** commence à la racine `/` et indique l’emplacement complet.
+
+            Exemple :
+
+            `/home/student/Documents`
+
+            Un **chemin relatif** part de l’endroit où tu te trouves présentement.
+
+            Exemple :
+
+            `Documents`
+
+            Si tu es déjà dans `/home/student`, alors `Documents` veut dire :
+            `/home/student/Documents`.
+
+        - type: code_block
+          label: "Exemples de chemins"
+          content: |
+            /home/student/Documents       # chemin absolu
+            Documents                     # chemin relatif depuis /home/student
+            ..                            # dossier parent
+            .                             # dossier actuel
+            ~                             # dossier personnel
+
+        - type: teacher_note
+          title: "Démonstration recommandée"
+          content: |
+            Dessiner au tableau une arborescence simple : / → home → student → Documents.
+            Faire ensuite le parallèle avec C:\Users\Nom sous Windows.
+            Insister sur le fait que les chemins relatifs dépendent toujours de l’endroit actuel.
+
+        - type: questions
+          items:
+            - id: t6-q1
+              type: qcm
+              question: "Quel symbole représente la racine du système de fichiers Linux ?"
+              answers:
+                - text: "C:"
+                  correct: false
+                - text: "/"
+                  correct: true
+                - text: "~"
+                  correct: false
+                - text: ".."
+                  correct: false
+
+            - id: t6-q2
+              type: qcm
+              question: "Que représente `~` sous Linux ?"
+              answers:
+                - text: "Le dossier personnel de l’utilisateur actuel."
+                  correct: true
+                - text: "La racine du système."
+                  correct: false
+                - text: "Un fichier temporaire."
+                  correct: false
+                - text: "Le dossier parent."
+                  correct: false
+
+            - id: t6-q3
+              type: qcm
+              question: "Le chemin `/home/student/Documents` est :"
+              answers:
+                - text: "Un chemin absolu."
+                  correct: true
+                - text: "Un chemin relatif."
+                  correct: false
+                - text: "Une commande Linux."
+                  correct: false
+                - text: "Un nom d’utilisateur."
+                  correct: false
+
+            - id: t6-q4
+              type: qcm
+              question: "Si tu es dans `/home/student`, que peut représenter le chemin relatif `Documents` ?"
+              answers:
+                - text: "/home/student/Documents"
+                  correct: true
+                - text: "/Documents seulement"
+                  correct: false
+                - text: "C:\\Documents"
+                  correct: false
+                - text: "Le dossier parent"
+                  correct: false
+
+    # ── TÂCHE 7 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t7
+      type: task
+      title: "Lister le contenu : ls, ls -l, ls -a"
+      order: 7
+      xpReward: 15
+      objectives:
+        - "Lister les fichiers et dossiers visibles."
+        - "Afficher les détails d’un dossier."
+        - "Afficher les fichiers cachés."
+      sections:
+        - type: theory
+          title: "Lister avant d’agir"
+          content: |
+            La commande `ls` permet de voir le contenu d’un dossier.
+
+            C’est une commande essentielle, parce qu’un technicien doit souvent vérifier
+            ce qui existe avant d’ouvrir, modifier, copier ou supprimer quoi que ce soit.
+
+        - type: command_table
+          title: "Variantes de ls"
+          commands:
+            - cmd: "ls"
+              desc: "Liste les fichiers et dossiers visibles dans le dossier actuel."
+            - cmd: "ls -l"
+              desc: "Affiche une liste détaillée : permissions, propriétaire, taille, date, nom."
+            - cmd: "ls -a"
+              desc: "Affiche aussi les fichiers et dossiers cachés."
+            - cmd: "ls -la"
+              desc: "Combine l’affichage détaillé et les fichiers cachés."
+
+        - type: code_block
+          label: "Exemples"
+          content: |
+            student@nexus-vm:~$ ls
+            Bureau  Documents  Images
+
+            student@nexus-vm:~$ ls -a
+            .  ..  .bashrc  .profile  Bureau  Documents  Images
+
+            student@nexus-vm:~$ ls -l
+            total 12
+            drwxr-xr-x 2 student student 4096 mai 29 09:00 Bureau
+            drwxr-xr-x 2 student student 4096 mai 29 09:00 Documents
+            drwxr-xr-x 2 student student 4096 mai 29 09:00 Images
+
+        - type: theory
+          title: "Fichiers cachés"
+          content: |
+            Sous Linux, un fichier ou un dossier dont le nom commence par un point est
+            caché dans l’affichage normal.
+
+            Exemple : `.bashrc`
+
+            Un fichier caché n’est pas nécessairement secret ou protégé. Il est simplement
+            masqué par défaut pour ne pas surcharger l’affichage.
+
+        - type: terminal_exercise
+          title: "Comparer ls et ls -a"
+          instructions: |
+            Dans ton répertoire personnel, exécute :
+
+            1. `ls`
+            2. `ls -a`
+            3. `ls -la`
+
+            Observe la différence entre les trois affichages.
+          expectedCommands:
+            - "ls"
+            - "ls -a"
+            - "ls -la"
+
+        - type: questions
+          items:
+            - id: t7-q1
+              type: short_answer
+              question: "Quelle commande liste les fichiers et dossiers visibles du dossier actuel ?"
+              acceptedAnswers:
+                - "ls"
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t7-q2
+              type: short_answer
+              question: "Quelle commande affiche aussi les fichiers cachés ?"
+              acceptedAnswers:
+                - "ls -a"
+                - "ls -la"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Les fichiers cachés commencent souvent par un point."
+                - "L’option à utiliser est la première lettre du mot anglais all."
+
+            - id: t7-q3
+              type: qcm
+              question: "Quel fichier serait caché par défaut sous Linux ?"
+              answers:
+                - text: "notes.txt"
+                  correct: false
+                - text: "Documents"
+                  correct: false
+                - text: ".profile"
+                  correct: true
+                - text: "rapport.pdf"
+                  correct: false
+
+            - id: t7-q4
+              type: qcm
+              question: "À quoi sert `ls -l` ?"
+              answers:
+                - text: "À afficher une liste détaillée."
+                  correct: true
+                - text: "À effacer le terminal."
+                  correct: false
+                - text: "À changer de dossier."
+                  correct: false
+                - text: "À compter les lignes d’un fichier."
+                  correct: false
+
+    # ── TÂCHE 8 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t8
+      type: task
+      title: "Naviguer : cd et les chemins"
+      order: 8
+      xpReward: 15
+      objectives:
+        - "Changer de dossier avec `cd`."
+        - "Utiliser `cd ..`, `cd ~` et `cd /chemin/absolu`."
+        - "Comprendre l’effet du dossier actuel sur les chemins relatifs."
+      sections:
+        - type: theory
+          title: "Changer de dossier"
+          content: |
+            La commande `cd` signifie **Change Directory**.
+            Elle permet de te déplacer dans l’arborescence Linux.
+
+            Pour bien utiliser `cd`, tu dois toujours garder en tête l’endroit où tu te trouves.
+            C’est pour cette raison que `pwd` et `cd` sont souvent utilisés ensemble.
+
+        - type: command_table
+          title: "Commandes de navigation"
+          commands:
+            - cmd: "cd Documents"
+              desc: "Entre dans le dossier Documents à partir du dossier actuel."
+            - cmd: "cd .."
+              desc: "Monte d’un niveau vers le dossier parent."
+            - cmd: "cd ~"
+              desc: "Retourne au dossier personnel."
+            - cmd: "cd"
+              desc: "Retourne aussi au dossier personnel dans la plupart des shells."
+            - cmd: "cd /home/student/Documents"
+              desc: "Utilise un chemin absolu pour aller directement à un dossier."
+            - cmd: "pwd"
+              desc: "Vérifie l’emplacement actuel après un déplacement."
+
+        - type: code_block
+          label: "Exemple de navigation"
+          content: |
+            student@nexus-vm:~$ pwd
+            /home/student
+
+            student@nexus-vm:~$ cd Documents
+            student@nexus-vm:~/Documents$ pwd
+            /home/student/Documents
+
+            student@nexus-vm:~/Documents$ cd ..
+            student@nexus-vm:~$ pwd
+            /home/student
+
+            student@nexus-vm:~$ cd /etc
+            student@nexus-vm:/etc$ pwd
+            /etc
+
+            student@nexus-vm:/etc$ cd ~
+            student@nexus-vm:~$ pwd
+            /home/student
+
+        - type: terminal_exercise
+          title: "Parcours guidé"
+          instructions: |
+            Exécute les commandes suivantes dans ta VM et observe l’invite de commande :
+
+            1. `pwd`
+            2. `ls`
+            3. `cd Documents`
+            4. `pwd`
+            5. `cd ..`
+            6. `pwd`
+            7. `cd /etc`
+            8. `pwd`
+            9. `cd ~`
+            10. `pwd`
+          expectedCommands:
+            - "pwd"
+            - "ls"
+            - "cd Documents"
+            - "pwd"
+            - "cd .."
+            - "pwd"
+            - "cd /etc"
+            - "pwd"
+            - "cd ~"
+            - "pwd"
+
+        - type: validation
+          title: "Validation de navigation"
+          items:
+            - id: t8-v1
+              type: short_answer
+              question: "Quelle commande permet de monter d’un niveau dans l’arborescence ?"
+              acceptedAnswers:
+                - "cd .."
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t8-v2
+              type: short_answer
+              question: "Quelle commande permet de retourner au dossier personnel ?"
+              acceptedAnswers:
+                - "cd ~"
+                - "cd"
+              trimWhitespace: true
+              caseSensitive: false
+
+        - type: questions
+          items:
+            - id: t8-q1
+              type: qcm
+              question: "Tu es dans `/home/student/Documents`. Tu tapes `cd ..`. Où te retrouves-tu ?"
+              answers:
+                - text: "/home/student"
+                  correct: true
+                - text: "/home"
+                  correct: false
+                - text: "/"
+                  correct: false
+                - text: "/home/student/Documents/.."
+                  correct: false
+
+            - id: t8-q2
+              type: qcm
+              question: "Quelle commande utilise un chemin absolu ?"
+              answers:
+                - text: "cd Documents"
+                  correct: false
+                - text: "cd /home/student/Documents"
+                  correct: true
+                - text: "cd .."
+                  correct: false
+                - text: "cd ."
+                  correct: false
+
+            - id: t8-q3
+              type: qcm
+              question: "Pourquoi est-il utile de taper `pwd` après certains déplacements ?"
+              answers:
+                - text: "Pour confirmer l’emplacement actuel."
+                  correct: true
+                - text: "Pour supprimer le dossier courant."
+                  correct: false
+                - text: "Pour installer Bash."
+                  correct: false
+                - text: "Pour afficher les fichiers cachés."
+                  correct: false
+
+    # ── TÂCHE 9 ───────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-t9
+      type: task
+      title: "Lire sans modifier : cat, head, tail, wc -l"
+      order: 9
+      xpReward: 15
+      objectives:
+        - "Lire le contenu complet d’un fichier."
+        - "Lire le début ou la fin d’un fichier."
+        - "Compter le nombre de lignes d’un fichier."
+      sections:
+        - type: theory
+          title: "Lire avant de modifier"
+          content: |
+            Lire les fichiers est une compétence fondamentale en soutien informatique.
+            Avant de modifier une configuration ou de poser un diagnostic, il faut souvent
+            consulter des fichiers texte : notes, informations système, journaux, listes,
+            rapports ou fichiers de configuration.
+
+            Dans ce module, on se limite à des commandes qui lisent l’information sans
+            modifier le système.
+
+        - type: command_table
+          title: "Commandes de lecture"
+          commands:
+            - cmd: "cat fichier.txt"
+              desc: "Affiche le contenu complet d’un fichier."
+            - cmd: "head fichier.txt"
+              desc: "Affiche les 10 premières lignes d’un fichier."
+            - cmd: "tail fichier.txt"
+              desc: "Affiche les 10 dernières lignes d’un fichier."
+            - cmd: "wc -l fichier.txt"
+              desc: "Compte le nombre de lignes dans un fichier."
+
+        - type: code_block
+          label: "Lire des informations système simples"
+          content: |
+            student@nexus-vm:~$ cat /etc/hostname
+            nexus-vm
+
+            student@nexus-vm:~$ cat /etc/os-release
+            PRETTY_NAME="Ubuntu 24.04 LTS"
+            NAME="Ubuntu"
+            VERSION_ID="24.04"
+
+        - type: code_block
+          label: "Lire un fichier de démonstration"
+          content: |
+            student@nexus-vm:~$ cat ~/nexus/rapport.txt
+            Ligne 1...
+            Ligne 2...
+            Ligne 3...
+
+            student@nexus-vm:~$ head ~/nexus/rapport.txt
+            (affiche les 10 premières lignes)
+
+            student@nexus-vm:~$ tail ~/nexus/rapport.txt
+            (affiche les 10 dernières lignes)
+
+            student@nexus-vm:~$ wc -l ~/nexus/rapport.txt
+            42 /home/student/nexus/rapport.txt
+
+        - type: terminal_exercise
+          title: "Lire le rapport NEXUS"
+          instructions: |
+            Dans ta VM, rends-toi dans ton dossier personnel, puis lis le fichier
+            `~/nexus/rapport.txt` avec les commandes suivantes :
+
+            1. `cat ~/nexus/rapport.txt`
+            2. `head ~/nexus/rapport.txt`
+            3. `tail ~/nexus/rapport.txt`
+            4. `wc -l ~/nexus/rapport.txt`
+          expectedCommands:
+            - "cat ~/nexus/rapport.txt"
+            - "head ~/nexus/rapport.txt"
+            - "tail ~/nexus/rapport.txt"
+            - "wc -l ~/nexus/rapport.txt"
+
+        - type: questions
+          items:
+            - id: t9-q1
+              type: qcm
+              question: "Quelle commande affiche le contenu complet d’un fichier ?"
+              answers:
+                - text: "cat"
+                  correct: true
+                - text: "pwd"
+                  correct: false
+                - text: "cd"
+                  correct: false
+                - text: "history"
+                  correct: false
+
+            - id: t9-q2
+              type: qcm
+              question: "Tu veux voir seulement les dernières lignes d’un long fichier. Quelle commande choisis-tu ?"
+              answers:
+                - text: "head"
+                  correct: false
+                - text: "tail"
+                  correct: true
+                - text: "whoami"
+                  correct: false
+                - text: "clear"
+                  correct: false
+
+            - id: t9-q3
+              type: short_answer
+              question: "Écris la commande pour compter le nombre de lignes dans `rapport.txt`."
+              acceptedAnswers:
+                - "wc -l rapport.txt"
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t9-q4
+              type: qcm
+              question: "Pourquoi évite-t-on de baser ce premier module sur des commandes comme `rm` ou `sudo` ?"
+              answers:
+                - text: "Parce que ce module vise d’abord l’observation et la lecture sans modification."
+                  correct: true
+                - text: "Parce que ces commandes n’existent pas sous Linux."
+                  correct: false
+                - text: "Parce qu’elles fonctionnent seulement sous Windows."
+                  correct: false
+                - text: "Parce qu’elles affichent seulement des images."
+                  correct: false
+
+    # ── DÉFI ──────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-fr-challenge
+      type: challenge
+      title: "Défi — Premier Contact"
+      order: 10
+      xpReward: 50
+      penaltyEnabled: true
+      recommendedVm: "linux-fund-1-challenge.ova"
+      vmStatus: "À créer après validation du YAML final."
+      objectives:
+        - "Utiliser les commandes de repérage et de navigation."
+        - "Trouver un fichier caché sans modifier le système."
+        - "Lire des informations et répondre dans NEXUS."
+      sections:
+        - type: mission
+          title: "Briefing de mission"
+          content: |
+            Agent, ta première vraie mission commence maintenant.
+
+            Une machine Linux d’entraînement a été préparée pour toi. Elle contient
+            quelques fichiers de diagnostic placés dans le répertoire personnel de
+            l’utilisateur `student`.
+
+            Ton objectif est de trouver les informations demandées en utilisant seulement
+            les commandes vues dans ce module.
+
+            Commandes autorisées :
+
+            - `whoami`
+            - `pwd`
+            - `clear`
+            - `history`
+            - `ls`
+            - `ls -l`
+            - `ls -a`
+            - `ls -la`
+            - `cd`
+            - `cat`
+            - `head`
+            - `tail`
+            - `wc -l`
+
+        - type: warning
+          title: "Interdiction de modifier le système"
+          content: |
+            Pour ce défi, tu ne dois pas créer, modifier, déplacer, copier ou supprimer
+            de fichiers. La mission consiste seulement à explorer et lire.
+
+            Les commandes comme `rm`, `mv`, `cp`, `touch`, `mkdir`, `sudo`, `>` et `>>`
+            ne sont pas nécessaires pour réussir ce défi.
+
+        - type: theory
+          title: "Accès à la VM"
+          content: |
+            Télécharge et lance la machine virtuelle fournie par ton enseignant.
+
+            Informations prévues :
+
+            - VM : `linux-fund-1-challenge.ova`
+            - Utilisateur : `student`
+            - Mot de passe : `nexus2026`
+            - Dossier de départ : `/home/student`
+
+        - type: questions
+          items:
+            - id: c1
+              type: short_answer
+              question: "Quel nom d’utilisateur est affiché par la commande `whoami` ?"
+              acceptedAnswers:
+                - "student"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "La commande à utiliser ressemble à une question en anglais."
+                - "Tape `whoami` dans le terminal."
+
+            - id: c2
+              type: short_answer
+              question: "Quel chemin complet est affiché par `pwd` au départ de la mission ?"
+              acceptedAnswers:
+                - "/home/student"
+                - "/home/student/"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "La commande `pwd` affiche ton emplacement actuel."
+                - "Tu devrais être dans le répertoire personnel de l’utilisateur student."
+
+            - id: c3
+              type: short_answer
+              question: "Quel est le chemin complet du fichier caché `flag.txt` ?"
+              acceptedAnswers:
+                - "/home/student/.nexus/flag.txt"
+                - "/home/student/.nexus/flag.txt/"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Un fichier ou dossier caché commence souvent par un point."
+                - "La commande `ls` seule ne montre pas tout."
+                - "Essaie `ls -a` dans `/home/student`."
+
+            - id: c4
+              type: short_answer
+              question: "Quel est le contenu du fichier caché `flag.txt` ?"
+              acceptedAnswers:
+                - "NEXUS-LINUX-FUND-1"
+                - "nexus-linux-fund-1"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Quand tu connais le chemin du fichier, utilise une commande de lecture."
+                - "La commande `cat` peut afficher le contenu complet d’un petit fichier."
+
+            - id: c5
+              type: short_answer
+              question: "Combien de lignes contient le fichier `/home/student/nexus/rapport.txt` ?"
+              acceptedAnswers:
+                - "42"
+                - "42 /home/student/nexus/rapport.txt"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "La commande demandée compte les lignes."
+                - "Utilise `wc -l /home/student/nexus/rapport.txt`."
+
+            - id: c6
+              type: short_answer
+              question: "Quelle commande complète as-tu utilisée pour compter les lignes du rapport ?"
+              acceptedAnswers:
+                - "wc -l /home/student/nexus/rapport.txt"
+                - "wc -l ~/nexus/rapport.txt"
+                - "cd ~/nexus && wc -l rapport.txt"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Un chemin absolu commence par `/`."
+                - "Le raccourci `~` représente aussi `/home/student` pour cet utilisateur."
+
+            - id: c7
+              type: qcm
+              question: "Quelle commande aurait été la plus utile pour découvrir le dossier `.nexus` ?"
+              answers:
+                - text: "ls -a"
+                  correct: true
+                - text: "clear"
+                  correct: false
+                - text: "pwd"
+                  correct: false
+                - text: "whoami"
+                  correct: false
+
+            - id: c8
+              type: qcm
+              question: "Dans cette mission, pourquoi faut-il éviter les commandes comme `rm` ou `sudo` ?"
+              answers:
+                - text: "Parce que la mission demande seulement d’explorer et de lire sans modifier le système."
+                  correct: true
+                - text: "Parce qu’elles servent uniquement à afficher les fichiers cachés."
+                  correct: false
+                - text: "Parce qu’elles remplacent la commande `pwd`."
+                  correct: false
+                - text: "Parce qu’elles sont nécessaires pour lire un fichier texte."
+                  correct: false
+
+        - type: teacher_note
+          title: "Contenu suggéré de la VM de défi"
+          content: |
+            Préparer une VM Ubuntu 24.04 LTS avec l’utilisateur student.
+
+            Structure suggérée :
+
+            /home/student/
+            ├── nexus/
+            │   └── rapport.txt           # fichier de 42 lignes
+            └── .nexus/
+                └── flag.txt              # contenu : NEXUS-LINUX-FUND-1
+
+            S’assurer que les élèves peuvent réussir avec les commandes du module seulement.
+            Ne pas exiger `grep`, `find`, `cp`, `mv`, `rm`, `sudo`, `>` ou `>>`.

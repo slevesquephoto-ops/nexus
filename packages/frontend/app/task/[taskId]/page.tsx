@@ -7,6 +7,12 @@ import CodeBlock from '../../components/task/CodeBlock'
 import CommandTable from '../../components/task/CommandTable'
 import QuestionsSection from '../../components/task/QuestionsSection'
 import ImageSection from '../../components/task/ImageSection'
+import MissionBlock from '../../components/task/MissionBlock'
+import WarningBlock from '../../components/task/WarningBlock'
+import HintBlock from '../../components/task/HintBlock'
+import TerminalExercise from '../../components/task/TerminalExercise'
+import ValidationBlock from '../../components/task/ValidationBlock'
+import TeacherNote from '../../components/task/TeacherNote'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -16,6 +22,12 @@ type Section =
   | { type: 'command_table'; commands: { cmd: string; desc: string }[] }
   | { type: 'questions'; items: Question[] }
   | { type: 'image'; src: string; alt: string; caption?: string }
+  | { type: 'mission'; title: string; content: string }
+  | { type: 'warning'; title: string; content: string }
+  | { type: 'hints' | 'hint'; hints: string[] }
+  | { type: 'terminal_exercise'; title: string; instructions: string; expectedCommands?: string[] }
+  | { type: 'validation'; title: string; question: string; acceptedAnswers: string[] }
+  | { type: 'teacher_note'; content: string }
 
 type Question =
   | { id: string; type: 'qcm'; question: string; answers: { text: string; correct: boolean }[] }
@@ -54,6 +66,7 @@ export default function TaskPage() {
   const [submitted, setSubmitted]     = useState<Record<string, boolean>>({})
   const [completing, setCompleting]   = useState(false)
   const [result, setResult]           = useState<CompletionResult | null>(null)
+  const [userRole, setUserRole]       = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
@@ -61,6 +74,11 @@ export default function TaskPage() {
     setSubmitted({})
     setResult(null)
     setModule(null)
+
+    fetch(`${API_URL}/api/users/me`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.user?.role) setUserRole(d.user.role) })
+      .catch(() => {})
 
     fetch(`${API_URL}/api/tasks/${taskId}`, { credentials: 'include' })
       .then(r => {
@@ -193,6 +211,33 @@ export default function TaskPage() {
               )
             case 'image':
               return <ImageSection key={i} src={section.src} alt={section.alt} caption={section.caption} />
+            case 'mission':
+              return <MissionBlock key={i} title={section.title} content={section.content} />
+            case 'warning':
+              return <WarningBlock key={i} title={section.title} content={section.content} />
+            case 'hints':
+            case 'hint':
+              return <HintBlock key={i} hints={section.hints} />
+            case 'terminal_exercise':
+              return <TerminalExercise key={i} title={section.title} instructions={section.instructions} expectedCommands={section.commands ?? section.expectedCommands} />
+            case 'validation':
+              if (section.items) {
+                return (
+                  <QuestionsSection
+                    key={i}
+                    items={section.items}
+                    answers={answers}
+                    submitted={submitted}
+                    onAnswer={(qId, val) => setAnswers(prev => ({ ...prev, [qId]: val }))}
+                    onSubmit={(qId, correct) => setSubmitted(prev => ({ ...prev, [qId]: correct }))}
+                  />
+                )
+              }
+              return <ValidationBlock key={i} title={section.title} question={section.question} acceptedAnswers={section.acceptedAnswers ?? []} />
+            case 'teacher_note':
+              return (userRole === 'TEACHER' || userRole === 'ADMIN')
+                ? <TeacherNote key={i} content={section.content} />
+                : null
           }
         })}
 

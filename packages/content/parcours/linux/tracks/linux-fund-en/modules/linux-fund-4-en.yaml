@@ -1,0 +1,997 @@
+module:
+  id: linux-fund-4-en
+  trackId: linux-en
+  title: Linux Fundamentals 4 — Basic Permissions
+  description: Understand Linux permissions, read file rights with ls -l, use chmod carefully, and apply the right habits before modifying access to a file or directory.
+  order: 4
+  mascot: tux-shield
+  xpReward: 150
+  estimatedDuration: 90 to 120 minutes with in-class demonstration
+  language: en
+  targetEnvironment:
+    distribution: Ubuntu 24.04 LTS
+    user: student
+    notes: "This module assumes linux-fund-1, linux-fund-2, and linux-fund-3 are completed: the student can navigate, manage files, search, filter, and produce short reports."
+  prerequisites:
+    - Use pwd, ls, ls -l, ls -la, cd, cat, less, find, and grep.
+    - Understand absolute and relative paths.
+    - Understand that Linux is case-sensitive.
+    - Know how to create, modify, copy, move, rename, and delete files carefully.
+    - Know how to produce a short record using the > and >> redirections.
+  pedagogicalIntent:
+    - Introduce Linux permissions as an essential foundation without yet entering full user administration.
+    - Learn to read the columns of ls -l.
+    - Understand the r, w, and x permissions on files and on directories.
+    - Use chmod with both symbolic notation and numeric notation.
+    - Build safe habits before modifying permissions.
+    - Prepare future Linux support, administration, and cybersecurity courses.
+  gradingPolicy:
+    sectionQuestions: No penalty; students may retry.
+    challengeQuestions: Penalty applies according to NEXUS rules.
+    xp: Gamification only; does not directly correspond to an official grade weight.
+  tasks:
+    - id: linux-fund-4-en-t1
+      type: task
+      title: NEXUS Briefing — Understanding Access
+      order: 1
+      xpReward: 10
+      objectives:
+        - Understand the purpose of this module.
+        - Identify why permissions matter in IT support.
+        - Distinguish between observing permissions and modifying permissions.
+      sections:
+        - type: mission
+          title: Mission Briefing
+          content: |
+            Agent, you now know how to navigate Linux, manage files, and search for information.
+
+            One essential concept remains before completing the fundamentals: **permissions**.
+
+            In Linux, a file can exist but not be readable. A script can be present but not executable. A directory can be visible but impossible to enter.
+
+            In this module, you will learn to read permissions, understand what they mean, and modify them carefully using `chmod`.
+        - type: theory
+          title: What You Will Learn
+          content: |
+            In this module, you will learn to:
+
+            - read the permissions displayed by `ls -l`;
+            - recognize the three categories: owner, group, and others;
+            - understand the `r`, `w`, and `x` rights;
+            - distinguish permissions on a file from permissions on a directory;
+            - use `chmod` with symbolic notation;
+            - use `chmod` with numeric notation;
+            - understand why `chmod 777` is dangerous;
+            - apply a careful method before modifying permissions.
+        - type: warning
+          title: This Module Stays Within the Fundamentals
+          content: |
+            This module does not yet cover full user and group management, `sudo`, `chown`, or `chgrp`.
+
+            The objective here is to understand basic permissions using `ls -l` and `chmod`.
+        - type: teacher_note
+          title: Pedagogical Intent
+          content: |
+            This module should be the last Linux Fundamentals module before the integrated exam.
+            The topics sudo, chown, chgrp, users, and groups should be moved to Linux Administration.
+            Permission-denied diagnostic scenarios can be revisited later in Linux Support or Linux Administration.
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: What is the main objective of this module?
+              answers:
+                - text: Learning how to set up a Linux server.
+                  correct: false
+                - text: Understanding and carefully modifying basic permissions.
+                  correct: true
+                - text: Learning how to create Linux users.
+                  correct: false
+                - text: Configuring Samba in a Windows domain.
+                  correct: false
+              feedback:
+                correct: Correct. This module focuses on basic permissions.
+                incorrect: "This module stays within the fundamentals: reading permissions and using chmod carefully."
+
+    - id: linux-fund-4-en-t2
+      type: task
+      title: Setting Up the Permissions Lab
+      order: 2
+      xpReward: 10
+      objectives:
+        - Create a controlled working directory.
+        - Reactivate commands from previous modules.
+        - Prepare simple files for observing permissions.
+      sections:
+        - type: theory
+          title: Working in a Controlled Environment
+          content: |
+            Before learning a command that modifies permissions, you should work inside a lab directory.
+
+            In a real support environment, you avoid testing commands on system files or important directories.
+
+            Here, you will work in your home directory, inside a directory named `nexus-fund4`.
+        - type: terminal_exercise
+          title: Create the Lab Directory
+          instructions: |
+            Run the following commands in your VM.
+          commands:
+            - cd ~
+            - mkdir -p nexus-fund4/scripts nexus-fund4/documents nexus-fund4/public
+            - cd nexus-fund4
+            - echo "Rapport de permissions NEXUS" > documents/rapport.txt
+            - echo "echo Mission NEXUS active" > scripts/mission.sh
+            - echo "Information publique" > public/info.txt
+            - pwd
+            - ls -la
+          expectedObservation: "You should see the documents, public, and scripts directories inside nexus-fund4."
+        - type: warning
+          title: Setup Commands
+          content: |
+            Some of the commands above use `echo` and the `>` redirection to prepare lab files.
+
+            These concepts were covered in `linux-fund-3`. Here, they are used mainly to create test files.
+        - type: validation
+          title: Validation
+          question: What is the name of the lab directory used in this module?
+          answerType: short_answer
+          acceptedAnswers:
+            - nexus-fund4
+            - "nexus-fund4/"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - The directory was created in your home directory.
+            - It starts with `nexus-`.
+
+    - id: linux-fund-4-en-t3
+      type: task
+      title: Reading Permissions with ls -l
+      order: 3
+      xpReward: 15
+      objectives:
+        - Read the output of ls -l.
+        - Identify the element type.
+        - Locate the permissions, owner, and group.
+      sections:
+        - type: theory
+          title: Understanding the First Column of ls -l
+          content: |
+            The `ls -l` command displays a detailed list.
+
+            Example:
+
+            ```bash
+            -rw-r--r-- 1 student student 28 mai 29 10:00 rapport.txt
+            ```
+
+            The first column contains a lot of information:
+
+            ```text
+            -rw-r--r--
+            ```
+
+            It can be broken down as follows:
+
+            ```text
+            - | rw- | r-- | r--
+            ```
+
+            - the first character indicates the type;
+            - the next three characters apply to the owner;
+            - the following three apply to the group;
+            - the last three apply to other users.
+        - type: theory
+          title: File Type
+          content: |
+            The first character indicates the type of element.
+
+            Common examples:
+
+            ```text
+            -    regular file
+            d    directory
+            l    symbolic link
+            ```
+
+            In this module, you will mostly see `-` for files and `d` for directories.
+        - type: terminal_exercise
+          title: Observe Permissions
+          instructions: |
+            Observe the permissions of the files and directories in your lab.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -l
+            - ls -l documents
+            - ls -l scripts
+          expectedObservation: "Directories generally start with d. Files generally start with -."
+        - type: validation
+          title: Validation
+          question: In the output of ls -l, which character at the start of a line generally indicates a directory?
+          answerType: short_answer
+          acceptedAnswers:
+            - d
+            - "d "
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - A regular file generally starts with `-`.
+            - A directory starts with the first letter of the word "directory."
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: In `-rw-r--r--`, what does the first character `-` represent?
+              answers:
+                - text: The file is empty.
+                  correct: false
+                - text: The element is a regular file.
+                  correct: true
+                - text: The file is hidden.
+                  correct: false
+                - text: The file belongs to the root group.
+                  correct: false
+              feedback:
+                correct: Correct. The first character indicates the type of element.
+                incorrect: The first character indicates the type, for example file or directory.
+
+    - id: linux-fund-4-en-t4
+      type: task
+      title: Owner, Group, and Others
+      order: 4
+      xpReward: 15
+      objectives:
+        - Distinguish owner, group, and others.
+        - Understand the three permission blocks.
+        - Connect the concept to a multi-user environment.
+      sections:
+        - type: theory
+          title: Three Access Categories
+          content: |
+            Linux is designed as a multi-user system.
+
+            Permissions are therefore divided into three categories:
+
+            ```text
+            u  user / owner
+            g  group
+            o  others / other users
+            ```
+
+            In a permission such as:
+
+            ```text
+            -rw-r--r--
+            ```
+
+            We can read:
+
+            ```text
+            owner  : rw-
+            group  : r--
+            others : r--
+            ```
+
+            This means the owner can read and write, while the group and others can only read.
+        - type: theory
+          title: Why This Matters
+          content: |
+            In IT support, a permission issue can explain several symptoms:
+
+            - a user cannot open a file;
+            - a script refuses to run;
+            - an application cannot write to a directory;
+            - a website cannot read a resource;
+            - a directory appears to exist but access is denied.
+
+            Before changing permissions, you must be able to read them.
+        - type: terminal_exercise
+          title: Identify Owner and Group
+          instructions: |
+            Observe the detailed output and locate the owner and group columns.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -l documents/rapport.txt
+            - ls -ld documents
+          expectedObservation: "You should see two columns likely containing student student: the owner and the group."
+        - type: validation
+          title: Validation
+          question: In Linux permissions, what are the three main access categories?
+          answerType: short_answer
+          acceptedAnswers:
+            - owner group others
+            - user group others
+            - u g o
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - The first category corresponds to the file owner.
+            - The short letters are `u`, `g`, and `o`.
+
+    - id: linux-fund-4-en-t5
+      type: task
+      title: Understanding r, w, and x
+      order: 5
+      xpReward: 15
+      objectives:
+        - Understand the meaning of r, w, and x.
+        - Distinguish a present permission from an absent one.
+        - Read a simple permission string.
+      sections:
+        - type: theory
+          title: The Three Basic Permissions
+          content: |
+            The three basic permissions are:
+
+            ```text
+            r  read     read the content
+            w  write    write / modify
+            x  execute  execute / traverse
+            ```
+
+            When a permission is absent, it is replaced by a dash `-`.
+
+            Example:
+
+            ```text
+            rw-
+            ```
+
+            means:
+
+            - read allowed;
+            - write allowed;
+            - execute not allowed.
+        - type: theory
+          title: Full Example
+          content: |
+            The following permission:
+
+            ```text
+            -rwxr-x---
+            ```
+
+            can be read as:
+
+            ```text
+            type   : regular file
+            owner  : rwx
+            group  : r-x
+            others : ---
+            ```
+
+            Therefore:
+
+            - the owner can read, modify, and execute;
+            - the group can read and execute;
+            - others have no rights at all.
+        - type: terminal_exercise
+          title: Read the Current Rights
+          instructions: |
+            Observe the permissions of the script file created earlier.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -l scripts/mission.sh
+          expectedObservation: "The file mission.sh exists, but it likely does not yet have execute permission."
+        - type: questions
+          items:
+            - id: t5-q1
+              type: qcm
+              question: In `rw-`, which permission is absent?
+              answers:
+                - text: Read.
+                  correct: false
+                - text: Write.
+                  correct: false
+                - text: Execute.
+                  correct: true
+                - text: Owner.
+                  correct: false
+              feedback:
+                correct: Correct. The dash in the third position indicates that `x` is absent.
+                incorrect: "Read the three positions in order: r, w, x."
+            - id: t5-q2
+              type: qcm
+              question: What does `---` mean in a permission block?
+              answers:
+                - text: All rights are granted.
+                  correct: false
+                - text: No rights are granted in this block.
+                  correct: true
+                - text: The file is hidden.
+                  correct: false
+                - text: The file is deleted.
+                  correct: false
+              feedback:
+                correct: Correct. The three dashes indicate the absence of r, w, and x.
+                incorrect: A dash replaces an absent permission.
+
+    - id: linux-fund-4-en-t6
+      type: task
+      title: Files and Directories — x Does Not Always Mean the Same Thing
+      order: 6
+      xpReward: 15
+      objectives:
+        - Understand the difference between permissions on files and on directories.
+        - Understand the specific role of x on a directory.
+        - Avoid a common source of confusion.
+      sections:
+        - type: theory
+          title: On a File
+          content: |
+            On a file, permissions generally have this meaning:
+
+            ```text
+            r  read the content
+            w  modify the content
+            x  execute the file as a program or script
+            ```
+
+            Example: a `.sh` script generally needs the `x` permission to be launched directly with `./script.sh`.
+        - type: theory
+          title: On a Directory
+          content: |
+            On a directory, permissions do not mean exactly the same thing.
+
+            ```text
+            r  list the names of items inside the directory
+            w  create, delete, or rename items inside the directory
+            x  traverse the directory / access it if you know the path
+            ```
+
+            The `x` right on a directory is therefore very important. Without it, a user may be unable to enter the directory or access a file inside it.
+        - type: warning
+          title: Watch Out With Directories
+          content: |
+            Many students think `x` means only "execute."
+
+            For a directory, `x` means you can traverse it. This is essential for accessing its contents.
+        - type: terminal_exercise
+          title: Observe a Directory with ls -ld
+          instructions: |
+            The `ls -ld` command displays the permissions of the directory itself, without listing its contents.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -ld documents
+            - ls -l documents
+          expectedObservation: "`ls -ld documents` shows the directory itself. `ls -l documents` shows what it contains."
+        - type: validation
+          title: Validation
+          question: Which option displays the permissions of the directory itself rather than its contents?
+          answerType: short_answer
+          acceptedAnswers:
+            - ls -ld
+            - "ls -l -d"
+            - "ls -dl"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - Combine the long listing `-l` with the option that targets the directory itself.
+            - The answer starts with `ls`.
+
+    - id: linux-fund-4-en-t7
+      type: task
+      title: Modifying Permissions with Symbolic chmod
+      order: 7
+      xpReward: 15
+      objectives:
+        - Understand the role of chmod.
+        - Add or remove a permission using symbolic notation.
+        - Use u, g, o, and a.
+      sections:
+        - type: theory
+          title: chmod
+          content: |
+            The `chmod` command changes the permissions of a file or directory.
+
+            One way to use it is with symbolic notation:
+
+            ```bash
+            chmod u+x fichier
+            chmod g-w fichier
+            chmod o-r fichier
+            ```
+
+            The key letters are:
+
+            ```text
+            u  owner
+            g  group
+            o  others
+            a  all
+            ```
+
+            The operators are:
+
+            ```text
+            +  add a permission
+            -  remove a permission
+            =  set a permission exactly
+            ```
+        - type: terminal_exercise
+          title: Make a Script Executable
+          instructions: |
+            Your `mission.sh` file contains a simple command, but it cannot yet be run directly.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -l scripts/mission.sh
+            - chmod u+x scripts/mission.sh
+            - ls -l scripts/mission.sh
+            - ./scripts/mission.sh
+          expectedObservation: "After chmod u+x, the owner should have the x permission and the script should run."
+        - type: warning
+          title: Modify Only What Is Necessary
+          content: |
+            The command `chmod u+x scripts/mission.sh` grants execute permission to the owner only.
+
+            This is safer than giving all rights to everyone.
+        - type: validation
+          title: Validation
+          question: Which command grants execute permission to the owner of scripts/mission.sh?
+          answerType: short_answer
+          acceptedAnswers:
+            - chmod u+x scripts/mission.sh
+            - "chmod u+x ./scripts/mission.sh"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - The command starts with `chmod`.
+            - The owner is represented by `u`.
+            - Execute permission is represented by `x`.
+        - type: questions
+          items:
+            - id: t7-q1
+              type: qcm
+              question: In `chmod g-w fichier.txt`, what does `g-w` do?
+              answers:
+                - text: Adds write permission for the group.
+                  correct: false
+                - text: Removes write permission from the group.
+                  correct: true
+                - text: Removes read permission from the owner.
+                  correct: false
+                - text: Grants all rights to others.
+                  correct: false
+              feedback:
+                correct: Correct. `g` refers to the group and `-w` removes write permission.
+                incorrect: Read `g-w` as group minus write.
+
+    - id: linux-fund-4-en-t8
+      type: task
+      title: Numeric Notation — 4, 2, 1
+      order: 8
+      xpReward: 15
+      objectives:
+        - Understand the numeric value of permissions.
+        - Convert r, w, and x to numbers.
+        - Read common permissions such as 644 and 755.
+      sections:
+        - type: theory
+          title: Numeric Values
+          content: |
+            Another way to use `chmod` is with numeric notation.
+
+            Each permission has a value:
+
+            ```text
+            r = 4
+            w = 2
+            x = 1
+            ```
+
+            You add the values for each category.
+
+            Examples:
+
+            ```text
+            rwx = 4 + 2 + 1 = 7
+            rw- = 4 + 2 + 0 = 6
+            r-x = 4 + 0 + 1 = 5
+            r-- = 4 + 0 + 0 = 4
+            --- = 0 + 0 + 0 = 0
+            ```
+        - type: theory
+          title: Common Examples
+          content: |
+            Some common permissions:
+
+            ```text
+            644 = owner rw-, group r--, others r--
+            755 = owner rwx, group r-x, others r-x
+            700 = owner rwx, group ---, others ---
+            600 = owner rw-, group ---, others ---
+            ```
+
+            Numeric notation is fast, but it modifies all three categories at once. You must therefore know exactly what you are doing.
+        - type: terminal_exercise
+          title: Test Numeric chmod
+          instructions: |
+            Modify the permissions of the report file and observe the result.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -l documents/rapport.txt
+            - chmod 644 documents/rapport.txt
+            - ls -l documents/rapport.txt
+            - chmod 600 documents/rapport.txt
+            - ls -l documents/rapport.txt
+            - chmod 644 documents/rapport.txt
+          expectedObservation: "644 gives read permission to others. 600 removes rights from the group and others."
+        - type: validation
+          title: Validation
+          question: What numeric value corresponds to `rwx`?
+          answerType: short_answer
+          acceptedAnswers:
+            - "7"
+            - 7
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - r is worth 4, w is worth 2, and x is worth 1.
+            - Add 4 + 2 + 1.
+        - type: questions
+          items:
+            - id: t8-q1
+              type: qcm
+              question: What does `chmod 644 fichier.txt` generally mean?
+              answers:
+                - text: The owner can read and write; the group and others can read.
+                  correct: true
+                - text: Everyone can read, write, and execute.
+                  correct: false
+                - text: Only the owner can execute the file.
+                  correct: false
+                - text: The file is deleted.
+                  correct: false
+              feedback:
+                correct: Correct. 644 corresponds to rw-r--r--.
+                incorrect: Break down 6, 4, and 4 into r, w, and x.
+
+    - id: linux-fund-4-en-t9
+      type: task
+      title: The Danger of chmod 777
+      order: 9
+      xpReward: 15
+      objectives:
+        - Understand why 777 is risky.
+        - Avoid the reflex of opening everything.
+        - Choose more precise permissions instead.
+      sections:
+        - type: warning
+          title: 777 Is Almost Never the Right Answer
+          content: |
+            The following command grants all rights to everyone:
+
+            ```bash
+            chmod 777 fichier
+            ```
+
+            This means:
+
+            ```text
+            owner  : rwx
+            group  : rwx
+            others : rwx
+            ```
+
+            In a real environment, this is dangerous. It allows any user to read, modify, or execute a file.
+        - type: theory
+          title: The Real Problem Is Usually Elsewhere
+          content: |
+            When someone suggests `chmod 777`, it is often to quickly bypass an access problem.
+
+            But the real cause may be:
+
+            - the wrong owner;
+            - the wrong group;
+            - a missing permission on a directory;
+            - an application running under the wrong user;
+            - a poorly designed directory structure.
+
+            These topics will be covered in depth in the Linux Administration and Linux Support courses.
+        - type: theory
+          title: More Reasonable Permissions
+          content: |
+            Some more reasonable choices:
+
+            ```text
+            644  text file readable by all, writable by the owner only
+            600  private file writable by the owner only
+            755  directory or script accessible/executable by many, writable by the owner only
+            700  private owner directory
+            ```
+
+            The right habit: grant only the rights that are necessary.
+        - type: questions
+          items:
+            - id: t9-q1
+              type: qcm
+              question: Why is `chmod 777` generally dangerous?
+              answers:
+                - text: Because it deletes the file.
+                  correct: false
+                - text: Because it grants all rights to everyone.
+                  correct: true
+                - text: Because it prevents the owner from accessing the file.
+                  correct: false
+                - text: Because it converts a file into a directory.
+                  correct: false
+              feedback:
+                correct: Correct. 777 grants read, write, and execute to all three categories.
+                incorrect: Break down 777 into rwx, rwx, rwx.
+            - id: t9-q2
+              type: qcm
+              question: Which permission is generally more appropriate for a public text file that only the owner can modify?
+              answers:
+                - text: "777"
+                  correct: false
+                - text: "644"
+                  correct: true
+                - text: "000"
+                  correct: false
+                - text: "222"
+                  correct: false
+              feedback:
+                correct: Correct. 644 is very common for a text file that is readable by all but writable only by the owner.
+                incorrect: Think of rw-r--r--.
+
+    - id: linux-fund-4-en-t10
+      type: task
+      title: Safe Method Before chmod
+      order: 10
+      xpReward: 15
+      objectives:
+        - Apply a method before changing permissions.
+        - Verify the path and the initial state.
+        - Document a simple modification.
+      sections:
+        - type: theory
+          title: The Technician's Method
+          content: |
+            Before modifying permissions, apply a simple method:
+
+            1. verify where you are with `pwd`;
+            2. display current rights with `ls -l` or `ls -ld`;
+            3. identify what is actually missing;
+            4. choose the minimal change needed;
+            5. verify the result;
+            6. document what you did.
+
+            This method prevents changes that are too broad.
+        - type: terminal_exercise
+          title: Document a Change
+          instructions: |
+            Create a short report showing permissions before and after a modification.
+          commands:
+            - cd ~/nexus-fund4
+            - ls -l scripts/mission.sh > rapport-permissions.txt
+            - chmod 755 scripts/mission.sh
+            - ls -l scripts/mission.sh >> rapport-permissions.txt
+            - cat rapport-permissions.txt
+          expectedObservation: "The file rapport-permissions.txt should contain two lines: before and after the change."
+        - type: warning
+          title: Watch Out for the > Redirection
+          content: |
+            The `>` symbol replaces the content of a file.
+
+            The `>>` symbol appends to the end of the file.
+
+            This difference was covered in `linux-fund-3` and is important for documenting your work correctly.
+        - type: validation
+          title: Validation
+          question: Which command displays the current permissions of a file before modifying them?
+          answerType: short_answer
+          acceptedAnswers:
+            - ls -l
+            - "ls -l fichier"
+            - "ls -l nom_du_fichier"
+            - "ls -l scripts/mission.sh"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - The command starts with `ls`.
+            - You need the long listing format.
+
+    - id: linux-fund-4-en-t11
+      type: task
+      title: Mini-Lab — Fixing a Non-Executable Script
+      order: 11
+      xpReward: 20
+      objectives:
+        - Diagnose a missing permission.
+        - Make a script executable without opening all rights.
+        - Verify and document the fix.
+      sections:
+        - type: mission
+          title: Scenario
+          content: |
+            A NEXUS agent created a small script but cannot run it directly.
+
+            Your role: observe the permissions, apply the minimal fix, and document the result.
+        - type: terminal_exercise
+          title: Prepare the Broken Script
+          instructions: |
+            Prepare a test script that is not executable.
+          commands:
+            - cd ~/nexus-fund4
+            - echo "echo Diagnostic terminé" > scripts/diagnostic.sh
+            - chmod 644 scripts/diagnostic.sh
+            - ls -l scripts/diagnostic.sh
+            - ./scripts/diagnostic.sh
+          expectedObservation: "Direct execution should fail with a message similar to Permission denied."
+        - type: terminal_exercise
+          title: Fix the Permission
+          instructions: |
+            Fix only what is necessary so that the owner can execute the script.
+          commands:
+            - chmod u+x scripts/diagnostic.sh
+            - ls -l scripts/diagnostic.sh
+            - ./scripts/diagnostic.sh
+          expectedObservation: "The script should now display Diagnostic terminé."
+        - type: validation
+          title: Validation
+          question: Which command did you use to add execute permission for the owner of scripts/diagnostic.sh?
+          answerType: short_answer
+          acceptedAnswers:
+            - chmod u+x scripts/diagnostic.sh
+            - "chmod u+x ./scripts/diagnostic.sh"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - You need to use `chmod`.
+            - The owner is `u`.
+            - Execute permission is `x`.
+        - type: questions
+          items:
+            - id: t11-q1
+              type: qcm
+              question: Why is `chmod u+x scripts/diagnostic.sh` preferable to `chmod 777 scripts/diagnostic.sh` in this context?
+              answers:
+                - text: Because it deletes the script after execution.
+                  correct: false
+                - text: Because it grants only the necessary right to the owner.
+                  correct: true
+                - text: Because it converts the script into a directory.
+                  correct: false
+                - text: Because it prevents the owner from modifying the script.
+                  correct: false
+              feedback:
+                correct: Correct. We apply the minimal necessary change.
+                incorrect: Compare the rights granted by `u+x` versus `777`.
+
+    - id: linux-fund-4-en-t12
+      type: challenge
+      title: Challenge — Locked Access
+      order: 12
+      xpReward: 30
+      challenge: true
+      objectives:
+        - Read permissions.
+        - Identify a missing permission.
+        - Apply chmod carefully.
+        - Produce proof of the fix.
+      sections:
+        - type: mission
+          title: Final Challenge
+          content: |
+            Agent, a mission directory contains several files. Some rights have been misconfigured.
+
+            You must fix only what is necessary, without granting all rights to everyone.
+
+            Objectives:
+
+            - identify the file that cannot be executed;
+            - fix its permissions;
+            - identify the file that must remain private;
+            - produce a short permissions report;
+            - answer the validation questions in NEXUS.
+        - type: teacher_note
+          title: Suggested Challenge VM Setup
+          content: |
+            Create a /home/student/mission-permissions directory with a similar structure:
+
+            mission-permissions/
+            ├── scripts/
+            │   ├── start-mission.sh      chmod 644
+            │   └── check-access.sh       chmod 755
+            ├── documents/
+            │   ├── briefing.txt          chmod 644
+            │   └── private-note.txt      chmod 600
+            └── evidence/
+                └── permissions-before.txt
+
+            The challenge may ask students to:
+            - make start-mission.sh executable for the owner only;
+            - verify that private-note.txt is not open to others;
+            - produce permissions-after.txt using ls -l on the targeted files.
+
+            Do not require sudo, chown, or chgrp in this challenge.
+        - type: terminal_exercise
+          title: Local Challenge Setup If No Special VM Is Provided
+          instructions: |
+            If your teacher has not provided a special VM for this challenge, you can set up a local environment with these commands.
+          commands:
+            - cd ~
+            - mkdir -p mission-permissions/scripts mission-permissions/documents mission-permissions/evidence
+            - echo "echo Mission démarrée" > mission-permissions/scripts/start-mission.sh
+            - echo "echo Accès validé" > mission-permissions/scripts/check-access.sh
+            - echo "Briefing de mission" > mission-permissions/documents/briefing.txt
+            - echo "Note privée" > mission-permissions/documents/private-note.txt
+            - chmod 644 mission-permissions/scripts/start-mission.sh
+            - chmod 755 mission-permissions/scripts/check-access.sh
+            - chmod 644 mission-permissions/documents/briefing.txt
+            - chmod 600 mission-permissions/documents/private-note.txt
+            - ls -l mission-permissions/scripts mission-permissions/documents > mission-permissions/evidence/permissions-before.txt
+          expectedObservation: "A mission-permissions directory is ready for the challenge."
+        - type: validation
+          title: Question 1 — Non-Executable File
+          question: Which script file was not executable at the start?
+          answerType: short_answer
+          acceptedAnswers:
+            - start-mission.sh
+            - scripts/start-mission.sh
+            - mission-permissions/scripts/start-mission.sh
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Look at the files in the scripts directory.
+            - Compare the permissions of the .sh files.
+            - The file to fix starts with `start`.
+        - type: validation
+          title: Question 2 — Minimal Fix
+          question: Which command adds execute permission for the owner of scripts/start-mission.sh?
+          answerType: short_answer
+          acceptedAnswers:
+            - chmod u+x scripts/start-mission.sh
+            - "chmod u+x ./scripts/start-mission.sh"
+            - "chmod u+x mission-permissions/scripts/start-mission.sh"
+            - "chmod u+x ~/mission-permissions/scripts/start-mission.sh"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `chmod`.
+            - The owner is `u`.
+            - The right to add is `x`.
+        - type: validation
+          title: Question 3 — Private File
+          question: Which numeric permission is appropriate for a private file that is readable and writable only by the owner?
+          answerType: short_answer
+          acceptedAnswers:
+            - "600"
+            - 600
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - The owner must have read and write.
+            - The group and others must have no rights.
+            - rw------- corresponds to which numeric value?
+        - type: validation
+          title: Question 4 — Danger
+          question: Which command would be too permissive and dangerous to quickly fix all rights on a file?
+          answerType: short_answer
+          acceptedAnswers:
+            - chmod 777
+            - "chmod 777 fichier"
+            - "chmod 777 start-mission.sh"
+            - "chmod 777 scripts/start-mission.sh"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - It grants rwx to everyone.
+            - It contains the number 777.
+        - type: questions
+          items:
+            - id: t12-q5
+              type: qcm
+              question: Why does this challenge ask you to fix only what is necessary?
+              answers:
+                - text: Because Linux always forbids chmod 777.
+                  correct: false
+                - text: Because a good technician applies the principle of least privilege.
+                  correct: true
+                - text: Because chmod only works on directories.
+                  correct: false
+                - text: Because scripts can never be executed on Linux.
+                  correct: false
+              feedback:
+                correct: Correct. We grant only the access that is needed.
+                incorrect: The goal is to avoid overly broad permissions.

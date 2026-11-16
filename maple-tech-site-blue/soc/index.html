@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOC — Tableau de bord | Maple Tech Solutions</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/soc.css">
+</head>
+<body class="soc-page">
+
+  <header>
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <img src="../assets/images/logo.png" alt="Maple Tech Solutions" class="logo-img"
+             onerror="this.style.display='none'">
+        <div>
+          <div class="logo-text">🍁 Maple <span>Tech</span></div>
+          <div class="logo-tagline">Solutions informatiques</div>
+        </div>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="../index.html">← Site principal</a></li>
+          <li><a href="index.html" class="active">Tableau de bord</a></li>
+          <li><a href="logs.html">Journaux</a></li>
+          <li><a href="threat-intel.html">Menaces</a></li>
+          <li><a href="containment.html">Containment</a></li>
+        </ul>
+      </nav>
+      <div class="soc-badge-header">SOC FICTIF</div>
+    </div>
+  </header>
+
+  <div class="alert-banner">
+    <span class="alert-pulse"></span>
+    <strong>⚠ ALERTE CRITIQUE EN COURS</strong> — Activité suspecte détectée. Analyse en cours.
+  </div>
+
+  <main class="soc-main">
+
+    <div class="soc-section-header">
+      <h1 class="soc-title">Tableau de bord SOC</h1>
+      <p class="soc-subtitle">Centre des opérations de sécurité — Maple Tech Solutions</p>
+      <div class="soc-timestamp">Alerte reçue à <span class="mono">09:41:30</span> — Statut : <span class="status-badge status-critical">CRITIQUE</span></div>
+    </div>
+
+    <!-- Alerte principale — informations minimales -->
+    <div class="soc-card soc-card-alert">
+      <div class="soc-card-header">
+        <span class="soc-card-icon">🚨</span>
+        <h2>Alerte principale</h2>
+        <span class="status-badge status-critical">CRITIQUE</span>
+      </div>
+      <div class="alert-details-grid">
+        <div class="alert-detail-item">
+          <span class="alert-label">Réf. incident</span>
+          <span class="alert-value mono">INC-2024-0142</span>
+        </div>
+        <div class="alert-detail-item">
+          <span class="alert-label">Sévérité</span>
+          <span class="alert-value"><span class="status-badge status-critical">Critique</span></span>
+        </div>
+        <div class="alert-detail-item">
+          <span class="alert-label">Heure de détection</span>
+          <span class="alert-value mono">09:41:30</span>
+        </div>
+        <div class="alert-detail-item">
+          <span class="alert-label">Type d'activité</span>
+          <span class="alert-value">Activité réseau non attendue</span>
+        </div>
+        <div class="alert-detail-item">
+          <span class="alert-label">Statut</span>
+          <span class="alert-value"><span class="status-badge status-warning">En cours d'analyse</span></span>
+        </div>
+        <div class="alert-detail-item">
+          <span class="alert-label">Source &amp; cible</span>
+          <span class="alert-value alert-value-unknown">
+            <span class="unknown-badge">À identifier</span>
+            Consulte les journaux web.
+          </span>
+        </div>
+      </div>
+
+      <div class="alert-instruction-box">
+        <span class="alert-instruction-icon">🔎</span>
+        <div>
+          <strong>Ta mission :</strong> une alerte critique vient d'être déclenchée.
+          L'adresse source et la ressource ciblée ne sont pas encore identifiées.
+          Commence par analyser les journaux web pour reconstituer la séquence d'événements.
+        </div>
+      </div>
+    </div>
+
+    <!-- Étapes de l'investigation -->
+    <div class="soc-card">
+      <div class="soc-card-header">
+        <span class="soc-card-icon">📋</span>
+        <h2>Progression de l'investigation</h2>
+      </div>
+      <div class="investigation-steps">
+        <div class="inv-step inv-step-active">
+          <div class="inv-step-dot"></div>
+          <div class="inv-step-label">1. Journaux</div>
+          <div class="inv-step-desc">Identifier source et séquence</div>
+        </div>
+        <div class="inv-step-connector"></div>
+        <div class="inv-step">
+          <div class="inv-step-dot"></div>
+          <div class="inv-step-label">2. Menaces</div>
+          <div class="inv-step-desc">Profil de l'acteur</div>
+        </div>
+        <div class="inv-step-connector"></div>
+        <div class="inv-step">
+          <div class="inv-step-dot"></div>
+          <div class="inv-step-label">3. Containment</div>
+          <div class="inv-step-desc">Mesures et code de validation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liens rapides -->
+    <h2 class="soc-section-label">Commencer l'investigation</h2>
+    <div class="soc-quicklinks">
+
+      <a href="logs.html" class="soc-quicklink-card soc-quicklink-highlight">
+        <div class="ql-icon">📄</div>
+        <div class="ql-body">
+          <div class="ql-title">Journaux web</div>
+          <div class="ql-desc">Analyser la séquence de requêtes enregistrées ce jour-là. Identifie la source IP suspecte et les ressources ciblées.</div>
+        </div>
+        <div class="ql-arrow">→</div>
+      </a>
+
+      <a href="threat-intel.html" class="soc-quicklink-card">
+        <div class="ql-icon">🔍</div>
+        <div class="ql-body">
+          <div class="ql-title">Renseignement sur la menace</div>
+          <div class="ql-desc">Rechercher un profil d'acteur à partir d'une adresse IP. À consulter après les journaux.</div>
+        </div>
+        <div class="ql-arrow">→</div>
+      </a>
+
+      <a href="containment.html" class="soc-quicklink-card">
+        <div class="ql-icon">🛡️</div>
+        <div class="ql-body">
+          <div class="ql-title">Console de containment</div>
+          <div class="ql-desc">Appliquer les mesures de confinement et obtenir le code de validation. À faire en dernier.</div>
+        </div>
+        <div class="ql-arrow">→</div>
+      </a>
+
+    </div>
+
+    <div class="soc-info-box">
+      <strong>Rappel :</strong> Cet environnement SOC est fictif et simulé à des fins pédagogiques.
+      Ne tente pas de reproduire ces actions sur un système réel ou externe.
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Maple Tech Solutions</h4>
+        <p style="font-size:0.82rem;line-height:1.6;">Système SOC interne — usage exclusif des équipes autorisées.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation SOC</h4>
+        <ul>
+          <li><a href="index.html">Tableau de bord</a></li>
+          <li><a href="logs.html">Journaux</a></li>
+          <li><a href="threat-intel.html">Menaces</a></li>
+          <li><a href="containment.html">Containment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Incident actif</h4>
+        <ul>
+          <li>Réf. : <span class="mono">INC-2024-0142</span></li>
+          <li>Sévérité : Critique</li>
+          <li>Statut : En cours d'analyse</li>
+        </ul>
+      </div>
+    </div>
+    <p>© 2024 Maple Tech Solutions inc. — Environnement SOC fictif à des fins pédagogiques.</p>
+  </footer>
+
+</body>
+</html>

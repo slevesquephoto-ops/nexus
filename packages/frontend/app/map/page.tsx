@@ -9,9 +9,9 @@ import ModuleView from '../components/map/ModuleView'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
 
-interface User { id: string; username: string; xp: number; level: number; avatarId?: string | null }
+interface User { id: string; username: string; xp: number; level: number; avatarId?: string | null; role: string }
 interface Parcours { id: string; title: string; order: number; _count: { tracks: number }; prerequisiteId?: string | null; prerequisiteCompleted?: boolean }
-interface Track { id: string; title: string; orderInParcours: number }
+interface Track { id: string; title: string; language?: string; orderInParcours: number; completed?: boolean }
 interface Module {
   id: string
   title: string
@@ -30,6 +30,7 @@ export default function MapPage() {
   const [currentPos, setCurrentPos]                   = useState<CurrentPos | null>(null)
   const [positionReady, setPositionReady]             = useState(false)
   const [parcoursList, setParcoursList]               = useState<Parcours[]>([])
+  const [parcoursLoaded, setParcoursLoaded]           = useState(false)
   const [parcoursTracksCache, setParcoursTracksCache] = useState<Record<string, Track[]>>({})
   const [openParcoursId, setOpenParcoursId]           = useState<string | null>(null)
   const [selectedTrackId, setSelectedTrackId]         = useState<string | null>(null)
@@ -62,12 +63,13 @@ export default function MapPage() {
       .then(r => r.json())
       .then((list: Parcours[]) => {
         setParcoursList(list)
+        setParcoursLoaded(true)
         if (list.length > 0) {
           const targetId = list.find(p => p.id === currentPos?.parcoursId)?.id ?? list[0].id
           setOpenParcoursId(targetId)
         }
       })
-      .catch(() => {})
+      .catch(() => { setParcoursLoaded(true) })
   // currentPos is read inside the callback — captured correctly when positionReady becomes true
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionReady])
@@ -116,10 +118,12 @@ export default function MapPage() {
     setModuleRefreshKey(k => k + 1)
   }
 
+  const isStaff = user?.role === 'TEACHER' || user?.role === 'ADMIN'
+
   const lockedParcours = selectedTrackId
     ? parcoursList.find(p => parcoursTracksCache[p.id]?.some(t => t.id === selectedTrackId))
     : null
-  const isSelectedLocked = lockedParcours?.prerequisiteId != null && lockedParcours?.prerequisiteCompleted === false
+  const isSelectedLocked = !isStaff && lockedParcours?.prerequisiteId != null && lockedParcours?.prerequisiteCompleted === false
   const prereqParcours = lockedParcours?.prerequisiteId
     ? parcoursList.find(p => p.id === lockedParcours.prerequisiteId)
     : null
@@ -131,6 +135,7 @@ export default function MapPage() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
           parcoursList={parcoursList}
+          parcoursLoaded={parcoursLoaded}
           parcoursTracksCache={parcoursTracksCache}
           openParcoursId={openParcoursId}
           selectedTrackId={selectedTrackId}
@@ -145,6 +150,7 @@ export default function MapPage() {
               moduleId={activeModuleId}
               onBack={handleBack}
               user={user}
+              isStaff={isStaff}
             />
           ) : isSelectedLocked ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center px-8">

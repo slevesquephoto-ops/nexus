@@ -45,6 +45,12 @@ router.get('/:id', async (req, res) => {
 
     if (!track) return res.status(404).json({ error: 'Track not found' });
 
+    let isStaff = false;
+    if (userId) {
+      const u = await prisma.user.findUnique({ where: { id: String(userId) }, select: { role: true } });
+      isStaff = u?.role === 'TEACHER' || u?.role === 'ADMIN';
+    }
+
     // Sans userId : comportement précédent (firstTaskId seulement)
     if (!userId) {
       const modules = track.modules.map(mod => ({
@@ -63,9 +69,9 @@ router.get('/:id', async (req, res) => {
       const allDone = total > 0 && completed === total;
 
       let status;
-      if (allDone)       status = 'done';
-      else if (prevDone) status = 'active';
-      else               status = 'locked';
+      if (allDone)                status = 'done';
+      else if (prevDone || isStaff) status = 'active';
+      else                         status = 'locked';
 
       prevDone = allDone;
 

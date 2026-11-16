@@ -91,6 +91,10 @@ docker compose up -d --build backend
 # Migration Prisma
 docker compose exec backend npx prisma migrate dev --name <nom>
 
+# IMPORTANT — après chaque migration, régénérer le client dans le container
+# (docker compose up --build réutilise l'ancien volume node_modules = client désynchronisé)
+docker compose exec backend npx prisma generate
+
 # Logs
 docker compose logs -f backend
 docker compose logs -f frontend

@@ -2,20 +2,27 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { getAvatarFile } from '../../lib/avatars'
 import ProfileOverlay from './ProfileOverlay'
+import ClassePanel from './ClassePanel'
+import LocaleToggle from './LocaleToggle'
 
 interface TopBarProps {
-  user: { username: string; xp: number; level: number; avatarId?: string | null } | null
+  user: { id: string; username: string; xp: number; level: number; avatarId?: string | null; role?: string } | null
 }
 
 export default function TopBar({ user }: TopBarProps) {
   const pathname = usePathname()
+  const t = useTranslations('nav')
   const [showProfile, setShowProfile] = useState(false)
+  const [showClasse, setShowClasse] = useState(false)
+  const isStaff = user?.role === 'TEACHER' || user?.role === 'ADMIN'
+  const isStudent = user?.role === 'STUDENT'
 
   return (
     <>
-      <header className="h-[80px] bg-nx-surface border-b border-nx-border flex items-center px-6 gap-6 shrink-0 z-10 sticky top-0">
+      <header className="h-[80px] bg-nx-surface border-b border-nx-border flex items-center px-6 gap-6 shrink-0 z-20 sticky top-0">
         <div className="text-4xl font-extrabold tracking-[0.18em] select-none uppercase">
           <span className="text-nx-yellow drop-shadow-[0_0_8px_rgba(245,192,48,0.5)]">N</span>
           <span className="text-nx-yellow drop-shadow-[0_0_8px_rgba(245,192,48,0.5)]">E</span>
@@ -23,18 +30,29 @@ export default function TopBar({ user }: TopBarProps) {
         </div>
 
         <span className="text-nx-border">|</span>
-        <span className="text-nx-text-dim text-sm tracking-widest uppercase">Ma carte</span>
+        <span className="text-nx-text-dim text-sm tracking-widest uppercase">{t('myMap')}</span>
 
         <nav className="flex gap-1 ml-4">
           <a href="/map" className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname === '/map' ? 'text-white' : 'text-nx-text-dim hover:text-nx-text'}`}>
-            Carte
+            {t('map')}
           </a>
           <a href="/profile" className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname === '/profile' ? 'text-white' : 'text-nx-text-dim hover:text-nx-text'}`}>
-            Profil
+            {t('profile')}
           </a>
+          {isStudent && (
+            <button onClick={() => setShowClasse(true)} className="px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 text-nx-text-dim hover:text-nx-text">
+              {t('classe')}
+            </button>
+          )}
+          {isStaff && (
+            <a href="/admin" className={`px-4 py-2 text-lg font-semibold tracking-wide transition-colors duration-200 rounded-lg hover:bg-nx-surface-2 ${pathname.startsWith('/admin') ? 'text-nx-yellow' : 'text-nx-text-dim hover:text-nx-yellow'}`}>
+              {t('admin')}
+            </a>
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-4">
+          <LocaleToggle />
           {user && (
             <>
               <span className="text-lg text-nx-text-dim tracking-widest">
@@ -59,6 +77,9 @@ export default function TopBar({ user }: TopBarProps) {
 
       {showProfile && user && (
         <ProfileOverlay user={user} onClose={() => setShowProfile(false)} />
+      )}
+      {showClasse && user && (
+        <ClassePanel currentUserId={user.id} onClose={() => setShowClasse(false)} />
       )}
     </>
   )

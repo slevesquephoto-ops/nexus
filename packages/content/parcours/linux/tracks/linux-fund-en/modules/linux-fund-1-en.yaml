@@ -1,0 +1,1221 @@
+module:
+  id: linux-fund-1-en
+  trackId: linux-en
+  title: "Linux Fundamentals 1 — First Contact"
+  description: "Discover Linux, understand the terminal, navigate the file system tree, and read files without modifying the system."
+  order: 1
+  mascot: "tux-terminal"
+  xpReward: 120
+  estimatedDuration: "60 to 90 minutes with in-class demonstration"
+  language: en
+  targetEnvironment:
+    distribution: "Ubuntu 24.04 LTS"
+    user: "student"
+    notes: "Ubuntu 24.04 LTS is used as a stable base to minimize frequent changes in virtual machines."
+  pedagogicalIntent:
+    - "Demystify Linux."
+    - "Have students practice their first terminal commands."
+    - "Build the foundations needed before working with files."
+    - "Assess a minimum competency in terminal navigation."
+    - "Introduce the NEXUS universe without overloading students with theory."
+  gradingPolicy:
+    sectionQuestions: "No penalty; students may retry."
+    challengeQuestions: "Penalty applies according to NEXUS rules."
+    xp: "Gamification only; does not directly correspond to an official grade weight."
+  nexusFeaturesRecommended:
+    - type: "mission"
+      display: "Dark narrative card with a briefing icon."
+    - type: "warning"
+      display: "Yellow or orange box with a warning icon."
+    - type: "hint"
+      display: "Progressive collapsible hint, ideally revealed one at a time."
+    - type: "terminal_exercise"
+      display: "Action block to be completed in the VM, with expected command(s)."
+    - type: "validation"
+      display: "Validation question tied to a real action."
+    - type: "teacher_note"
+      display: "Note visible to the teacher only."
+
+  tasks:
+
+    # ── TASK 1 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t1
+      type: task
+      title: "NEXUS Briefing — First Contact"
+      order: 1
+      xpReward: 10
+      objectives:
+        - "Understand the purpose of this module."
+        - "Know that actions will be carried out on a real Linux VM."
+        - "Adopt the mindset of a careful technician: observe before making changes."
+      sections:
+        - type: mission
+          title: "Mission Briefing"
+          content: |
+            Welcome to your first Linux module in NEXUS.
+
+            You have just been granted controlled access to a Linux machine. For now, your objective is not to repair, hack, delete, or modify the system. Your objective is far more important: **learning to find your way around**.
+
+            A good technician does not start by typing commands at random. They observe, verify where they are, identify the account in use, understand the file system tree, and read the available information before taking any action.
+
+        - type: theory
+          title: "What You Will Learn"
+          content: |
+            In this module, you will learn to:
+
+            - distinguish Linux, the kernel, and a distribution;
+            - understand the role of Ubuntu 24.04 LTS in this course;
+            - use the terminal and recognize the command prompt;
+            - identify your user with `whoami`;
+            - check your location with `pwd`;
+            - understand absolute and relative paths;
+            - list files with `ls`, `ls -l`, and `ls -a`;
+            - navigate with `cd`;
+            - read files with `cat`, `head`, `tail`, and `wc -l`.
+
+        - type: warning
+          title: "Module Safety Rule"
+          content: |
+            In this first module, you must not use any destructive commands.
+            Commands such as `rm`, `sudo`, `mv`, `cp`, `>`, and `>>` will be covered later.
+
+            For now, you will mostly **observe and read**.
+
+        - type: teacher_note
+          title: "Pedagogical Intent"
+          content: |
+            Present this module as an introductory experience. Students have already been exposed
+            to some virtualization and basic Windows command-line work, but absolute and
+            relative paths need to be taught explicitly.
+
+        - type: questions
+          items:
+            - id: t1-q1
+              type: qcm
+              question: "In this first module, what is the best attitude to adopt as a technician?"
+              answers:
+                - text: "Type commands quickly to see what happens."
+                  correct: false
+                - text: "Observe, verify your location, then read the available information."
+                  correct: true
+                - text: "Delete unnecessary files to clean up the system."
+                  correct: false
+                - text: "Use sudo as soon as a command does not work."
+                  correct: false
+              feedback:
+                correct: "Correct. A technician starts by understanding the environment before taking action."
+                incorrect: "Re-read the briefing: in this module, the objective is to observe and get your bearings."
+
+    # ── TASK 2 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t2
+      type: task
+      title: "What Is Linux?"
+      order: 2
+      xpReward: 10
+      objectives:
+        - "Distinguish the Linux kernel from the full system used by the student."
+        - "Understand why Linux matters in IT support."
+      sections:
+        - type: theory
+          title: "Linux: The Kernel at the Core of the System"
+          content: |
+            In everyday language, people often say "Linux" to refer to a complete
+            operating system. Technically, Linux refers first and foremost to the **kernel**.
+
+            The kernel is the central component that allows the system to communicate with
+            hardware: processor, memory, disk, peripherals, network, etc.
+
+            A Linux distribution builds around this kernel by adding several elements:
+            system tools, libraries, a shell, a package manager, services,
+            sometimes a graphical interface, and applications.
+
+        - type: theory
+          title: "A Linux Distribution in Layers"
+          content: |
+            A Linux distribution can be represented as a series of layers:
+
+            1. **Hardware**: processor, memory, disk, network card.
+            2. **Linux kernel**: communication between hardware and the system.
+            3. **System tools and libraries**: core functions used by the system.
+            4. **Shell and services**: commands, processes, network, logs, users.
+            5. **Package manager**: software installation and updates.
+            6. **Graphical interface and applications**: the environment used by the person.
+
+        - type: image
+          src: "/content-images/linux-conept.webp"
+          alt: "Linux Distro Concept"
+          caption: "Linux distribution concept diagram"
+
+        - type: theory
+          title: "Why Learn Linux?"
+          content: |
+            Linux is used in several important contexts:
+
+            - web servers;
+            - cloud environments;
+            - network equipment;
+            - embedded systems;
+            - cybersecurity tools;
+            - Android phones;
+            - development environments.
+
+            In IT support, even if your primary workstation runs Windows,
+            you may encounter Linux on servers, specialized equipment,
+            virtual machines, appliances, or diagnostic tools.
+
+        - type: questions
+          items:
+            - id: t2-q1
+              type: qcm
+              question: "Technically, Linux refers first and foremost to:"
+              answers:
+                - text: "A word processing application."
+                  correct: false
+                - text: "The system kernel."
+                  correct: true
+                - text: "A computer brand."
+                  correct: false
+                - text: "A mandatory graphical interface."
+                  correct: false
+              feedback:
+                correct: "Correct. In everyday language, people often say Linux to mean the entire system, but Linux is first and foremost the kernel."
+                incorrect: "Think about the central component that communicates with the hardware."
+
+            - id: t2-q2
+              type: qcm
+              question: "Which component handles software installation and updates in a Linux distribution?"
+              answers:
+                - text: "The package manager."
+                  correct: true
+                - text: "The desktop wallpaper."
+                  correct: false
+                - text: "The keyboard."
+                  correct: false
+                - text: "The BIOS only."
+                  correct: false
+
+            - id: t2-q3
+              type: short_answer
+              question: "What English word refers to the system core?"
+              acceptedAnswers:
+                - "kernel"
+                - "Kernel"
+              trimWhitespace: true
+              caseSensitive: false
+
+    # ── TASK 3 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t3
+      type: task
+      title: "Linux Distributions and Ubuntu 24.04 LTS"
+      order: 3
+      xpReward: 10
+      objectives:
+        - "Understand what a Linux distribution is."
+        - "Identify Ubuntu 24.04 LTS as the reference environment for this module."
+      sections:
+        - type: theory
+          title: "What Is a Distribution?"
+          content: |
+            A **Linux distribution** is a complete system built around the Linux kernel.
+            Not all distributions make exactly the same technical choices.
+
+            They can vary in:
+
+            - the kernel version they use;
+            - the tools installed by default;
+            - the package manager;
+            - the graphical environment;
+            - the update frequency;
+            - their intended audience: beginners, servers, cybersecurity, enterprise, etc.
+
+        - type: command_table
+          title: "Some Well-Known Distributions"
+          commands:
+            - cmd: "Ubuntu"
+              desc: "Popular for learning, workstations, servers, and cloud environments."
+            - cmd: "Debian"
+              desc: "Highly stable; often used as a base for other distributions."
+            - cmd: "Fedora"
+              desc: "A modern distribution, often close to the latest Linux technologies."
+            - cmd: "Kali Linux"
+              desc: "A distribution specialized in cybersecurity and penetration testing."
+            - cmd: "Red Hat Enterprise Linux"
+              desc: "A commercial distribution widely used in enterprise environments."
+            - cmd: "Arch Linux"
+              desc: "A highly flexible distribution, generally aimed at advanced users."
+
+        - type: theory
+          title: "Why Ubuntu 24.04 LTS in This Module?"
+          content: |
+            In NEXUS, the primary environment for this module is **Ubuntu 24.04 LTS**.
+
+            LTS stands for **Long Term Support**.
+            This choice is practical in an educational setting because it limits
+            frequent changes in virtual machines and provides a stable base for exercises.
+
+            In some more advanced exercises, you may install a newer version
+            of Linux from scratch. But for foundational modules, Ubuntu 24.04 LTS
+            is the reference.
+
+        - type: questions
+          items:
+            - id: t3-q1
+              type: qcm
+              question: "What is a Linux distribution?"
+              answers:
+                - text: "A complete system built around the Linux kernel."
+                  correct: true
+                - text: "A command that deletes files."
+                  correct: false
+                - text: "A type of network cable."
+                  correct: false
+                - text: "A Linux antivirus."
+                  correct: false
+
+            - id: t3-q2
+              type: qcm
+              question: "What does LTS stand for in Ubuntu 24.04 LTS?"
+              answers:
+                - text: "Linux Terminal System"
+                  correct: false
+                - text: "Long Term Support"
+                  correct: true
+                - text: "Latest Technical Shell"
+                  correct: false
+                - text: "Local Transfer Service"
+                  correct: false
+
+            - id: t3-q3
+              type: qcm
+              question: "Why choose an LTS version for a course VM?"
+              answers:
+                - text: "Because it changes every day."
+                  correct: false
+                - text: "Because it provides a more stable and predictable base."
+                  correct: true
+                - text: "Because it contains no terminal."
+                  correct: false
+                - text: "Because it only works without internet access."
+                  correct: false
+
+    # ── TASK 4 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t4
+      type: task
+      title: "Terminal, Shell, and Command Prompt"
+      order: 4
+      xpReward: 10
+      objectives:
+        - "Distinguish between the terminal, the shell, and the command line."
+        - "Read the basic information in the command prompt."
+      sections:
+        - type: theory
+          title: "Three Often-Confused Terms"
+          content: |
+            When starting out, people often use the words **terminal**, **shell**, and
+            **command line** as though they mean exactly the same thing.
+            They are related, but they do not refer to quite the same thing.
+
+            - The **terminal** is the application or window where you type commands.
+            - The **shell** is the program that interprets your commands. On Ubuntu, this is typically Bash.
+            - The **command line** is the working method where you control the system using text.
+
+        - type: code_block
+          label: "Command Prompt Example"
+          content: |
+            student@nexus-vm:~$
+
+        - type: theory
+          title: "Reading the Command Prompt"
+          content: |
+            In this example:
+
+            - `student` is the name of the logged-in user;
+            - `nexus-vm` is the machine name;
+            - `~` indicates the user's home directory;
+            - `$` generally indicates a regular user session;
+            - `#` would generally indicate an administrator/root session.
+
+        - type: warning
+          title: "Regular User or Administrator?"
+          content: |
+            In this module, you must work as a regular user. If you see `#`
+            at the end of the prompt, you are likely in an administrator session.
+            This is riskier, as mistakes can have a greater impact.
+
+        - type: terminal_exercise
+          title: "Observe the Terminal"
+          instructions: |
+            Open the terminal in your VM. Look at the command prompt and identify:
+            the username, the machine name, and the end-of-line symbol.
+          expectedCommands: []
+
+        - type: questions
+          items:
+            - id: t4-q1
+              type: qcm
+              question: "Which element interprets the commands you type?"
+              answers:
+                - text: "The shell."
+                  correct: true
+                - text: "The screen."
+                  correct: false
+                - text: "The network cable."
+                  correct: false
+                - text: "The desktop wallpaper."
+                  correct: false
+
+            - id: t4-q2
+              type: qcm
+              question: "In the prompt student@nexus-vm:~$, what does `~` represent?"
+              answers:
+                - text: "The user's home directory."
+                  correct: true
+                - text: "The root directory."
+                  correct: false
+                - text: "A deleted file."
+                  correct: false
+                - text: "The machine name."
+                  correct: false
+
+            - id: t4-q3
+              type: qcm
+              question: "Which symbol generally indicates an administrator/root session?"
+              answers:
+                - text: "$"
+                  correct: false
+                - text: "#"
+                  correct: true
+                - text: "~"
+                  correct: false
+                - text: "@"
+                  correct: false
+
+    # ── TASK 5 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t5
+      type: task
+      title: "First Reference Points: whoami, pwd, clear, history"
+      order: 5
+      xpReward: 15
+      objectives:
+        - "Identify the current user."
+        - "Verify your location before taking action."
+        - "Clear the display and review the command history."
+      sections:
+        - type: theory
+          title: "Get Your Bearings Before Acting"
+          content: |
+            In IT support, it is important to know **which account** you are working under
+            and **which directory** you are currently in.
+
+            Two commands therefore become reflexes:
+
+            - `whoami` : displays the name of the current user;
+            - `pwd` : displays the full path of the current directory.
+
+        - type: command_table
+          title: "Navigation Reference Commands"
+          commands:
+            - cmd: "whoami"
+              desc: "Displays the name of the currently logged-in user."
+            - cmd: "pwd"
+              desc: "Print Working Directory — displays the full path of the current directory."
+            - cmd: "clear"
+              desc: "Clears the terminal display without erasing the command history."
+            - cmd: "history"
+              desc: "Displays the commands previously typed in the terminal."
+
+        - type: code_block
+          label: "Examples"
+          content: |
+            student@nexus-vm:~$ whoami
+            student
+
+            student@nexus-vm:~$ pwd
+            /home/student
+
+            student@nexus-vm:~$ clear
+
+            student@nexus-vm:~$ history
+            1  whoami
+            2  pwd
+            3  clear
+            4  history
+
+        - type: terminal_exercise
+          title: "Check Your Identity and Location"
+          instructions: |
+            In your VM, run the following commands:
+
+            1. `whoami`
+            2. `pwd`
+            3. `history`
+
+            Take note of the results. You will need them to answer the questions.
+          expectedCommands:
+            - "whoami"
+            - "pwd"
+            - "history"
+
+        - type: validation
+          title: "Quick Validation"
+          items:
+            - id: t5-v1
+              type: short_answer
+              question: "Which command lets you find out which account you are working under?"
+              acceptedAnswers:
+                - "whoami"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "The command resembles a question in English."
+                - "It means: who am I?"
+
+            - id: t5-v2
+              type: short_answer
+              question: "Which command displays the full path of the current directory?"
+              acceptedAnswers:
+                - "pwd"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "It stands for Print Working Directory."
+
+        - type: questions
+          items:
+            - id: t5-q1
+              type: qcm
+              question: "Why is `pwd` an important command to run before modifying files?"
+              answers:
+                - text: "It lets you verify where you are before taking action."
+                  correct: true
+                - text: "It deletes temporary files."
+                  correct: false
+                - text: "It installs updates."
+                  correct: false
+                - text: "It restarts the terminal."
+                  correct: false
+
+            - id: t5-q2
+              type: short_answer
+              question: "Which command clears the terminal display?"
+              acceptedAnswers:
+                - "clear"
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t5-q3
+              type: short_answer
+              question: "Which command displays previously typed commands?"
+              acceptedAnswers:
+                - "history"
+              trimWhitespace: true
+              caseSensitive: false
+
+    # ── TASK 6 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t6
+      type: task
+      title: "Understanding the Linux File System Tree"
+      order: 6
+      xpReward: 15
+      objectives:
+        - "Understand the root `/`."
+        - "Understand the home directory `/home/student`."
+        - "Distinguish `/`, `~`, `.`, `..`, absolute paths, and relative paths."
+      sections:
+        - type: theory
+          title: "Linux Is Organized Like a Tree"
+          content: |
+            The Linux file system starts from a single point: `/`.
+            This is called the **root** of the system.
+
+            Unlike Windows, Linux does not organize files around drive letters
+            like `C:` or `D:`. Everything is located somewhere under `/`.
+
+        - type: theory
+          title: "Comparison with Windows"
+          content: |
+            On Windows, a user's home folder typically looks like this:
+
+            `C:\Users\Steeve`
+
+            On Linux, a user's home directory looks more like this:
+
+            `/home/student`
+
+            The `~` symbol is a shortcut that represents the home directory of
+            the current user.
+
+        - type: command_table
+          title: "Essential Symbols"
+          commands:
+            - cmd: "/"
+              desc: "Root of the Linux file system."
+            - cmd: "~"
+              desc: "Shortcut to the current user's home directory."
+            - cmd: "."
+              desc: "The current directory."
+            - cmd: ".."
+              desc: "The parent directory, one level up."
+            - cmd: "/home/student"
+              desc: "Example of an absolute path to the student user's home directory."
+
+        - type: theory
+          title: "Absolute Path and Relative Path"
+          content: |
+            An **absolute path** starts from the root `/` and gives the complete location.
+
+            Example:
+
+            `/home/student/Documents`
+
+            A **relative path** starts from wherever you currently are.
+
+            Example:
+
+            `Documents`
+
+            If you are already in `/home/student`, then `Documents` means:
+            `/home/student/Documents`.
+
+        - type: code_block
+          label: "Path Examples"
+          content: |
+            /home/student/Documents       # absolute path
+            Documents                     # relative path from /home/student
+            ..                            # parent directory
+            .                             # current directory
+            ~                             # home directory
+
+        - type: teacher_note
+          title: "Recommended Demonstration"
+          content: |
+            Draw a simple tree on the board: / → home → student → Documents.
+            Then draw the parallel with C:\Users\Name on Windows.
+            Emphasize that relative paths always depend on the current location.
+
+        - type: questions
+          items:
+            - id: t6-q1
+              type: qcm
+              question: "Which symbol represents the root of the Linux file system?"
+              answers:
+                - text: "C:"
+                  correct: false
+                - text: "/"
+                  correct: true
+                - text: "~"
+                  correct: false
+                - text: ".."
+                  correct: false
+
+            - id: t6-q2
+              type: qcm
+              question: "What does `~` represent on Linux?"
+              answers:
+                - text: "The current user's home directory."
+                  correct: true
+                - text: "The root of the system."
+                  correct: false
+                - text: "A temporary file."
+                  correct: false
+                - text: "The parent directory."
+                  correct: false
+
+            - id: t6-q3
+              type: qcm
+              question: "The path `/home/student/Documents` is:"
+              answers:
+                - text: "An absolute path."
+                  correct: true
+                - text: "A relative path."
+                  correct: false
+                - text: "A Linux command."
+                  correct: false
+                - text: "A username."
+                  correct: false
+
+            - id: t6-q4
+              type: qcm
+              question: "If you are in `/home/student`, what can the relative path `Documents` refer to?"
+              answers:
+                - text: "/home/student/Documents"
+                  correct: true
+                - text: "/Documents only"
+                  correct: false
+                - text: "C:\\Documents"
+                  correct: false
+                - text: "The parent directory"
+                  correct: false
+
+    # ── TASK 7 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t7
+      type: task
+      title: "Listing Contents: ls, ls -l, ls -a"
+      order: 7
+      xpReward: 15
+      objectives:
+        - "List visible files and directories."
+        - "Display detailed information about a directory."
+        - "Display hidden files."
+      sections:
+        - type: theory
+          title: "List Before Acting"
+          content: |
+            The `ls` command lets you see the contents of a directory.
+
+            It is an essential command, because a technician must often verify
+            what exists before opening, modifying, copying, or deleting anything.
+
+        - type: command_table
+          title: "ls Variants"
+          commands:
+            - cmd: "ls"
+              desc: "Lists visible files and directories in the current directory."
+            - cmd: "ls -l"
+              desc: "Displays a detailed list: permissions, owner, size, date, name."
+            - cmd: "ls -a"
+              desc: "Also displays hidden files and directories."
+            - cmd: "ls -la"
+              desc: "Combines the detailed view with hidden files."
+
+        - type: code_block
+          label: "Examples"
+          content: |
+            student@nexus-vm:~$ ls
+            Bureau  Documents  Images
+
+            student@nexus-vm:~$ ls -a
+            .  ..  .bashrc  .profile  Bureau  Documents  Images
+
+            student@nexus-vm:~$ ls -l
+            total 12
+            drwxr-xr-x 2 student student 4096 mai 29 09:00 Bureau
+            drwxr-xr-x 2 student student 4096 mai 29 09:00 Documents
+            drwxr-xr-x 2 student student 4096 mai 29 09:00 Images
+
+        - type: theory
+          title: "Hidden Files"
+          content: |
+            On Linux, any file or directory whose name begins with a dot is
+            hidden from the normal display.
+
+            Example: `.bashrc`
+
+            A hidden file is not necessarily secret or protected. It is simply
+            concealed by default to keep the display uncluttered.
+
+        - type: terminal_exercise
+          title: "Compare ls and ls -a"
+          instructions: |
+            In your home directory, run:
+
+            1. `ls`
+            2. `ls -a`
+            3. `ls -la`
+
+            Observe the difference between the three outputs.
+          expectedCommands:
+            - "ls"
+            - "ls -a"
+            - "ls -la"
+
+        - type: questions
+          items:
+            - id: t7-q1
+              type: short_answer
+              question: "Which command lists the visible files and directories in the current directory?"
+              acceptedAnswers:
+                - "ls"
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t7-q2
+              type: short_answer
+              question: "Which command also displays hidden files?"
+              acceptedAnswers:
+                - "ls -a"
+                - "ls -la"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Hidden files often start with a dot."
+                - "The option to use is the first letter of the English word 'all'."
+
+            - id: t7-q3
+              type: qcm
+              question: "Which file would be hidden by default on Linux?"
+              answers:
+                - text: "notes.txt"
+                  correct: false
+                - text: "Documents"
+                  correct: false
+                - text: ".profile"
+                  correct: true
+                - text: "rapport.pdf"
+                  correct: false
+
+            - id: t7-q4
+              type: qcm
+              question: "What is `ls -l` used for?"
+              answers:
+                - text: "To display a detailed list."
+                  correct: true
+                - text: "To clear the terminal."
+                  correct: false
+                - text: "To change directories."
+                  correct: false
+                - text: "To count the lines in a file."
+                  correct: false
+
+    # ── TASK 8 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t8
+      type: task
+      title: "Navigating: cd and Paths"
+      order: 8
+      xpReward: 15
+      objectives:
+        - "Change directories with `cd`."
+        - "Use `cd ..`, `cd ~`, and `cd /absolute/path`."
+        - "Understand how the current directory affects relative paths."
+      sections:
+        - type: theory
+          title: "Changing Directories"
+          content: |
+            The `cd` command stands for **Change Directory**.
+            It lets you move through the Linux file system tree.
+
+            To use `cd` effectively, you must always keep track of where you currently are.
+            This is why `pwd` and `cd` are often used together.
+
+        - type: command_table
+          title: "Navigation Commands"
+          commands:
+            - cmd: "cd Documents"
+              desc: "Enters the Documents directory from the current directory."
+            - cmd: "cd .."
+              desc: "Moves up one level to the parent directory."
+            - cmd: "cd ~"
+              desc: "Returns to the home directory."
+            - cmd: "cd"
+              desc: "Also returns to the home directory in most shells."
+            - cmd: "cd /home/student/Documents"
+              desc: "Uses an absolute path to go directly to a directory."
+            - cmd: "pwd"
+              desc: "Verifies the current location after a move."
+
+        - type: code_block
+          label: "Navigation Example"
+          content: |
+            student@nexus-vm:~$ pwd
+            /home/student
+
+            student@nexus-vm:~$ cd Documents
+            student@nexus-vm:~/Documents$ pwd
+            /home/student/Documents
+
+            student@nexus-vm:~/Documents$ cd ..
+            student@nexus-vm:~$ pwd
+            /home/student
+
+            student@nexus-vm:~$ cd /etc
+            student@nexus-vm:/etc$ pwd
+            /etc
+
+            student@nexus-vm:/etc$ cd ~
+            student@nexus-vm:~$ pwd
+            /home/student
+
+        - type: terminal_exercise
+          title: "Guided Navigation"
+          instructions: |
+            Run the following commands in your VM and observe the command prompt:
+
+            1. `pwd`
+            2. `ls`
+            3. `cd Documents`
+            4. `pwd`
+            5. `cd ..`
+            6. `pwd`
+            7. `cd /etc`
+            8. `pwd`
+            9. `cd ~`
+            10. `pwd`
+          expectedCommands:
+            - "pwd"
+            - "ls"
+            - "cd Documents"
+            - "pwd"
+            - "cd .."
+            - "pwd"
+            - "cd /etc"
+            - "pwd"
+            - "cd ~"
+            - "pwd"
+
+        - type: validation
+          title: "Navigation Validation"
+          items:
+            - id: t8-v1
+              type: short_answer
+              question: "Which command moves you up one level in the directory tree?"
+              acceptedAnswers:
+                - "cd .."
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t8-v2
+              type: short_answer
+              question: "Which command takes you back to your home directory?"
+              acceptedAnswers:
+                - "cd ~"
+                - "cd"
+              trimWhitespace: true
+              caseSensitive: false
+
+        - type: questions
+          items:
+            - id: t8-q1
+              type: qcm
+              question: "You are in `/home/student/Documents`. You type `cd ..`. Where do you end up?"
+              answers:
+                - text: "/home/student"
+                  correct: true
+                - text: "/home"
+                  correct: false
+                - text: "/"
+                  correct: false
+                - text: "/home/student/Documents/.."
+                  correct: false
+
+            - id: t8-q2
+              type: qcm
+              question: "Which command uses an absolute path?"
+              answers:
+                - text: "cd Documents"
+                  correct: false
+                - text: "cd /home/student/Documents"
+                  correct: true
+                - text: "cd .."
+                  correct: false
+                - text: "cd ."
+                  correct: false
+
+            - id: t8-q3
+              type: qcm
+              question: "Why is it useful to type `pwd` after certain moves?"
+              answers:
+                - text: "To confirm your current location."
+                  correct: true
+                - text: "To delete the current directory."
+                  correct: false
+                - text: "To install Bash."
+                  correct: false
+                - text: "To display hidden files."
+                  correct: false
+
+    # ── TASK 9 ────────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-t9
+      type: task
+      title: "Reading Without Modifying: cat, head, tail, wc -l"
+      order: 9
+      xpReward: 15
+      objectives:
+        - "Read the full contents of a file."
+        - "Read the beginning or end of a file."
+        - "Count the number of lines in a file."
+      sections:
+        - type: theory
+          title: "Read Before You Modify"
+          content: |
+            Reading files is a fundamental skill in IT support.
+            Before modifying a configuration or running a diagnostic, you often need to
+            consult text files: notes, system information, logs, lists,
+            reports, or configuration files.
+
+            In this module, we limit ourselves to commands that read information without
+            modifying the system.
+
+        - type: command_table
+          title: "Reading Commands"
+          commands:
+            - cmd: "cat fichier.txt"
+              desc: "Displays the complete contents of a file."
+            - cmd: "head fichier.txt"
+              desc: "Displays the first 10 lines of a file."
+            - cmd: "tail fichier.txt"
+              desc: "Displays the last 10 lines of a file."
+            - cmd: "wc -l fichier.txt"
+              desc: "Counts the number of lines in a file."
+
+        - type: code_block
+          label: "Reading Basic System Information"
+          content: |
+            student@nexus-vm:~$ cat /etc/hostname
+            nexus-vm
+
+            student@nexus-vm:~$ cat /etc/os-release
+            PRETTY_NAME="Ubuntu 24.04 LTS"
+            NAME="Ubuntu"
+            VERSION_ID="24.04"
+
+        - type: code_block
+          label: "Reading a Demo File"
+          content: |
+            student@nexus-vm:~$ cat ~/nexus/rapport.txt
+            Ligne 1...
+            Ligne 2...
+            Ligne 3...
+
+            student@nexus-vm:~$ head ~/nexus/rapport.txt
+            (displays the first 10 lines)
+
+            student@nexus-vm:~$ tail ~/nexus/rapport.txt
+            (displays the last 10 lines)
+
+            student@nexus-vm:~$ wc -l ~/nexus/rapport.txt
+            42 /home/student/nexus/rapport.txt
+
+        - type: terminal_exercise
+          title: "Read the NEXUS Report"
+          instructions: |
+            In your VM, go to your home directory, then read the file
+            `~/nexus/rapport.txt` using the following commands:
+
+            1. `cat ~/nexus/rapport.txt`
+            2. `head ~/nexus/rapport.txt`
+            3. `tail ~/nexus/rapport.txt`
+            4. `wc -l ~/nexus/rapport.txt`
+          expectedCommands:
+            - "cat ~/nexus/rapport.txt"
+            - "head ~/nexus/rapport.txt"
+            - "tail ~/nexus/rapport.txt"
+            - "wc -l ~/nexus/rapport.txt"
+
+        - type: questions
+          items:
+            - id: t9-q1
+              type: qcm
+              question: "Which command displays the complete contents of a file?"
+              answers:
+                - text: "cat"
+                  correct: true
+                - text: "pwd"
+                  correct: false
+                - text: "cd"
+                  correct: false
+                - text: "history"
+                  correct: false
+
+            - id: t9-q2
+              type: qcm
+              question: "You want to see only the last lines of a long file. Which command do you choose?"
+              answers:
+                - text: "head"
+                  correct: false
+                - text: "tail"
+                  correct: true
+                - text: "whoami"
+                  correct: false
+                - text: "clear"
+                  correct: false
+
+            - id: t9-q3
+              type: short_answer
+              question: "Write the command to count the number of lines in `rapport.txt`."
+              acceptedAnswers:
+                - "wc -l rapport.txt"
+              trimWhitespace: true
+              caseSensitive: false
+
+            - id: t9-q4
+              type: qcm
+              question: "Why does this first module avoid commands like `rm` or `sudo`?"
+              answers:
+                - text: "Because this module focuses first on observation and reading without making changes."
+                  correct: true
+                - text: "Because these commands do not exist on Linux."
+                  correct: false
+                - text: "Because they only work on Windows."
+                  correct: false
+                - text: "Because they only display images."
+                  correct: false
+
+    # ── CHALLENGE ─────────────────────────────────────────────────────────────
+    - id: linux-fund-1-en-challenge
+      type: challenge
+      title: "Challenge — First Contact"
+      order: 10
+      xpReward: 50
+      penaltyEnabled: true
+      recommendedVm: "linux-fund-1-challenge.ova"
+      vmStatus: "To be created after final YAML validation."
+      objectives:
+        - "Use navigation and orientation commands."
+        - "Find a hidden file without modifying the system."
+        - "Read information and submit answers in NEXUS."
+      sections:
+        - type: mission
+          title: "Mission Briefing"
+          content: |
+            Agent, your first real mission starts now.
+
+            A training Linux machine has been prepared for you. It contains
+            a few diagnostic files placed in the home directory of the
+            `student` user.
+
+            Your objective is to find the requested information using only
+            the commands covered in this module.
+
+            Authorized commands:
+
+            - `whoami`
+            - `pwd`
+            - `clear`
+            - `history`
+            - `ls`
+            - `ls -l`
+            - `ls -a`
+            - `ls -la`
+            - `cd`
+            - `cat`
+            - `head`
+            - `tail`
+            - `wc -l`
+
+        - type: warning
+          title: "No System Modifications Allowed"
+          content: |
+            For this challenge, you must not create, modify, move, copy, or delete
+            any files. The mission consists of exploration and reading only.
+
+            Commands such as `rm`, `mv`, `cp`, `touch`, `mkdir`, `sudo`, `>`, and `>>`
+            are not needed to complete this challenge.
+
+        - type: theory
+          title: "VM Access"
+          content: |
+            Download and launch the virtual machine provided by your teacher.
+
+            Expected information:
+
+            - VM: `linux-fund-1-challenge.ova`
+            - Username: `student`
+            - Password: `nexus2026`
+            - Starting directory: `/home/student`
+
+        - type: questions
+          items:
+            - id: c1
+              type: short_answer
+              question: "What username is displayed by the `whoami` command?"
+              acceptedAnswers:
+                - "student"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "The command to use sounds like a question in English."
+                - "Type `whoami` in the terminal."
+
+            - id: c2
+              type: short_answer
+              question: "What full path does `pwd` display at the start of the mission?"
+              acceptedAnswers:
+                - "/home/student"
+                - "/home/student/"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "The `pwd` command displays your current location."
+                - "You should be in the home directory of the student user."
+
+            - id: c3
+              type: short_answer
+              question: "What is the full path of the hidden file `flag.txt`?"
+              acceptedAnswers:
+                - "/home/student/.nexus/flag.txt"
+                - "/home/student/.nexus/flag.txt/"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "A hidden file or directory often starts with a dot."
+                - "The `ls` command alone does not show everything."
+                - "Try `ls -a` in `/home/student`."
+
+            - id: c4
+              type: short_answer
+              question: "What is the content of the hidden file `flag.txt`?"
+              acceptedAnswers:
+                - "NEXUS-LINUX-FUND-1"
+                - "nexus-linux-fund-1"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "Once you know the file path, use a reading command."
+                - "The `cat` command can display the full contents of a small file."
+
+            - id: c5
+              type: short_answer
+              question: "How many lines does the file `/home/student/nexus/rapport.txt` contain?"
+              acceptedAnswers:
+                - "42"
+                - "42 /home/student/nexus/rapport.txt"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "The command you need counts lines."
+                - "Use `wc -l /home/student/nexus/rapport.txt`."
+
+            - id: c6
+              type: short_answer
+              question: "What complete command did you use to count the lines in the report?"
+              acceptedAnswers:
+                - "wc -l /home/student/nexus/rapport.txt"
+                - "wc -l ~/nexus/rapport.txt"
+                - "cd ~/nexus && wc -l rapport.txt"
+              trimWhitespace: true
+              caseSensitive: false
+              hints:
+                - "An absolute path starts with `/`."
+                - "The shortcut `~` also represents `/home/student` for this user."
+
+            - id: c7
+              type: qcm
+              question: "Which command would have been most useful to discover the `.nexus` folder?"
+              answers:
+                - text: "ls -a"
+                  correct: true
+                - text: "clear"
+                  correct: false
+                - text: "pwd"
+                  correct: false
+                - text: "whoami"
+                  correct: false
+
+            - id: c8
+              type: qcm
+              question: "In this mission, why should you avoid commands like `rm` or `sudo`?"
+              answers:
+                - text: "Because the mission only requires exploring and reading without modifying the system."
+                  correct: true
+                - text: "Because they are only used to display hidden files."
+                  correct: false
+                - text: "Because they replace the `pwd` command."
+                  correct: false
+                - text: "Because they are needed to read a text file."
+                  correct: false
+
+        - type: teacher_note
+          title: "Suggested VM Content for the Challenge"
+          content: |
+            Prepare an Ubuntu 24.04 LTS VM with the student user.
+
+            Suggested structure:
+
+            /home/student/
+            ├── nexus/
+            │   └── rapport.txt           # 42-line file
+            └── .nexus/
+                └── flag.txt              # content: NEXUS-LINUX-FUND-1
+
+            Ensure that students can succeed using only the commands from this module.
+            Do not require `grep`, `find`, `cp`, `mv`, `rm`, `sudo`, `>`, or `>>`.

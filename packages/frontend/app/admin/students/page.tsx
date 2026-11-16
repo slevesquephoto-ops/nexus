@@ -24,9 +24,16 @@ export default function StudentsPage() {
   const [password, setPassword] = useState('')
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState('')
-  const [tempPassword, setTempPassword] = useState<string | null>(null)
+  const [shownPassword, setShownPassword] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  // Password change state
+  const [pwdStudentId, setPwdStudentId] = useState<string | null>(null)
+  const [pwdStudentName, setPwdStudentName] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [pwdChanging, setPwdChanging] = useState(false)
+  const [pwdError, setPwdError] = useState('')
 
   function loadStudents() {
     fetch(`${API_URL}/api/admin/users`, { credentials: 'include' })
@@ -56,7 +63,7 @@ export default function StudentsPage() {
       })
       const body = await res.json()
       if (!res.ok) { setCreateError(body.error ?? 'Erreur'); return }
-      setTempPassword(password)
+      setShownPassword(password)
       setUsername('')
       setPassword('')
       setShowForm(false)
@@ -75,13 +82,38 @@ export default function StudentsPage() {
     setDeletingId(id)
     setConfirmDeleteId(null)
     try {
-      await fetch(`${API_URL}/api/admin/users/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
+      await fetch(`${API_URL}/api/admin/users/${id}`, { method: 'DELETE', credentials: 'include' })
       setStudents(prev => prev.filter(s => s.id !== id))
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  function openPasswordModal(id: string, name: string) {
+    setPwdStudentId(id)
+    setPwdStudentName(name)
+    setNewPassword('')
+    setPwdError('')
+  }
+
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault()
+    if (!pwdStudentId || newPassword.trim().length < 4) return
+    setPwdChanging(true)
+    setPwdError('')
+    try {
+      const res = await fetch(`${API_URL}/api/admin/users/${pwdStudentId}/password`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ password: newPassword.trim() }),
+      })
+      const body = await res.json()
+      if (!res.ok) { setPwdError(body.error ?? 'Erreur'); return }
+      setShownPassword(newPassword.trim())
+      setPwdStudentId(null)
+    } finally {
+      setPwdChanging(false)
     }
   }
 
@@ -95,8 +127,47 @@ export default function StudentsPage() {
 
   return (
     <>
-      {tempPassword && (
-        <PasswordModal password={tempPassword} onClose={() => setTempPassword(null)} />
+      {shownPassword && (
+        <PasswordModal password={shownPassword} onClose={() => setShownPassword(null)} />
+      )}
+
+      {/* Password change modal */}
+      {pwdStudentId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-nx-surface border border-nx-border rounded-2xl p-6 w-full max-w-sm mx-4 space-y-4">
+            <div>
+              <h2 className="text-white font-bold text-lg">Changer le mot de passe</h2>
+              <p className="text-nx-gray text-sm mt-0.5">{pwdStudentName}</p>
+            </div>
+            <form onSubmit={handlePasswordChange} className="space-y-3">
+              <input
+                type="text"
+                placeholder="Nouveau mot de passe"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                className="w-full bg-nx-surface-2 border border-nx-border rounded-lg px-4 py-2.5 text-nx-text placeholder:text-nx-text-muted text-sm focus:outline-none focus:border-nx-yellow/50 transition-colors"
+                autoFocus
+              />
+              {pwdError && <p className="text-red-400 text-xs">{pwdError}</p>}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPwdStudentId(null)}
+                  className="flex-1 py-2.5 border border-nx-border text-nx-gray rounded-lg text-sm hover:text-white transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={pwdChanging || newPassword.trim().length < 4}
+                  className="flex-1 py-2.5 bg-nx-yellow text-nx-bg font-semibold rounded-lg text-sm hover:brightness-110 disabled:opacity-50 transition-all"
+                >
+                  {pwdChanging ? '…' : 'Changer'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       <div className="max-w-2xl mx-auto px-6 py-8 space-y-6">
@@ -152,24 +223,32 @@ export default function StudentsPage() {
         ) : students.length > 0 ? (
           <div className="bg-nx-surface border border-nx-border rounded-xl px-4 divide-y divide-nx-border/50">
             {students.map(s => (
-              <div key={s.id} className="flex items-center justify-between py-3">
-                <div>
+              <div key={s.id} className="flex items-center justify-between py-3 gap-3">
+                <div className="min-w-0 flex-1">
                   <p className="text-white text-sm font-medium">{s.username}</p>
                   <p className="text-nx-gray text-xs mt-0.5">
                     {s.xp} XP · Niveau {s.level}
                   </p>
                 </div>
-                <button
-                  onClick={() => handleDelete(s.id)}
-                  disabled={deletingId === s.id}
-                  className={`px-3 py-1 text-xs rounded-lg border transition-colors disabled:opacity-50 ${
-                    confirmDeleteId === s.id
-                      ? 'text-red-300 border-red-400/70 bg-red-900/20'
-                      : 'text-red-400 border-red-900/50 hover:border-red-400/50 hover:text-red-300'
-                  }`}
-                >
-                  {deletingId === s.id ? '…' : confirmDeleteId === s.id ? 'Confirmer ?' : 'Supprimer'}
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => openPasswordModal(s.id, s.username)}
+                    className="px-3 py-1 text-xs text-nx-gray border border-nx-border/60 hover:border-nx-yellow/50 hover:text-nx-yellow rounded-lg transition-colors"
+                  >
+                    MDP
+                  </button>
+                  <button
+                    onClick={() => handleDelete(s.id)}
+                    disabled={deletingId === s.id}
+                    className={`px-3 py-1 text-xs rounded-lg border transition-colors disabled:opacity-50 ${
+                      confirmDeleteId === s.id
+                        ? 'text-red-300 border-red-400/70 bg-red-900/20'
+                        : 'text-red-400 border-red-900/50 hover:border-red-400/50 hover:text-red-300'
+                    }`}
+                  >
+                    {deletingId === s.id ? '…' : confirmDeleteId === s.id ? 'Confirmer ?' : 'Supprimer'}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

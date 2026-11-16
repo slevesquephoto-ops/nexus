@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Maple Tech Solutions</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="assets/images/logo.png" alt="Maple Tech Solutions" class="logo-img"
+             onerror="this.style.display='none'">
+        <div>
+          <div class="logo-text">🍁 Maple <span>Tech</span></div>
+          <div class="logo-tagline">Solutions informatiques</div>
+        </div>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section style="background:var(--navy);color:#fff;padding:3rem 2rem;">
+    <div class="section-inner">
+      <h1 style="font-size:2rem;font-weight:800;margin-bottom:0.5rem;">Contactez-nous</h1>
+      <p style="opacity:0.75;">Nous répondons dans les 2 heures ouvrables.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-inner">
+      <div class="contact-grid">
+
+        <div class="contact-info">
+          <h3>Nos coordonnées</h3>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon">📍</div>
+            <div class="contact-detail-text">
+              <strong>Adresse</strong>
+              1842 rue Saint-Laurent, Suite 204<br>
+              Laval, Québec H7L 2P4
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon">📞</div>
+            <div class="contact-detail-text">
+              <strong>Téléphone</strong>
+              (450) 555-0187
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon">✉️</div>
+            <div class="contact-detail-text">
+              <strong>Courriel</strong>
+              info@mapletechsolutions.ca
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon">🕐</div>
+            <div class="contact-detail-text">
+              <strong>Heures d'ouverture</strong>
+              Lundi – Vendredi : 8h00 – 17h30<br>
+              Support d'urgence disponible 24/7
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <!-- Formulaire cosmétique — aucun backend, affiche juste un message de confirmation -->
+          <form id="contact-form" onsubmit="handleContactSubmit(event)">
+            <div class="form-group">
+              <label for="name">Nom complet *</label>
+              <input type="text" id="name" name="name" required placeholder="Jean Tremblay">
+            </div>
+            <div class="form-group">
+              <label for="company">Entreprise</label>
+              <input type="text" id="company" name="company" placeholder="Nom de votre organisation">
+            </div>
+            <div class="form-group">
+              <label for="email">Courriel *</label>
+              <input type="email" id="email" name="email" required placeholder="votre@courriel.com">
+            </div>
+            <div class="form-group">
+              <label for="phone">Téléphone</label>
+              <input type="tel" id="phone" name="phone" placeholder="(450) 555-0000">
+            </div>
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" required placeholder="Décrivez votre besoin..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Envoyer le message</button>
+            <div id="form-confirm" style="display:none;margin-top:1rem;padding:1rem;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;color:#065f46;font-size:0.9rem;">
+              ✔ Votre message a été envoyé. Nous vous répondrons dans les plus brefs délais.
+            </div>
+          </form>
+          <script>
+            function handleContactSubmit(e) {
+              e.preventDefault();
+              document.getElementById("contact-form").style.opacity = "0.5";
+              document.getElementById("form-confirm").style.display = "block";
+            }
+          </script>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Maple Tech Solutions</h4>
+        <p style="font-size:0.82rem;line-height:1.6;">Soutien informatique professionnel pour les PME québécoises.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="about.html">À propos</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li>1842 rue Saint-Laurent, Laval QC</li>
+          <li>(450) 555-0187</li>
+          <li>info@mapletechsolutions.ca</li>
+        </ul>
+      </div>
+    </div>
+    <p>© 2024 Maple Tech Solutions inc. — Tous droits réservés.</p>
+  </footer>
+
+</body>
+</html>

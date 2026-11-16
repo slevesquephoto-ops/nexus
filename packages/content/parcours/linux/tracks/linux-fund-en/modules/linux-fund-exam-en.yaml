@@ -1,0 +1,875 @@
+module:
+  id: linux-fund-exam-en
+  trackId: linux-en
+  title: Exam — Linux Fundamentals
+  description: "Integrated mission evaluating concepts from linux-fund-1 through linux-fund-4: navigation, file management, searching, redirection, and basic permissions."
+  order: 5
+  mascot: tux-exam
+  xpReward: 250
+  estimatedDuration: 120 to 180 minutes
+  language: en
+  evaluationType: exam
+  targetEnvironment:
+    distribution: Ubuntu 24.04 LTS
+    user: student
+    recommendedMode: VM prepared by the teacher
+    notes: "The exam must be completed in a real VM. Students submit their validation answers in NEXUS."
+  prerequisites:
+    - linux-fund-1 completed
+    - linux-fund-2 completed
+    - linux-fund-3 completed
+    - linux-fund-4 completed
+  allowedCommands:
+    - whoami
+    - pwd
+    - clear
+    - history
+    - ls
+    - ls -l
+    - ls -a
+    - ls -la
+    - ls -ld
+    - cd
+    - cat
+    - head
+    - tail
+    - wc -l
+    - mkdir
+    - mkdir -p
+    - touch
+    - nano
+    - less
+    - file
+    - cp
+    - cp -r
+    - mv
+    - rm
+    - rm -i
+    - rm -r
+    - rmdir
+    - man
+    - command --help
+    - find
+    - grep
+    - grep -i
+    - grep -n
+    - grep -r
+    - echo
+    - date
+    - sort
+    - uniq
+    - chmod
+  prohibitedOrNotExpected:
+    - sudo
+    - chown
+    - chgrp
+    - adduser
+    - usermod
+    - systemctl
+    - journalctl
+    - apt
+    - ssh
+    - scp
+    - ip
+    - ping
+  gradingPolicy:
+    sectionQuestions: Penalty applies, as this is an exam.
+    hints: Allowed only if the teacher wants a formative version; disable for a strict summative version.
+    xp: Gamification only; the real grade depends on the teacher's criteria.
+    suggestedScore:
+      total: 100
+      breakdown:
+        navigation_and_reading: 20
+        file_manipulation: 20
+        search_filter_redirect: 25
+        permissions: 25
+        method_and_cleanliness: 10
+  teacherPreparation:
+    title: Recommended Exam VM Setup
+    content: |
+      Create an Ubuntu 24.04 LTS VM with the `student` user.
+
+      Create the exam directory:
+
+      ```bash
+      /home/student/nexus-exam/
+      ```
+
+      Recommended structure:
+
+      ```text
+      nexus-exam/
+      ├── briefing/
+      │   ├── instructions.txt
+      │   └── objectives.txt
+      ├── clients/
+      │   ├── alpha/
+      │   │   ├── report_alpha.txt
+      │   │   ├── notes_alpha.txt
+      │   │   └── archive_alpha.old
+      │   ├── beta/
+      │   │   ├── report_beta.txt
+      │   │   ├── error_beta.log
+      │   │   └── duplicates.txt
+      │   └── gamma/
+      │       ├── report_gamma.txt
+      │       └── incident_gamma.log
+      ├── evidence/
+      │   ├── system-info.txt
+      │   └── hidden/
+      │       └── .trace-nexus
+      ├── scripts/
+      │   ├── start-diagnostic.sh      chmod 644
+      │   └── verify-report.sh         chmod 755
+      └── depot/
+          ├── to-sort.txt
+          ├── Final Report.txt
+          └── unknown_file
+      ```
+
+      Suggested content:
+
+      - Put the keyword `NEXUS-ALPHA-42` in `clients/alpha/report_alpha.txt`.
+      - Put the word `error` several times in `clients/beta/error_beta.log`.
+      - Put the word `intrusion` in `clients/gamma/incident_gamma.log`.
+      - Put duplicate lines in `clients/beta/duplicates.txt`.
+      - Put a clue in `evidence/hidden/.trace-nexus`.
+      - Create `scripts/start-diagnostic.sh` as non-executable with chmod 644.
+      - Create `depot/Final Report.txt` with a space in the name to validate quote handling.
+
+      Quick setup example:
+
+      ```bash
+      cd /home/student
+      mkdir -p nexus-exam/briefing nexus-exam/clients/alpha nexus-exam/clients/beta nexus-exam/clients/gamma nexus-exam/evidence/hidden nexus-exam/scripts nexus-exam/depot
+      echo "Welcome to the Linux Fundamentals exam." > nexus-exam/briefing/instructions.txt
+      echo "Objective: locate, organize, document, and fix permissions." > nexus-exam/briefing/objectives.txt
+      echo "Alpha client report. Validation code: NEXUS-ALPHA-42" > nexus-exam/clients/alpha/report_alpha.txt
+      echo "Alpha client notes: check for hidden files." > nexus-exam/clients/alpha/notes_alpha.txt
+      echo "Old Alpha archive" > nexus-exam/clients/alpha/archive_alpha.old
+      printf "error disk\nerror permission\nwarning network\nerror application\n" > nexus-exam/clients/beta/error_beta.log
+      printf "alpha\nbeta\nalpha\ngamma\nbeta\nomega\n" > nexus-exam/clients/beta/duplicates.txt
+      echo "Beta client report" > nexus-exam/clients/beta/report_beta.txt
+      echo "Gamma client report" > nexus-exam/clients/gamma/report_gamma.txt
+      echo "Gamma incident: intrusion detected in the log." > nexus-exam/clients/gamma/incident_gamma.log
+      echo "Hidden trace: NEXUS-HIDDEN-77" > nexus-exam/evidence/hidden/.trace-nexus
+      echo "Simulated system info" > nexus-exam/evidence/system-info.txt
+      echo "echo Diagnostic started" > nexus-exam/scripts/start-diagnostic.sh
+      echo "echo Report verified" > nexus-exam/scripts/verify-report.sh
+      chmod 644 nexus-exam/scripts/start-diagnostic.sh
+      chmod 755 nexus-exam/scripts/verify-report.sh
+      echo "To be filed in the reports folder." > nexus-exam/depot/to-sort.txt
+      echo "Report with a space in the name." > "nexus-exam/depot/Final Report.txt"
+      echo "text content without extension" > nexus-exam/depot/unknown_file
+      chown -R student:student nexus-exam
+      ```
+
+      Do not ask students to use `sudo`, `chown`, or `chgrp` in this exam.
+  tasks:
+    - id: linux-fund-exam-en-t1
+      type: task
+      title: Exam Briefing — Integrated Mission
+      order: 1
+      xpReward: 10
+      challenge: true
+      objectives:
+        - Understand the exam context.
+        - Identify the working rules.
+        - Prepare to complete an integrated mission.
+      sections:
+        - type: mission
+          title: NEXUS Briefing
+          content: |
+            Agent, you have reached the end of the **Linux Fundamentals** track.
+
+            This mission verifies whether you can apply the Linux terminal fundamentals in a complete scenario:
+
+            - navigate the file system;
+            - read files;
+            - manage directories and files;
+            - search for information;
+            - produce a short report;
+            - read and fix basic permissions.
+
+            You must work in the VM provided by your teacher.
+        - type: warning
+          title: Important Rules
+          content: |
+            During this exam:
+
+            - do not modify system files;
+            - work only inside the requested exam directory;
+            - always verify where you are with `pwd`;
+            - use `ls -la` before modifying or deleting;
+            - never use `chmod 777` unless a question specifically asks you to explain why it is dangerous;
+            - do not use `sudo`, `chown`, `chgrp`, `apt`, `systemctl`, or `journalctl`.
+        - type: validation
+          title: Validation — Starting Directory
+          question: What is the name of the main exam directory?
+          answerType: short_answer
+          acceptedAnswers:
+            - nexus-exam
+            - "nexus-exam/"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - The directory name starts with `nexus`.
+            - It is normally located in `/home/student`.
+
+    - id: linux-fund-exam-en-t2
+      type: task
+      title: Part 1 — Getting Your Bearings and Reading the Instructions
+      order: 2
+      xpReward: 20
+      challenge: true
+      objectives:
+        - Use pwd, ls, cd, and cat.
+        - Read the briefing files.
+        - Identify the absolute working path.
+      sections:
+        - type: terminal_exercise
+          title: Navigate to the Exam Directory
+          instructions: |
+            Open a terminal and navigate to the exam directory.
+          commands:
+            - cd ~/nexus-exam
+            - pwd
+            - ls -la
+            - cat briefing/instructions.txt
+            - cat briefing/objectives.txt
+          expectedObservation: "You should see the briefing, clients, depot, evidence, and scripts directories."
+        - type: validation
+          title: Question 1 — Absolute Path
+          question: What is the absolute path of the exam directory?
+          answerType: short_answer
+          acceptedAnswers:
+            - /home/student/nexus-exam
+            - /home/student/nexus-exam/
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `pwd`.
+            - The path starts with `/home/student`.
+        - type: validation
+          title: Question 2 — Objective
+          question: According to the objectives.txt file, which verb describes the action to take with permissions?
+          answerType: short_answer
+          acceptedAnswers:
+            - fix
+            - Fix
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - Read `briefing/objectives.txt`.
+            - The sentence mentions locating, organizing, documenting, and something permissions.
+        - type: questions
+          items:
+            - id: t2-q3
+              type: qcm
+              question: Which command lets you confirm your current location before modifying files?
+              answers:
+                - text: pwd
+                  correct: true
+                - text: rm
+                  correct: false
+                - text: chmod
+                  correct: false
+                - text: mkdir
+                  correct: false
+              feedback:
+                correct: Correct. `pwd` is a fundamental safety habit.
+                incorrect: Before acting, verify where you are with `pwd`.
+
+    - id: linux-fund-exam-en-t3
+      type: task
+      title: Part 2 — Exploring, Hidden Files, and Case Sensitivity
+      order: 3
+      xpReward: 20
+      challenge: true
+      objectives:
+        - Use ls -la.
+        - Find a hidden file.
+        - Revisit case sensitivity and naming precision.
+      sections:
+        - type: terminal_exercise
+          title: Explore the Evidence
+          instructions: |
+            Explore the `evidence` directory and look for both visible and hidden items.
+          commands:
+            - cd ~/nexus-exam
+            - ls -la evidence
+            - ls -la evidence/hidden
+            - cat evidence/hidden/.trace-nexus
+          expectedObservation: "The .trace-nexus file is hidden because its name starts with a dot."
+        - type: validation
+          title: Question 1 — Hidden File
+          question: What is the full name of the hidden file found in evidence/hidden?
+          answerType: short_answer
+          acceptedAnswers:
+            - .trace-nexus
+            - evidence/hidden/.trace-nexus
+            - /home/student/nexus-exam/evidence/hidden/.trace-nexus
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `ls -la`.
+            - The file name starts with a dot.
+        - type: validation
+          title: Question 2 — Hidden Code
+          question: What validation code is written inside the hidden file?
+          answerType: short_answer
+          acceptedAnswers:
+            - NEXUS-HIDDEN-77
+            - "Hidden trace: NEXUS-HIDDEN-77"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `cat` on the hidden file.
+            - The code starts with `NEXUS-HIDDEN`.
+        - type: questions
+          items:
+            - id: t3-q3
+              type: qcm
+              question: On Linux, are `Report.txt` and `report.txt` always the same file?
+              answers:
+                - text: Yes, Linux always ignores case.
+                  correct: false
+                - text: No, Linux is generally case-sensitive.
+                  correct: true
+                - text: Yes, but only in the terminal.
+                  correct: false
+                - text: No, because text files are not allowed.
+                  correct: false
+              feedback:
+                correct: Correct. Case matters on Linux.
+                incorrect: Linux generally distinguishes between uppercase and lowercase letters.
+
+    - id: linux-fund-exam-en-t4
+      type: task
+      title: Part 3 — Organizing a Report Folder
+      order: 4
+      xpReward: 20
+      challenge: true
+      objectives:
+        - Create a simple directory tree.
+        - Copy and move files.
+        - Handle a file name containing a space.
+      sections:
+        - type: terminal_exercise
+          title: Create the Final Workspace
+          instructions: |
+            Create a `final-work` directory with three subdirectories: `reports`, `evidence`, and `archives`.
+
+            Then file the requested items.
+          commands:
+            - cd ~/nexus-exam
+            - mkdir -p final-work/reports final-work/evidence final-work/archives
+            - cp clients/alpha/report_alpha.txt final-work/reports/
+            - cp "depot/Final Report.txt" final-work/reports/
+            - mv depot/to-sort.txt final-work/archives/
+            - file depot/unknown_file
+            - cp depot/unknown_file final-work/evidence/
+            - ls -la final-work
+            - ls -la final-work/reports
+          expectedObservation: "The final-work directory should contain reports, evidence, and archives."
+        - type: validation
+          title: Question 1 — mkdir Command
+          question: Which command creates the three directories reports, evidence, and archives under final-work in a single command?
+          answerType: short_answer
+          acceptedAnswers:
+            - mkdir -p final-work/reports final-work/evidence final-work/archives
+            - "mkdir -p ./final-work/reports ./final-work/evidence ./final-work/archives"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - The command starts with `mkdir -p`.
+            - You need to name all three paths.
+        - type: validation
+          title: Question 2 — File With a Space
+          question: Which correct form copies the file "Final Report.txt" located in depot to final-work/reports?
+          answerType: short_answer
+          acceptedAnswers:
+            - cp "depot/Final Report.txt" final-work/reports/
+            - "cp depot/Final\\ Report.txt final-work/reports/"
+            - "cp \"depot/Final Report.txt\" final-work/reports/"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - The name contains a space.
+            - Use quotes or a backslash before the space.
+        - type: validation
+          title: Question 3 — Actual Type
+          question: According to the file command, what general type describes depot/unknown_file?
+          answerType: short_answer
+          acceptedAnswers:
+            - text
+            - ASCII text
+            - Unicode text
+            - text file
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - Use `file depot/unknown_file`.
+            - The file has no extension, but its content is text.
+
+    - id: linux-fund-exam-en-t5
+      type: task
+      title: Part 4 — Searching for Files
+      order: 5
+      xpReward: 20
+      challenge: true
+      objectives:
+        - Use find.
+        - Search by name.
+        - Use wildcards.
+      sections:
+        - type: terminal_exercise
+          title: Find the Reports and Logs
+          instructions: |
+            Use `find` to locate the requested files.
+          commands:
+            - cd ~/nexus-exam
+            - find clients -name "report*.txt"
+            - find clients -name "*.log"
+            - find . -name "*gamma*"
+          expectedObservation: "You should find .txt reports, .log files, and files containing gamma in their name."
+        - type: validation
+          title: Question 1 — Log Files
+          question: How many .log files are located in the clients directory and its subdirectories?
+          answerType: short_answer
+          acceptedAnswers:
+            - "2"
+            - 2
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - Use `find clients -name "*.log"`.
+            - Count the returned lines.
+        - type: validation
+          title: Question 2 — Gamma File
+          question: Which file contains the word gamma in its name and ends with .log?
+          answerType: short_answer
+          acceptedAnswers:
+            - incident_gamma.log
+            - clients/gamma/incident_gamma.log
+            - ./clients/gamma/incident_gamma.log
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `find . -name "*gamma*"`.
+            - Look for the file ending in `.log`.
+        - type: questions
+          items:
+            - id: t5-q3
+              type: qcm
+              question: In `find clients -name "*.log"`, what does `*` represent?
+              answers:
+                - text: It deletes all .log files.
+                  correct: false
+                - text: It replaces zero, one, or more characters.
+                  correct: true
+                - text: It forces the use of sudo.
+                  correct: false
+                - text: It converts a directory into a file.
+                  correct: false
+              feedback:
+                correct: Correct. `*` is a wildcard.
+                incorrect: The `*` symbol is a wildcard used in search patterns.
+
+    - id: linux-fund-exam-en-t6
+      type: task
+      title: Part 5 — Searching Text and Filtering
+      order: 6
+      xpReward: 25
+      challenge: true
+      objectives:
+        - Use grep.
+        - Use grep -r, grep -i, and grep -n.
+        - Filter output with the pipe.
+      sections:
+        - type: terminal_exercise
+          title: Search for Clues
+          instructions: |
+            Search for the requested keywords in the clients directories.
+          commands:
+            - cd ~/nexus-exam
+            - grep -r "NEXUS-ALPHA-42" clients
+            - grep -r -i "error" clients
+            - grep -n "intrusion" clients/gamma/incident_gamma.log
+            - find clients -name "*.txt" | grep "report"
+          expectedObservation: "You should find the Alpha code, Beta errors, the Gamma intrusion, and filter for reports."
+        - type: validation
+          title: Question 1 — Alpha Code
+          question: What NEXUS code is found in the Alpha client report?
+          answerType: short_answer
+          acceptedAnswers:
+            - NEXUS-ALPHA-42
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `grep -r`.
+            - The code starts with `NEXUS-ALPHA`.
+        - type: validation
+          title: Question 2 — Intrusion
+          question: In which file is the word intrusion found?
+          answerType: short_answer
+          acceptedAnswers:
+            - incident_gamma.log
+            - clients/gamma/incident_gamma.log
+            - ./clients/gamma/incident_gamma.log
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `grep -r "intrusion" clients`.
+            - The file is in the gamma directory.
+        - type: validation
+          title: Question 3 — Line Number
+          question: Which grep option displays the line number?
+          answerType: short_answer
+          acceptedAnswers:
+            - -n
+            - n
+            - grep -n
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - This option was covered in linux-fund-3.
+            - It starts with a dash.
+        - type: questions
+          items:
+            - id: t6-q4
+              type: qcm
+              question: What does the pipe `|` do?
+              answers:
+                - text: It sends the output of one command into another command.
+                  correct: true
+                - text: It permanently deletes a directory.
+                  correct: false
+                - text: It changes the owner of a file.
+                  correct: false
+                - text: It makes a script executable.
+                  correct: false
+              feedback:
+                correct: Correct. The pipe chains the output processing between commands.
+                incorrect: The pipe connects the output of one command to the input of another.
+
+    - id: linux-fund-exam-en-t7
+      type: task
+      title: Part 6 — Producing a Report With Redirection
+      order: 7
+      xpReward: 25
+      challenge: true
+      objectives:
+        - Use > and >>.
+        - Use sort and uniq.
+        - Produce a short final report.
+      sections:
+        - type: terminal_exercise
+          title: Create the Exam Report
+          instructions: |
+            Create a file `final-work/exam-report.txt`.
+
+            It must contain:
+            - a title;
+            - the date;
+            - the list of .log files;
+            - the lines containing the word error;
+            - a sorted, deduplicated list from the duplicates.txt file.
+          commands:
+            - cd ~/nexus-exam
+            - echo "Linux Fundamentals Exam Report" > final-work/exam-report.txt
+            - date >> final-work/exam-report.txt
+            - find clients -name "*.log" >> final-work/exam-report.txt
+            - grep -r -i "error" clients >> final-work/exam-report.txt
+            - sort clients/beta/duplicates.txt | uniq >> final-work/exam-report.txt
+            - wc -l final-work/exam-report.txt
+            - less final-work/exam-report.txt
+          expectedObservation: "The report should contain several sections appended with >>."
+        - type: validation
+          title: Question 1 — Overwrite Symbol
+          question: Which symbol redirects output to a file, replacing its existing content?
+          answerType: short_answer
+          acceptedAnswers:
+            - ">"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - It was used to create the first line of the report.
+            - Warning — it overwrites existing content.
+        - type: validation
+          title: Question 2 — Append Symbol
+          question: Which symbol appends output to the end of a file without erasing existing content?
+          answerType: short_answer
+          acceptedAnswers:
+            - ">>"
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - It looks like the redirection symbol, but written twice.
+        - type: validation
+          title: Question 3 — Duplicates
+          question: Which combination of commands sorts duplicates.txt and removes consecutive duplicates?
+          answerType: short_answer
+          acceptedAnswers:
+            - sort clients/beta/duplicates.txt | uniq
+            - "sort clients/beta/duplicates.txt|uniq"
+            - "cat clients/beta/duplicates.txt | sort | uniq"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `sort`.
+            - Send the result to `uniq` with a pipe.
+        - type: questions
+          items:
+            - id: t7-q4
+              type: qcm
+              question: Why is `sort` often used before `uniq`?
+              answers:
+                - text: Because `uniq` only removes consecutive duplicates.
+                  correct: true
+                - text: Because `sort` automatically deletes files.
+                  correct: false
+                - text: Because `uniq` only works on directories.
+                  correct: false
+                - text: Because `sort` grants root permissions.
+                  correct: false
+              feedback:
+                correct: Correct. Sorting groups identical lines together.
+                incorrect: "`uniq` works best when identical lines are already grouped."
+
+    - id: linux-fund-exam-en-t8
+      type: task
+      title: Part 7 — Basic Permissions
+      order: 8
+      xpReward: 25
+      challenge: true
+      objectives:
+        - Read permissions with ls -l.
+        - Make a script executable.
+        - Use chmod without opening all rights.
+      sections:
+        - type: terminal_exercise
+          title: Fix the Diagnostic Script
+          instructions: |
+            The script `scripts/start-diagnostic.sh` exists but is not executable.
+
+            Fix only what is necessary so that the owner can run it.
+          commands:
+            - cd ~/nexus-exam
+            - ls -l scripts/start-diagnostic.sh
+            - ./scripts/start-diagnostic.sh
+            - chmod u+x scripts/start-diagnostic.sh
+            - ls -l scripts/start-diagnostic.sh
+            - ./scripts/start-diagnostic.sh
+            - ls -l scripts/start-diagnostic.sh >> final-work/exam-report.txt
+          expectedObservation: "Before chmod, direct execution fails. After chmod u+x, the script runs."
+        - type: validation
+          title: Question 1 — Minimal Command
+          question: Which command adds execute permission for the owner of scripts/start-diagnostic.sh?
+          answerType: short_answer
+          acceptedAnswers:
+            - chmod u+x scripts/start-diagnostic.sh
+            - "chmod u+x ./scripts/start-diagnostic.sh"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `chmod`.
+            - The owner is `u`.
+            - Execute permission is `x`.
+        - type: validation
+          title: Question 2 — Private Permission
+          question: Which numeric permission is appropriate for a file readable and writable only by its owner?
+          answerType: short_answer
+          acceptedAnswers:
+            - "600"
+            - 600
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - The owner has r and w.
+            - The group and others have no rights.
+        - type: validation
+          title: Question 3 — Directory Itself
+          question: Which command displays the permissions of the scripts directory itself, without listing its contents?
+          answerType: short_answer
+          acceptedAnswers:
+            - ls -ld scripts
+            - "ls -dl scripts"
+            - "ls -l -d scripts"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `ls`.
+            - Combine `-l` and `-d`.
+        - type: questions
+          items:
+            - id: t8-q4
+              type: qcm
+              question: Why would `chmod 777 scripts/start-diagnostic.sh` be a poor fix?
+              answers:
+                - text: Because it grants all rights to everyone.
+                  correct: true
+                - text: Because it automatically deletes the file.
+                  correct: false
+                - text: Because it prevents the owner from running it.
+                  correct: false
+                - text: Because it only works on Windows.
+                  correct: false
+              feedback:
+                correct: Correct. That fix is far too broad.
+                incorrect: 777 means rwx for the owner, the group, and others.
+
+    - id: linux-fund-exam-en-t9
+      type: task
+      title: Part 8 — Careful Cleanup
+      order: 9
+      xpReward: 15
+      challenge: true
+      objectives:
+        - Carefully delete an unnecessary file.
+        - Use rm -i.
+        - Verify before and after.
+      sections:
+        - type: terminal_exercise
+          title: Archive or Remove an Old File
+          instructions: |
+            The file `clients/alpha/archive_alpha.old` is an old test archive.
+
+            First copy it to `final-work/archives`, then carefully delete the original with `rm -i`.
+          commands:
+            - cd ~/nexus-exam
+            - ls -l clients/alpha/archive_alpha.old
+            - cp clients/alpha/archive_alpha.old final-work/archives/
+            - rm -i clients/alpha/archive_alpha.old
+            - ls -l clients/alpha
+            - ls -l final-work/archives
+          expectedObservation: "The original file should be removed from clients/alpha, but a copy should exist in final-work/archives."
+        - type: validation
+          title: Question 1 — Safe Deletion
+          question: Which rm option prompts for confirmation before deleting?
+          answerType: short_answer
+          acceptedAnswers:
+            - -i
+            - i
+            - rm -i
+          trimWhitespace: true
+          caseSensitive: false
+          hints:
+            - It is the interactive option.
+            - It starts with a dash.
+        - type: questions
+          items:
+            - id: t9-q2
+              type: qcm
+              question: Why should you check with ls before deleting?
+              answers:
+                - text: To confirm you are targeting the right file or directory.
+                  correct: true
+                - text: To automatically create a backup.
+                  correct: false
+                - text: To change the file owner.
+                  correct: false
+                - text: To make the file executable.
+                  correct: false
+              feedback:
+                correct: Correct. It is a safety habit.
+                incorrect: Before deleting, verify the target.
+
+    - id: linux-fund-exam-en-t10
+      type: challenge
+      title: Final Submission — Verify the Report
+      order: 10
+      xpReward: 40
+      challenge: true
+      objectives:
+        - Verify the final work.
+        - Read the report.
+        - Confirm the presence of all required elements.
+      sections:
+        - type: terminal_exercise
+          title: Final Verification
+          instructions: |
+            Verify that your `final-work` directory contains all expected elements.
+          commands:
+            - cd ~/nexus-exam
+            - find final-work -type f
+            - wc -l final-work/exam-report.txt
+            - grep -i "error" final-work/exam-report.txt
+            - grep "NEXUS" final-work/exam-report.txt
+            - less final-work/exam-report.txt
+          expectedObservation: "The report must contain the title, the date, the logs, the errors, and the sorted deduplicated list."
+        - type: validation
+          title: Question 1 — Final Report
+          question: What is the name of the final report file you produced?
+          answerType: short_answer
+          acceptedAnswers:
+            - exam-report.txt
+            - final-work/exam-report.txt
+            - /home/student/nexus-exam/final-work/exam-report.txt
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - It is in the final-work directory.
+            - Its name contains `report`.
+        - type: validation
+          title: Question 2 — Line Count Command
+          question: Which command counts the lines in the final report?
+          answerType: short_answer
+          acceptedAnswers:
+            - wc -l final-work/exam-report.txt
+            - "wc -l ./final-work/exam-report.txt"
+          trimWhitespace: true
+          caseSensitive: true
+          hints:
+            - Use `wc`.
+            - The option for counting lines is `-l`.
+        - type: questions
+          items:
+            - id: t10-q3
+              type: qcm
+              question: Which set of concepts does this exam primarily validate?
+              answers:
+                - text: Navigation, files, searching, redirection, and permissions.
+                  correct: true
+                - text: Active Directory, DHCP, DNS, and GPO.
+                  correct: false
+                - text: Photoshop, printing, and screen calibration.
+                  correct: false
+                - text: Advanced Python programming.
+                  correct: false
+              feedback:
+                correct: Correct. This is the integration of the four Linux Fundamentals modules.
+                incorrect: This exam covers the Linux basics from the four previous modules.
+        - type: teacher_note
+          title: Suggested Grading Criteria
+          content: |
+            Suggested grading out of 100:
+
+            1. Navigation and Reading — 20 points
+               - navigates to the correct location;
+               - uses pwd, ls, cat, and less correctly;
+               - finds the hidden file.
+
+            2. File Management — 20 points
+               - creates the correct directory tree;
+               - copies the right files;
+               - correctly handles the file with a space in its name;
+               - moves/archives correctly.
+
+            3. Search, Filter, and Redirection — 25 points
+               - uses find correctly;
+               - uses grep, grep -r, grep -i, and grep -n correctly;
+               - produces a report using > and >>;
+               - uses sort | uniq correctly.
+
+            4. Permissions — 25 points
+               - reads ls -l;
+               - fixes the script with chmod u+x;
+               - understands 600, 644, 755, and 777;
+               - avoids overly open permissions.
+
+            5. Method and Cleanliness — 10 points
+               - verifies before deleting;
+               - works in the correct directory;
+               - final report is readable;
+               - stays within the requested scope.

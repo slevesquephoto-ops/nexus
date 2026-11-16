@@ -1,0 +1,41 @@
+IMAGES À PLACER ICI — maple-tech-site/assets/images/
+======================================================
+
+1. logo.png
+   Quoi     : Logo de Maple Tech Solutions
+   Format   : PNG fond transparent
+   Taille   : 180 × 44 px recommandé
+   Utilisé  : Dans le header de toutes les pages
+   Sans lui : Le nom "🍁 Maple Tech" en texte s'affiche en fallback (déjà fonctionnel)
+
+2. hero-bg.jpg
+   Quoi     : Fond de la section hero de la page d'accueil
+   Format   : JPG
+   Taille   : 1920 × 700 px recommandé
+   Style    : Bureau moderne, salle serveur, technicien au travail — tons sombres
+   Utilisé  : index.html (décommenter la ligne background-image dans style.css, classe .hero)
+   Sans lui : Un dégradé bleu marine / vert forêt s'affiche (déjà fonctionnel)
+
+3. team-jf.jpg
+   Quoi     : Photo de profil — Jean-François Gagnon (Directeur)
+   Format   : JPG
+   Taille   : 300 × 300 px (carré), recadrage portrait professionnel
+   Utilisé  : about.html
+   Sans lui : Cercle avec initiales "JG" s'affiche en fallback
+
+4. team-mc.jpg
+   Quoi     : Photo de profil — Marie-Claude Tremblay (Technicienne sénior)
+   Format   : JPG
+   Taille   : 300 × 300 px (carré)
+   Utilisé  : about.html
+   Sans lui : Cercle avec initiales "MT" s'affiche en fallback
+
+5. team-kb.jpg
+   Quoi     : Photo de profil — Kevin Bouchard (Spécialiste soutien)
+   Format   : JPG
+   Taille   : 300 × 300 px (carré)
+   Utilisé  : about.html
+   Sans lui : Cercle avec initiales "KB" s'affiche en fallback
+
+IMPORTANT : Le site fonctionne sans aucune de ces images.
+Les fallbacks CSS/HTML sont déjà en place.
